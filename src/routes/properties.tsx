@@ -1,4 +1,4 @@
-import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { Outlet, createFileRoute, useLocation, useNavigate } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
@@ -17,9 +17,15 @@ export const Route = createFileRoute("/properties")({
 });
 
 function PublicPropertiesPage() {
+  const location = useLocation();
   const search = Route.useSearch();
   const navigate = useNavigate();
   const fetchListings = useServerFn(getPublicListings);
+
+  const isDetailPath = /^\/properties\/[^/]+$/.test(location.pathname);
+  if (isDetailPath) {
+    return <Outlet />;
+  }
 
   const [filters, setFilters] = useState({
     operation: (search.operation ?? "buy") as "buy" | "rent",

@@ -17,10 +17,15 @@ import { Route as LoginRouteImport } from './routes/login'
 import { Route as FavoritesRouteImport } from './routes/favorites'
 import { Route as DemoRouteImport } from './routes/demo'
 import { Route as CompareRouteImport } from './routes/compare'
+import { Route as BuyerRouteImport } from './routes/buyer'
 import { Route as BuyRouteImport } from './routes/buy'
 import { Route as AppRouteImport } from './routes/app'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as PropertiesSlugRouteImport } from './routes/properties/$slug'
+import { Route as BuyerTransactionsRouteImport } from './routes/buyer/transactions'
+import { Route as BuyerProfileRouteImport } from './routes/buyer/profile'
+import { Route as BuyerMatchesRouteImport } from './routes/buyer/matches'
+import { Route as BuyerDashboardRouteImport } from './routes/buyer/dashboard'
 import { Route as AppTasksRouteImport } from './routes/app/tasks'
 import { Route as AppSettingsRouteImport } from './routes/app/settings'
 import { Route as AppOrganizationsRouteImport } from './routes/app/organizations'
@@ -42,6 +47,7 @@ import { Route as AppPropertiesIndexRouteImport } from './routes/app/properties/
 import { Route as AppLeadsIndexRouteImport } from './routes/app/leads/index'
 import { Route as AppDocumentsIndexRouteImport } from './routes/app/documents/index'
 import { Route as AppBuyersIndexRouteImport } from './routes/app/buyers/index'
+import { Route as BuyerTransactionsTransactionIdRouteImport } from './routes/buyer/transactions/$transactionId'
 import { Route as AppTransactionsNewRouteImport } from './routes/app/transactions/new'
 import { Route as AppTransactionsTransactionIdRouteImport } from './routes/app/transactions/$transactionId'
 import { Route as AppSellersNewRouteImport } from './routes/app/sellers/new'
@@ -96,6 +102,11 @@ const CompareRoute = CompareRouteImport.update({
   path: '/compare',
   getParentRoute: () => rootRouteImport,
 } as any)
+const BuyerRoute = BuyerRouteImport.update({
+  id: '/buyer',
+  path: '/buyer',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const BuyRoute = BuyRouteImport.update({
   id: '/buy',
   path: '/buy',
@@ -115,6 +126,26 @@ const PropertiesSlugRoute = PropertiesSlugRouteImport.update({
   id: '/$slug',
   path: '/$slug',
   getParentRoute: () => PropertiesRoute,
+} as any)
+const BuyerTransactionsRoute = BuyerTransactionsRouteImport.update({
+  id: '/transactions',
+  path: '/transactions',
+  getParentRoute: () => BuyerRoute,
+} as any)
+const BuyerProfileRoute = BuyerProfileRouteImport.update({
+  id: '/profile',
+  path: '/profile',
+  getParentRoute: () => BuyerRoute,
+} as any)
+const BuyerMatchesRoute = BuyerMatchesRouteImport.update({
+  id: '/matches',
+  path: '/matches',
+  getParentRoute: () => BuyerRoute,
+} as any)
+const BuyerDashboardRoute = BuyerDashboardRouteImport.update({
+  id: '/dashboard',
+  path: '/dashboard',
+  getParentRoute: () => BuyerRoute,
 } as any)
 const AppTasksRoute = AppTasksRouteImport.update({
   id: '/tasks',
@@ -221,6 +252,12 @@ const AppBuyersIndexRoute = AppBuyersIndexRouteImport.update({
   path: '/',
   getParentRoute: () => AppBuyersRouteRoute,
 } as any)
+const BuyerTransactionsTransactionIdRoute =
+  BuyerTransactionsTransactionIdRouteImport.update({
+    id: '/$transactionId',
+    path: '/$transactionId',
+    getParentRoute: () => BuyerTransactionsRoute,
+  } as any)
 const AppTransactionsNewRoute = AppTransactionsNewRouteImport.update({
   id: '/new',
   path: '/new',
@@ -292,6 +329,7 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/app': typeof AppRouteWithChildren
   '/buy': typeof BuyRoute
+  '/buyer': typeof BuyerRouteWithChildren
   '/compare': typeof CompareRoute
   '/demo': typeof DemoRoute
   '/favorites': typeof FavoritesRoute
@@ -314,6 +352,10 @@ export interface FileRoutesByFullPath {
   '/app/organizations': typeof AppOrganizationsRoute
   '/app/settings': typeof AppSettingsRoute
   '/app/tasks': typeof AppTasksRoute
+  '/buyer/dashboard': typeof BuyerDashboardRoute
+  '/buyer/matches': typeof BuyerMatchesRoute
+  '/buyer/profile': typeof BuyerProfileRoute
+  '/buyer/transactions': typeof BuyerTransactionsRouteWithChildren
   '/properties/$slug': typeof PropertiesSlugRoute
   '/app/buyers/$buyerId': typeof AppBuyersBuyerIdRoute
   '/app/buyers/new': typeof AppBuyersNewRoute
@@ -328,6 +370,7 @@ export interface FileRoutesByFullPath {
   '/app/sellers/new': typeof AppSellersNewRoute
   '/app/transactions/$transactionId': typeof AppTransactionsTransactionIdRoute
   '/app/transactions/new': typeof AppTransactionsNewRoute
+  '/buyer/transactions/$transactionId': typeof BuyerTransactionsTransactionIdRoute
   '/app/buyers/': typeof AppBuyersIndexRoute
   '/app/documents/': typeof AppDocumentsIndexRoute
   '/app/leads/': typeof AppLeadsIndexRoute
@@ -340,6 +383,7 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/app': typeof AppRouteWithChildren
   '/buy': typeof BuyRoute
+  '/buyer': typeof BuyerRouteWithChildren
   '/compare': typeof CompareRoute
   '/demo': typeof DemoRoute
   '/favorites': typeof FavoritesRoute
@@ -355,6 +399,10 @@ export interface FileRoutesByTo {
   '/app/organizations': typeof AppOrganizationsRoute
   '/app/settings': typeof AppSettingsRoute
   '/app/tasks': typeof AppTasksRoute
+  '/buyer/dashboard': typeof BuyerDashboardRoute
+  '/buyer/matches': typeof BuyerMatchesRoute
+  '/buyer/profile': typeof BuyerProfileRoute
+  '/buyer/transactions': typeof BuyerTransactionsRouteWithChildren
   '/properties/$slug': typeof PropertiesSlugRoute
   '/app/buyers/$buyerId': typeof AppBuyersBuyerIdRoute
   '/app/buyers/new': typeof AppBuyersNewRoute
@@ -369,6 +417,7 @@ export interface FileRoutesByTo {
   '/app/sellers/new': typeof AppSellersNewRoute
   '/app/transactions/$transactionId': typeof AppTransactionsTransactionIdRoute
   '/app/transactions/new': typeof AppTransactionsNewRoute
+  '/buyer/transactions/$transactionId': typeof BuyerTransactionsTransactionIdRoute
   '/app/buyers': typeof AppBuyersIndexRoute
   '/app/documents': typeof AppDocumentsIndexRoute
   '/app/leads': typeof AppLeadsIndexRoute
@@ -382,6 +431,7 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/app': typeof AppRouteWithChildren
   '/buy': typeof BuyRoute
+  '/buyer': typeof BuyerRouteWithChildren
   '/compare': typeof CompareRoute
   '/demo': typeof DemoRoute
   '/favorites': typeof FavoritesRoute
@@ -404,6 +454,10 @@ export interface FileRoutesById {
   '/app/organizations': typeof AppOrganizationsRoute
   '/app/settings': typeof AppSettingsRoute
   '/app/tasks': typeof AppTasksRoute
+  '/buyer/dashboard': typeof BuyerDashboardRoute
+  '/buyer/matches': typeof BuyerMatchesRoute
+  '/buyer/profile': typeof BuyerProfileRoute
+  '/buyer/transactions': typeof BuyerTransactionsRouteWithChildren
   '/properties/$slug': typeof PropertiesSlugRoute
   '/app/buyers/$buyerId': typeof AppBuyersBuyerIdRoute
   '/app/buyers/new': typeof AppBuyersNewRoute
@@ -418,6 +472,7 @@ export interface FileRoutesById {
   '/app/sellers/new': typeof AppSellersNewRoute
   '/app/transactions/$transactionId': typeof AppTransactionsTransactionIdRoute
   '/app/transactions/new': typeof AppTransactionsNewRoute
+  '/buyer/transactions/$transactionId': typeof BuyerTransactionsTransactionIdRoute
   '/app/buyers/': typeof AppBuyersIndexRoute
   '/app/documents/': typeof AppDocumentsIndexRoute
   '/app/leads/': typeof AppLeadsIndexRoute
@@ -432,6 +487,7 @@ export interface FileRouteTypes {
     | '/'
     | '/app'
     | '/buy'
+    | '/buyer'
     | '/compare'
     | '/demo'
     | '/favorites'
@@ -454,6 +510,10 @@ export interface FileRouteTypes {
     | '/app/organizations'
     | '/app/settings'
     | '/app/tasks'
+    | '/buyer/dashboard'
+    | '/buyer/matches'
+    | '/buyer/profile'
+    | '/buyer/transactions'
     | '/properties/$slug'
     | '/app/buyers/$buyerId'
     | '/app/buyers/new'
@@ -468,6 +528,7 @@ export interface FileRouteTypes {
     | '/app/sellers/new'
     | '/app/transactions/$transactionId'
     | '/app/transactions/new'
+    | '/buyer/transactions/$transactionId'
     | '/app/buyers/'
     | '/app/documents/'
     | '/app/leads/'
@@ -480,6 +541,7 @@ export interface FileRouteTypes {
     | '/'
     | '/app'
     | '/buy'
+    | '/buyer'
     | '/compare'
     | '/demo'
     | '/favorites'
@@ -495,6 +557,10 @@ export interface FileRouteTypes {
     | '/app/organizations'
     | '/app/settings'
     | '/app/tasks'
+    | '/buyer/dashboard'
+    | '/buyer/matches'
+    | '/buyer/profile'
+    | '/buyer/transactions'
     | '/properties/$slug'
     | '/app/buyers/$buyerId'
     | '/app/buyers/new'
@@ -509,6 +575,7 @@ export interface FileRouteTypes {
     | '/app/sellers/new'
     | '/app/transactions/$transactionId'
     | '/app/transactions/new'
+    | '/buyer/transactions/$transactionId'
     | '/app/buyers'
     | '/app/documents'
     | '/app/leads'
@@ -521,6 +588,7 @@ export interface FileRouteTypes {
     | '/'
     | '/app'
     | '/buy'
+    | '/buyer'
     | '/compare'
     | '/demo'
     | '/favorites'
@@ -543,6 +611,10 @@ export interface FileRouteTypes {
     | '/app/organizations'
     | '/app/settings'
     | '/app/tasks'
+    | '/buyer/dashboard'
+    | '/buyer/matches'
+    | '/buyer/profile'
+    | '/buyer/transactions'
     | '/properties/$slug'
     | '/app/buyers/$buyerId'
     | '/app/buyers/new'
@@ -557,6 +629,7 @@ export interface FileRouteTypes {
     | '/app/sellers/new'
     | '/app/transactions/$transactionId'
     | '/app/transactions/new'
+    | '/buyer/transactions/$transactionId'
     | '/app/buyers/'
     | '/app/documents/'
     | '/app/leads/'
@@ -570,6 +643,7 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AppRoute: typeof AppRouteWithChildren
   BuyRoute: typeof BuyRoute
+  BuyerRoute: typeof BuyerRouteWithChildren
   CompareRoute: typeof CompareRoute
   DemoRoute: typeof DemoRoute
   FavoritesRoute: typeof FavoritesRoute
@@ -638,6 +712,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof CompareRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/buyer': {
+      id: '/buyer'
+      path: '/buyer'
+      fullPath: '/buyer'
+      preLoaderRoute: typeof BuyerRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/buy': {
       id: '/buy'
       path: '/buy'
@@ -665,6 +746,34 @@ declare module '@tanstack/react-router' {
       fullPath: '/properties/$slug'
       preLoaderRoute: typeof PropertiesSlugRouteImport
       parentRoute: typeof PropertiesRoute
+    }
+    '/buyer/transactions': {
+      id: '/buyer/transactions'
+      path: '/transactions'
+      fullPath: '/buyer/transactions'
+      preLoaderRoute: typeof BuyerTransactionsRouteImport
+      parentRoute: typeof BuyerRoute
+    }
+    '/buyer/profile': {
+      id: '/buyer/profile'
+      path: '/profile'
+      fullPath: '/buyer/profile'
+      preLoaderRoute: typeof BuyerProfileRouteImport
+      parentRoute: typeof BuyerRoute
+    }
+    '/buyer/matches': {
+      id: '/buyer/matches'
+      path: '/matches'
+      fullPath: '/buyer/matches'
+      preLoaderRoute: typeof BuyerMatchesRouteImport
+      parentRoute: typeof BuyerRoute
+    }
+    '/buyer/dashboard': {
+      id: '/buyer/dashboard'
+      path: '/dashboard'
+      fullPath: '/buyer/dashboard'
+      preLoaderRoute: typeof BuyerDashboardRouteImport
+      parentRoute: typeof BuyerRoute
     }
     '/app/tasks': {
       id: '/app/tasks'
@@ -812,6 +921,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/app/buyers/'
       preLoaderRoute: typeof AppBuyersIndexRouteImport
       parentRoute: typeof AppBuyersRouteRoute
+    }
+    '/buyer/transactions/$transactionId': {
+      id: '/buyer/transactions/$transactionId'
+      path: '/$transactionId'
+      fullPath: '/buyer/transactions/$transactionId'
+      preLoaderRoute: typeof BuyerTransactionsTransactionIdRouteImport
+      parentRoute: typeof BuyerTransactionsRoute
     }
     '/app/transactions/new': {
       id: '/app/transactions/new'
@@ -1050,6 +1166,33 @@ const AppRouteChildren: AppRouteChildren = {
 
 const AppRouteWithChildren = AppRoute._addFileChildren(AppRouteChildren)
 
+interface BuyerTransactionsRouteChildren {
+  BuyerTransactionsTransactionIdRoute: typeof BuyerTransactionsTransactionIdRoute
+}
+
+const BuyerTransactionsRouteChildren: BuyerTransactionsRouteChildren = {
+  BuyerTransactionsTransactionIdRoute: BuyerTransactionsTransactionIdRoute,
+}
+
+const BuyerTransactionsRouteWithChildren =
+  BuyerTransactionsRoute._addFileChildren(BuyerTransactionsRouteChildren)
+
+interface BuyerRouteChildren {
+  BuyerDashboardRoute: typeof BuyerDashboardRoute
+  BuyerMatchesRoute: typeof BuyerMatchesRoute
+  BuyerProfileRoute: typeof BuyerProfileRoute
+  BuyerTransactionsRoute: typeof BuyerTransactionsRouteWithChildren
+}
+
+const BuyerRouteChildren: BuyerRouteChildren = {
+  BuyerDashboardRoute: BuyerDashboardRoute,
+  BuyerMatchesRoute: BuyerMatchesRoute,
+  BuyerProfileRoute: BuyerProfileRoute,
+  BuyerTransactionsRoute: BuyerTransactionsRouteWithChildren,
+}
+
+const BuyerRouteWithChildren = BuyerRoute._addFileChildren(BuyerRouteChildren)
+
 interface PropertiesRouteChildren {
   PropertiesSlugRoute: typeof PropertiesSlugRoute
 }
@@ -1066,6 +1209,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AppRoute: AppRouteWithChildren,
   BuyRoute: BuyRoute,
+  BuyerRoute: BuyerRouteWithChildren,
   CompareRoute: CompareRoute,
   DemoRoute: DemoRoute,
   FavoritesRoute: FavoritesRoute,

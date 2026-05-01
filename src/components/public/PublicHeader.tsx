@@ -26,6 +26,9 @@ export function PublicHeader() {
           <Link to="/compare" className="hover:text-habitra-action">
             Comparar
           </Link>
+          <Link to="/buyer/dashboard" className="hover:text-habitra-action">
+            Mi compra
+          </Link>
         </nav>
         <div className="flex items-center gap-2">
           <Link to="/login" className="rounded-xl border border-slate-200 px-3 py-2 text-xs font-semibold text-slate-700">

@@ -1,1 +1,0 @@
-import{t as e}from"./jsx-dev-runtime-CKlSMCfp.js";import{t}from"./CrmPlaceholderPage-B5XE-l3E.js";var n=e(),r=`C:/Jcrea/Projects/Habitra/src/routes/app/settings.tsx?tsr-split=component`,i=()=>(0,n.jsxDEV)(t,{title:`Configuracion`},void 0,!1,{fileName:r,lineNumber:2,columnNumber:30},void 0);export{i as component};
