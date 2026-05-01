@@ -77,3 +77,44 @@ export const DOCUMENT_TYPE_LABELS: Record<string, string> = {
   ESTADO_CUENTA: "Estado de cuenta",
   OTROS: "Otros",
 };
+
+export const TRANSACTION_STATUS_LABELS: Record<string, string> = {
+  ACTIVA: "Activa",
+  PAUSADA: "Pausada",
+  EN_RIESGO: "En riesgo",
+  CANCELADA: "Cancelada",
+  CERRADA: "Cerrada",
+};
+
+export const TRANSACTION_STAGE_LABELS: Record<string, string> = {
+  LEAD_CREADO: "Lead creado",
+  COMPRADOR_CALIFICADO: "Comprador calificado",
+  PROPIEDAD_SELECCIONADA: "Propiedad seleccionada",
+  VISITA_REALIZADA: "Visita realizada",
+  OFERTA_ENVIADA: "Oferta enviada",
+  OFERTA_ACEPTADA: "Oferta aceptada",
+  APARTADO_PROMESA: "Apartado/promesa",
+  CREDITO_EN_PROCESO: "Credito en proceso",
+  AVALUO_SOLICITADO: "Avaluo solicitado",
+  AVALUO_COMPLETADO: "Avaluo completado",
+  EXPEDIENTE_NOTARIAL: "Expediente notarial",
+  FIRMA_PROGRAMADA: "Firma programada",
+  ESCRITURA_FIRMADA: "Escritura firmada",
+  REGISTRO_EN_PROCESO: "Registro en proceso",
+  ENTREGA_COMPLETADA: "Entrega completada",
+  CERRADA: "Cerrada",
+};
+
+export const TIMELINE_STATUS_LABELS: Record<string, string> = {
+  PENDIENTE: "Pendiente",
+  EN_PROGRESO: "En progreso",
+  COMPLETADO: "Completado",
+  BLOQUEADO: "Bloqueado",
+};
+
+export const TASK_STATUS_LABELS: Record<string, string> = {
+  PENDIENTE: "Pendiente",
+  EN_PROGRESO: "En progreso",
+  COMPLETADA: "Completada",
+  BLOQUEADA: "Bloqueada",
+};

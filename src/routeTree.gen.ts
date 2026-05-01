@@ -13,7 +13,6 @@ import { Route as LoginRouteImport } from './routes/login'
 import { Route as DemoRouteImport } from './routes/demo'
 import { Route as AppRouteImport } from './routes/app'
 import { Route as IndexRouteImport } from './routes/index'
-import { Route as AppTransactionsRouteImport } from './routes/app/transactions'
 import { Route as AppTasksRouteImport } from './routes/app/tasks'
 import { Route as AppSettingsRouteImport } from './routes/app/settings'
 import { Route as AppReportsRouteImport } from './routes/app/reports'
@@ -22,16 +21,20 @@ import { Route as AppDashboardRouteImport } from './routes/app/dashboard'
 import { Route as AppCalendarRouteImport } from './routes/app/calendar'
 import { Route as AppBillingRouteImport } from './routes/app/billing'
 import { Route as AppAdminRouteImport } from './routes/app/admin'
+import { Route as AppTransactionsRouteRouteImport } from './routes/app/transactions/route'
 import { Route as AppSellersRouteRouteImport } from './routes/app/sellers/route'
 import { Route as AppPropertiesRouteRouteImport } from './routes/app/properties/route'
 import { Route as AppLeadsRouteRouteImport } from './routes/app/leads/route'
 import { Route as AppDocumentsRouteRouteImport } from './routes/app/documents/route'
 import { Route as AppBuyersRouteRouteImport } from './routes/app/buyers/route'
+import { Route as AppTransactionsIndexRouteImport } from './routes/app/transactions/index'
 import { Route as AppSellersIndexRouteImport } from './routes/app/sellers/index'
 import { Route as AppPropertiesIndexRouteImport } from './routes/app/properties/index'
 import { Route as AppLeadsIndexRouteImport } from './routes/app/leads/index'
 import { Route as AppDocumentsIndexRouteImport } from './routes/app/documents/index'
 import { Route as AppBuyersIndexRouteImport } from './routes/app/buyers/index'
+import { Route as AppTransactionsNewRouteImport } from './routes/app/transactions/new'
+import { Route as AppTransactionsTransactionIdRouteImport } from './routes/app/transactions/$transactionId'
 import { Route as AppSellersNewRouteImport } from './routes/app/sellers/new'
 import { Route as AppSellersSellerIdRouteImport } from './routes/app/sellers/$sellerId'
 import { Route as AppPropertiesPropertyIdRouteImport } from './routes/app/properties/$propertyId'
@@ -61,11 +64,6 @@ const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
-} as any)
-const AppTransactionsRoute = AppTransactionsRouteImport.update({
-  id: '/transactions',
-  path: '/transactions',
-  getParentRoute: () => AppRoute,
 } as any)
 const AppTasksRoute = AppTasksRouteImport.update({
   id: '/tasks',
@@ -107,6 +105,11 @@ const AppAdminRoute = AppAdminRouteImport.update({
   path: '/admin',
   getParentRoute: () => AppRoute,
 } as any)
+const AppTransactionsRouteRoute = AppTransactionsRouteRouteImport.update({
+  id: '/transactions',
+  path: '/transactions',
+  getParentRoute: () => AppRoute,
+} as any)
 const AppSellersRouteRoute = AppSellersRouteRouteImport.update({
   id: '/sellers',
   path: '/sellers',
@@ -131,6 +134,11 @@ const AppBuyersRouteRoute = AppBuyersRouteRouteImport.update({
   id: '/buyers',
   path: '/buyers',
   getParentRoute: () => AppRoute,
+} as any)
+const AppTransactionsIndexRoute = AppTransactionsIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => AppTransactionsRouteRoute,
 } as any)
 const AppSellersIndexRoute = AppSellersIndexRouteImport.update({
   id: '/',
@@ -157,6 +165,17 @@ const AppBuyersIndexRoute = AppBuyersIndexRouteImport.update({
   path: '/',
   getParentRoute: () => AppBuyersRouteRoute,
 } as any)
+const AppTransactionsNewRoute = AppTransactionsNewRouteImport.update({
+  id: '/new',
+  path: '/new',
+  getParentRoute: () => AppTransactionsRouteRoute,
+} as any)
+const AppTransactionsTransactionIdRoute =
+  AppTransactionsTransactionIdRouteImport.update({
+    id: '/$transactionId',
+    path: '/$transactionId',
+    getParentRoute: () => AppTransactionsRouteRoute,
+  } as any)
 const AppSellersNewRoute = AppSellersNewRouteImport.update({
   id: '/new',
   path: '/new',
@@ -213,6 +232,7 @@ export interface FileRoutesByFullPath {
   '/app/leads': typeof AppLeadsRouteRouteWithChildren
   '/app/properties': typeof AppPropertiesRouteRouteWithChildren
   '/app/sellers': typeof AppSellersRouteRouteWithChildren
+  '/app/transactions': typeof AppTransactionsRouteRouteWithChildren
   '/app/admin': typeof AppAdminRoute
   '/app/billing': typeof AppBillingRoute
   '/app/calendar': typeof AppCalendarRoute
@@ -221,7 +241,6 @@ export interface FileRoutesByFullPath {
   '/app/reports': typeof AppReportsRoute
   '/app/settings': typeof AppSettingsRoute
   '/app/tasks': typeof AppTasksRoute
-  '/app/transactions': typeof AppTransactionsRoute
   '/app/buyers/$buyerId': typeof AppBuyersBuyerIdRoute
   '/app/buyers/new': typeof AppBuyersNewRoute
   '/app/documents/$documentId': typeof AppDocumentsDocumentIdRoute
@@ -231,11 +250,14 @@ export interface FileRoutesByFullPath {
   '/app/properties/$propertyId': typeof AppPropertiesPropertyIdRoute
   '/app/sellers/$sellerId': typeof AppSellersSellerIdRoute
   '/app/sellers/new': typeof AppSellersNewRoute
+  '/app/transactions/$transactionId': typeof AppTransactionsTransactionIdRoute
+  '/app/transactions/new': typeof AppTransactionsNewRoute
   '/app/buyers/': typeof AppBuyersIndexRoute
   '/app/documents/': typeof AppDocumentsIndexRoute
   '/app/leads/': typeof AppLeadsIndexRoute
   '/app/properties/': typeof AppPropertiesIndexRoute
   '/app/sellers/': typeof AppSellersIndexRoute
+  '/app/transactions/': typeof AppTransactionsIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -250,7 +272,6 @@ export interface FileRoutesByTo {
   '/app/reports': typeof AppReportsRoute
   '/app/settings': typeof AppSettingsRoute
   '/app/tasks': typeof AppTasksRoute
-  '/app/transactions': typeof AppTransactionsRoute
   '/app/buyers/$buyerId': typeof AppBuyersBuyerIdRoute
   '/app/buyers/new': typeof AppBuyersNewRoute
   '/app/documents/$documentId': typeof AppDocumentsDocumentIdRoute
@@ -260,11 +281,14 @@ export interface FileRoutesByTo {
   '/app/properties/$propertyId': typeof AppPropertiesPropertyIdRoute
   '/app/sellers/$sellerId': typeof AppSellersSellerIdRoute
   '/app/sellers/new': typeof AppSellersNewRoute
+  '/app/transactions/$transactionId': typeof AppTransactionsTransactionIdRoute
+  '/app/transactions/new': typeof AppTransactionsNewRoute
   '/app/buyers': typeof AppBuyersIndexRoute
   '/app/documents': typeof AppDocumentsIndexRoute
   '/app/leads': typeof AppLeadsIndexRoute
   '/app/properties': typeof AppPropertiesIndexRoute
   '/app/sellers': typeof AppSellersIndexRoute
+  '/app/transactions': typeof AppTransactionsIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -277,6 +301,7 @@ export interface FileRoutesById {
   '/app/leads': typeof AppLeadsRouteRouteWithChildren
   '/app/properties': typeof AppPropertiesRouteRouteWithChildren
   '/app/sellers': typeof AppSellersRouteRouteWithChildren
+  '/app/transactions': typeof AppTransactionsRouteRouteWithChildren
   '/app/admin': typeof AppAdminRoute
   '/app/billing': typeof AppBillingRoute
   '/app/calendar': typeof AppCalendarRoute
@@ -285,7 +310,6 @@ export interface FileRoutesById {
   '/app/reports': typeof AppReportsRoute
   '/app/settings': typeof AppSettingsRoute
   '/app/tasks': typeof AppTasksRoute
-  '/app/transactions': typeof AppTransactionsRoute
   '/app/buyers/$buyerId': typeof AppBuyersBuyerIdRoute
   '/app/buyers/new': typeof AppBuyersNewRoute
   '/app/documents/$documentId': typeof AppDocumentsDocumentIdRoute
@@ -295,11 +319,14 @@ export interface FileRoutesById {
   '/app/properties/$propertyId': typeof AppPropertiesPropertyIdRoute
   '/app/sellers/$sellerId': typeof AppSellersSellerIdRoute
   '/app/sellers/new': typeof AppSellersNewRoute
+  '/app/transactions/$transactionId': typeof AppTransactionsTransactionIdRoute
+  '/app/transactions/new': typeof AppTransactionsNewRoute
   '/app/buyers/': typeof AppBuyersIndexRoute
   '/app/documents/': typeof AppDocumentsIndexRoute
   '/app/leads/': typeof AppLeadsIndexRoute
   '/app/properties/': typeof AppPropertiesIndexRoute
   '/app/sellers/': typeof AppSellersIndexRoute
+  '/app/transactions/': typeof AppTransactionsIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -313,6 +340,7 @@ export interface FileRouteTypes {
     | '/app/leads'
     | '/app/properties'
     | '/app/sellers'
+    | '/app/transactions'
     | '/app/admin'
     | '/app/billing'
     | '/app/calendar'
@@ -321,7 +349,6 @@ export interface FileRouteTypes {
     | '/app/reports'
     | '/app/settings'
     | '/app/tasks'
-    | '/app/transactions'
     | '/app/buyers/$buyerId'
     | '/app/buyers/new'
     | '/app/documents/$documentId'
@@ -331,11 +358,14 @@ export interface FileRouteTypes {
     | '/app/properties/$propertyId'
     | '/app/sellers/$sellerId'
     | '/app/sellers/new'
+    | '/app/transactions/$transactionId'
+    | '/app/transactions/new'
     | '/app/buyers/'
     | '/app/documents/'
     | '/app/leads/'
     | '/app/properties/'
     | '/app/sellers/'
+    | '/app/transactions/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -350,7 +380,6 @@ export interface FileRouteTypes {
     | '/app/reports'
     | '/app/settings'
     | '/app/tasks'
-    | '/app/transactions'
     | '/app/buyers/$buyerId'
     | '/app/buyers/new'
     | '/app/documents/$documentId'
@@ -360,11 +389,14 @@ export interface FileRouteTypes {
     | '/app/properties/$propertyId'
     | '/app/sellers/$sellerId'
     | '/app/sellers/new'
+    | '/app/transactions/$transactionId'
+    | '/app/transactions/new'
     | '/app/buyers'
     | '/app/documents'
     | '/app/leads'
     | '/app/properties'
     | '/app/sellers'
+    | '/app/transactions'
   id:
     | '__root__'
     | '/'
@@ -376,6 +408,7 @@ export interface FileRouteTypes {
     | '/app/leads'
     | '/app/properties'
     | '/app/sellers'
+    | '/app/transactions'
     | '/app/admin'
     | '/app/billing'
     | '/app/calendar'
@@ -384,7 +417,6 @@ export interface FileRouteTypes {
     | '/app/reports'
     | '/app/settings'
     | '/app/tasks'
-    | '/app/transactions'
     | '/app/buyers/$buyerId'
     | '/app/buyers/new'
     | '/app/documents/$documentId'
@@ -394,11 +426,14 @@ export interface FileRouteTypes {
     | '/app/properties/$propertyId'
     | '/app/sellers/$sellerId'
     | '/app/sellers/new'
+    | '/app/transactions/$transactionId'
+    | '/app/transactions/new'
     | '/app/buyers/'
     | '/app/documents/'
     | '/app/leads/'
     | '/app/properties/'
     | '/app/sellers/'
+    | '/app/transactions/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -437,13 +472,6 @@ declare module '@tanstack/react-router' {
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
-    }
-    '/app/transactions': {
-      id: '/app/transactions'
-      path: '/transactions'
-      fullPath: '/app/transactions'
-      preLoaderRoute: typeof AppTransactionsRouteImport
-      parentRoute: typeof AppRoute
     }
     '/app/tasks': {
       id: '/app/tasks'
@@ -501,6 +529,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppAdminRouteImport
       parentRoute: typeof AppRoute
     }
+    '/app/transactions': {
+      id: '/app/transactions'
+      path: '/transactions'
+      fullPath: '/app/transactions'
+      preLoaderRoute: typeof AppTransactionsRouteRouteImport
+      parentRoute: typeof AppRoute
+    }
     '/app/sellers': {
       id: '/app/sellers'
       path: '/sellers'
@@ -536,6 +571,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppBuyersRouteRouteImport
       parentRoute: typeof AppRoute
     }
+    '/app/transactions/': {
+      id: '/app/transactions/'
+      path: '/'
+      fullPath: '/app/transactions/'
+      preLoaderRoute: typeof AppTransactionsIndexRouteImport
+      parentRoute: typeof AppTransactionsRouteRoute
+    }
     '/app/sellers/': {
       id: '/app/sellers/'
       path: '/'
@@ -570,6 +612,20 @@ declare module '@tanstack/react-router' {
       fullPath: '/app/buyers/'
       preLoaderRoute: typeof AppBuyersIndexRouteImport
       parentRoute: typeof AppBuyersRouteRoute
+    }
+    '/app/transactions/new': {
+      id: '/app/transactions/new'
+      path: '/new'
+      fullPath: '/app/transactions/new'
+      preLoaderRoute: typeof AppTransactionsNewRouteImport
+      parentRoute: typeof AppTransactionsRouteRoute
+    }
+    '/app/transactions/$transactionId': {
+      id: '/app/transactions/$transactionId'
+      path: '/$transactionId'
+      fullPath: '/app/transactions/$transactionId'
+      preLoaderRoute: typeof AppTransactionsTransactionIdRouteImport
+      parentRoute: typeof AppTransactionsRouteRoute
     }
     '/app/sellers/new': {
       id: '/app/sellers/new'
@@ -713,12 +769,28 @@ const AppSellersRouteRouteWithChildren = AppSellersRouteRoute._addFileChildren(
   AppSellersRouteRouteChildren,
 )
 
+interface AppTransactionsRouteRouteChildren {
+  AppTransactionsTransactionIdRoute: typeof AppTransactionsTransactionIdRoute
+  AppTransactionsNewRoute: typeof AppTransactionsNewRoute
+  AppTransactionsIndexRoute: typeof AppTransactionsIndexRoute
+}
+
+const AppTransactionsRouteRouteChildren: AppTransactionsRouteRouteChildren = {
+  AppTransactionsTransactionIdRoute: AppTransactionsTransactionIdRoute,
+  AppTransactionsNewRoute: AppTransactionsNewRoute,
+  AppTransactionsIndexRoute: AppTransactionsIndexRoute,
+}
+
+const AppTransactionsRouteRouteWithChildren =
+  AppTransactionsRouteRoute._addFileChildren(AppTransactionsRouteRouteChildren)
+
 interface AppRouteChildren {
   AppBuyersRouteRoute: typeof AppBuyersRouteRouteWithChildren
   AppDocumentsRouteRoute: typeof AppDocumentsRouteRouteWithChildren
   AppLeadsRouteRoute: typeof AppLeadsRouteRouteWithChildren
   AppPropertiesRouteRoute: typeof AppPropertiesRouteRouteWithChildren
   AppSellersRouteRoute: typeof AppSellersRouteRouteWithChildren
+  AppTransactionsRouteRoute: typeof AppTransactionsRouteRouteWithChildren
   AppAdminRoute: typeof AppAdminRoute
   AppBillingRoute: typeof AppBillingRoute
   AppCalendarRoute: typeof AppCalendarRoute
@@ -727,7 +799,6 @@ interface AppRouteChildren {
   AppReportsRoute: typeof AppReportsRoute
   AppSettingsRoute: typeof AppSettingsRoute
   AppTasksRoute: typeof AppTasksRoute
-  AppTransactionsRoute: typeof AppTransactionsRoute
 }
 
 const AppRouteChildren: AppRouteChildren = {
@@ -736,6 +807,7 @@ const AppRouteChildren: AppRouteChildren = {
   AppLeadsRouteRoute: AppLeadsRouteRouteWithChildren,
   AppPropertiesRouteRoute: AppPropertiesRouteRouteWithChildren,
   AppSellersRouteRoute: AppSellersRouteRouteWithChildren,
+  AppTransactionsRouteRoute: AppTransactionsRouteRouteWithChildren,
   AppAdminRoute: AppAdminRoute,
   AppBillingRoute: AppBillingRoute,
   AppCalendarRoute: AppCalendarRoute,
@@ -744,7 +816,6 @@ const AppRouteChildren: AppRouteChildren = {
   AppReportsRoute: AppReportsRoute,
   AppSettingsRoute: AppSettingsRoute,
   AppTasksRoute: AppTasksRoute,
-  AppTransactionsRoute: AppTransactionsRoute,
 }
 
 const AppRouteWithChildren = AppRoute._addFileChildren(AppRouteChildren)

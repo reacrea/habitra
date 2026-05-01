@@ -8,6 +8,11 @@ import type {
   OperationType,
   PropertyStatus,
   PropertyType,
+  TaskStatus,
+  TimelineStepStatus,
+  TransactionStage,
+  TransactionStatus,
+  UserRole,
 } from "@prisma/client";
 
 export type LeadRow = {
@@ -124,4 +129,71 @@ export type DocumentRow = {
   transactionId: string | null;
   createdAt: string;
   updatedAt: string;
+};
+
+export type TransactionRow = {
+  id: string;
+  organizationId: string;
+  propertyId: string;
+  buyerId: string;
+  sellerId: string;
+  agentId: string;
+  offeredPrice: number | null;
+  acceptedPrice: number | null;
+  status: TransactionStatus;
+  currentStage: TransactionStage;
+  estimatedClosingDate: string | null;
+  paymentType: string;
+  creditType: CreditType | null;
+  probabilityToClose: number;
+  notesText: string | null;
+  createdAt: string;
+  updatedAt: string;
+  propertyTitle: string;
+  buyerName: string;
+  sellerName: string;
+  agentName: string;
+};
+
+export type TransactionTimelineRow = {
+  id: string;
+  transactionId: string;
+  name: string;
+  description: string | null;
+  responsibleRole: UserRole;
+  estimatedDate: string | null;
+  completedDate: string | null;
+  status: TimelineStepStatus;
+  notes: string | null;
+  order: number;
+  createdAt: string;
+  updatedAt: string;
+};
+
+export type TransactionTaskRow = {
+  id: string;
+  transactionId: string | null;
+  title: string;
+  description: string | null;
+  status: TaskStatus;
+  dueDate: string | null;
+  assigneeId: string | null;
+  assigneeName: string | null;
+  createdAt: string;
+  updatedAt: string;
+};
+
+export type TransactionNoteRow = {
+  id: string;
+  transactionId: string | null;
+  content: string;
+  authorId: string | null;
+  authorName: string | null;
+  createdAt: string;
+  updatedAt: string;
+};
+
+export type TransactionOption = {
+  id: string;
+  label: string;
 };

@@ -1,0 +1,1 @@
+import{a as e,n as t}from"./jsx-dev-runtime-CKlSMCfp.js";import{Gt as n,Ht as r}from"./index-BVLLSF8I.js";var i=e(t(),1);function a(e){let t=r();return i.useCallback(async(...r)=>{try{let t=await e(...r);if(n(t))throw t;return t}catch(e){if(n(e))return e.options._fromLocation=t.stores.location.get(),t.navigate(t.resolveRedirect(e).options);throw e}},[t,e])}export{a as t};
