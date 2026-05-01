@@ -2,6 +2,8 @@ import { useMutation } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { useState } from "react";
 
+import { AuthRequiredDialog } from "@/components/public/AuthRequiredDialog";
+import { useRequireAuthAction } from "@/hooks/use-require-auth-action";
 import { startBuyingProcessFromPublic } from "@/server/public-engagement";
 import { formatMutationError } from "@/utils/mutation-error";
 
@@ -13,6 +15,7 @@ type Props = {
 
 export function StartBuyingProcessModal({ propertySlug, open, onOpenChange }: Props) {
   const startFn = useServerFn(startBuyingProcessFromPublic);
+  const authAction = useRequireAuthAction();
   const [offeredPrice, setOfferedPrice] = useState("");
   const [paymentType, setPaymentType] = useState<"CONTADO" | "CREDITO" | "MIXTO">("CREDITO");
   const [creditType, setCreditType] = useState<
@@ -98,7 +101,7 @@ export function StartBuyingProcessModal({ propertySlug, open, onOpenChange }: Pr
           <button
             type="button"
             disabled={mutation.isPending}
-            onClick={() => mutation.mutate()}
+            onClick={() => authAction.requireAuth(() => mutation.mutate())}
             className="rounded-xl bg-habitra-action px-4 py-2 text-sm font-semibold text-white disabled:opacity-60"
           >
             {mutation.isPending ? "Creando..." : "Iniciar proceso"}
@@ -108,6 +111,7 @@ export function StartBuyingProcessModal({ propertySlug, open, onOpenChange }: Pr
           <p className="mt-2 text-sm text-red-600">{formatMutationError(mutation.error)}</p>
         ) : null}
       </div>
+      <AuthRequiredDialog {...authAction.authDialog} />
     </div>
   );
 }

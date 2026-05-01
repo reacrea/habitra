@@ -110,6 +110,12 @@ function LoginPage() {
         </form>
 
         <p className="mt-6 text-center text-sm text-slate-600">
+          No tienes cuenta?{" "}
+          <Link to="/register" className="text-emerald-700 underline">
+            Registrate
+          </Link>
+        </p>
+        <p className="mt-2 text-center text-sm text-slate-600">
           <Link to="/" className="text-emerald-700 underline">
             Volver al inicio
           </Link>

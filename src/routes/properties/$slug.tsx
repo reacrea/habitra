@@ -4,6 +4,7 @@ import { useServerFn } from "@tanstack/react-start";
 import { useState } from "react";
 
 import { CrmInlineError, CrmLoading } from "@/components/crm/CrmStates";
+import { AuthRequiredDialog } from "@/components/public/AuthRequiredDialog";
 import { ContactAgentForm } from "@/components/public/ContactAgentForm";
 import { MortgageCalculatorWidget } from "@/components/public/MortgageCalculatorWidget";
 import { PropertyAgentContactCard } from "@/components/public/PropertyAgentContactCard";
@@ -14,6 +15,7 @@ import { ScheduleVisitForm } from "@/components/public/ScheduleVisitForm";
 import { StartBuyingProcessModal } from "@/components/public/StartBuyingProcessModal";
 import { PropertyTimelinePreview } from "@/components/public/PropertyTimelinePreview";
 import { PublicLayout } from "@/components/public/PublicLayout";
+import { useRequireAuthAction } from "@/hooks/use-require-auth-action";
 import { usePublicShortlists } from "@/hooks/use-public-shortlists";
 import { getPublicPropertyBySlug, getPublicSimilarProperties } from "@/server/public-b2c";
 
@@ -26,6 +28,7 @@ function PublicPropertyDetailPage() {
   const fetchDetail = useServerFn(getPublicPropertyBySlug);
   const fetchSimilar = useServerFn(getPublicSimilarProperties);
   const shortlists = usePublicShortlists();
+  const authAction = useRequireAuthAction();
   const [startModalOpen, setStartModalOpen] = useState(false);
 
   const detailQuery = useQuery({
@@ -146,12 +149,28 @@ function PublicPropertyDetailPage() {
             <div className="rounded-2xl border border-slate-200 bg-white p-5">
               <h3 className="text-lg font-semibold text-habitra-text">Acciones</h3>
               <div className="mt-4 grid gap-2">
-                <a href="#contact-form" className="rounded-xl bg-habitra-action px-4 py-2 text-center text-sm font-semibold text-white">
+                <button
+                  type="button"
+                  onClick={() =>
+                    authAction.requireAuth(() => {
+                      document.getElementById("contact-form")?.scrollIntoView({ behavior: "smooth", block: "start" });
+                    })
+                  }
+                  className="rounded-xl bg-habitra-action px-4 py-2 text-center text-sm font-semibold text-white"
+                >
                   Contactar agente
-                </a>
-                <a href="#schedule-form" className="rounded-xl border border-slate-200 px-4 py-2 text-center text-sm font-semibold text-slate-700">
+                </button>
+                <button
+                  type="button"
+                  onClick={() =>
+                    authAction.requireAuth(() => {
+                      document.getElementById("schedule-form")?.scrollIntoView({ behavior: "smooth", block: "start" });
+                    })
+                  }
+                  className="rounded-xl border border-slate-200 px-4 py-2 text-center text-sm font-semibold text-slate-700"
+                >
                   Agendar visita
-                </a>
+                </button>
                 <Link
                   to="/mortgage-calculator"
                   className="rounded-xl border border-slate-200 px-4 py-2 text-center text-sm font-semibold text-slate-700"
@@ -160,21 +179,21 @@ function PublicPropertyDetailPage() {
                 </Link>
                 <button
                   type="button"
-                  onClick={() => setStartModalOpen(true)}
+                  onClick={() => authAction.requireAuth(() => setStartModalOpen(true))}
                   className="rounded-xl border border-slate-200 px-4 py-2 text-sm font-semibold text-slate-700"
                 >
                   Iniciar proceso
                 </button>
                 <button
                   type="button"
-                  onClick={() => shortlists.toggleFavorite(cardProperty)}
+                  onClick={() => authAction.requireAuth(() => shortlists.toggleFavorite(cardProperty))}
                   className={`rounded-xl border px-4 py-2 text-sm font-semibold ${favorite ? "border-emerald-200 bg-emerald-50 text-emerald-700" : "border-slate-200 text-slate-700"}`}
                 >
                   {favorite ? "En favoritos" : "Guardar favorito"}
                 </button>
                 <button
                   type="button"
-                  onClick={() => shortlists.toggleCompare(cardProperty)}
+                  onClick={() => authAction.requireAuth(() => shortlists.toggleCompare(cardProperty))}
                   className={`rounded-xl border px-4 py-2 text-sm font-semibold ${inCompare ? "border-indigo-200 bg-indigo-50 text-indigo-700" : "border-slate-200 text-slate-700"}`}
                 >
                   {inCompare ? "En comparador" : "Agregar a comparar"}
@@ -188,12 +207,28 @@ function PublicPropertyDetailPage() {
 
       <div className="fixed inset-x-0 bottom-0 z-40 border-t border-slate-200 bg-white p-3 shadow-[0_-8px_20px_rgba(0,0,0,0.06)] lg:hidden">
         <div className="mx-auto flex max-w-7xl gap-2">
-          <a href="#contact-form" className="flex-1 rounded-xl bg-habitra-action px-3 py-2 text-center text-sm font-semibold text-white">
+          <button
+            type="button"
+            onClick={() =>
+              authAction.requireAuth(() => {
+                document.getElementById("contact-form")?.scrollIntoView({ behavior: "smooth", block: "start" });
+              })
+            }
+            className="flex-1 rounded-xl bg-habitra-action px-3 py-2 text-center text-sm font-semibold text-white"
+          >
             Contactar
-          </a>
-          <a href="#schedule-form" className="flex-1 rounded-xl border border-slate-200 px-3 py-2 text-center text-sm font-semibold text-slate-700">
+          </button>
+          <button
+            type="button"
+            onClick={() =>
+              authAction.requireAuth(() => {
+                document.getElementById("schedule-form")?.scrollIntoView({ behavior: "smooth", block: "start" });
+              })
+            }
+            className="flex-1 rounded-xl border border-slate-200 px-3 py-2 text-center text-sm font-semibold text-slate-700"
+          >
             Visitar
-          </a>
+          </button>
           <Link
             to="/mortgage-calculator"
             className="flex-1 rounded-xl border border-slate-200 px-3 py-2 text-center text-sm font-semibold text-slate-700"
@@ -207,6 +242,7 @@ function PublicPropertyDetailPage() {
         open={startModalOpen}
         onOpenChange={setStartModalOpen}
       />
+      <AuthRequiredDialog {...authAction.authDialog} />
     </PublicLayout>
   );
 }

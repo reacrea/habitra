@@ -2,11 +2,14 @@ import { useMutation } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { useState } from "react";
 
+import { AuthRequiredDialog } from "@/components/public/AuthRequiredDialog";
+import { useRequireAuthAction } from "@/hooks/use-require-auth-action";
 import { scheduleVisitFromPublic } from "@/server/public-engagement";
 import { formatMutationError } from "@/utils/mutation-error";
 
 export function ScheduleVisitForm({ propertySlug }: { propertySlug: string }) {
   const scheduleFn = useServerFn(scheduleVisitFromPublic);
+  const authAction = useRequireAuthAction();
   const [title, setTitle] = useState("Agendar visita");
   const [description, setDescription] = useState("");
   const [dueDate, setDueDate] = useState("");
@@ -49,7 +52,7 @@ export function ScheduleVisitForm({ propertySlug }: { propertySlug: string }) {
         <button
           type="button"
           disabled={mutation.isPending || title.trim().length < 3}
-          onClick={() => mutation.mutate()}
+          onClick={() => authAction.requireAuth(() => mutation.mutate())}
           className="rounded-xl border border-slate-200 px-4 py-2 text-sm font-semibold text-slate-700 disabled:opacity-60"
         >
           {mutation.isPending ? "Agendando..." : "Crear visita"}
@@ -61,6 +64,7 @@ export function ScheduleVisitForm({ propertySlug }: { propertySlug: string }) {
       {mutation.isSuccess ? (
         <p className="mt-2 text-sm text-emerald-700">Visita agendada y registrada en CRM.</p>
       ) : null}
+      <AuthRequiredDialog {...authAction.authDialog} />
     </section>
   );
 }

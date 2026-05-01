@@ -15,14 +15,14 @@ export const auth = betterAuth({
   }),
   emailAndPassword: {
     enabled: true,
-    disableSignUp: true,
+    disableSignUp: false,
   },
   user: {
     additionalFields: {
       role: {
         type: "string",
         required: false,
-        defaultValue: "AGENT",
+        defaultValue: "BUYER",
         input: false,
       },
       phone: {

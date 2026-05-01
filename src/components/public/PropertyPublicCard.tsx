@@ -1,5 +1,7 @@
 import { Link } from "@tanstack/react-router";
 
+import { AuthRequiredDialog } from "@/components/public/AuthRequiredDialog";
+import { useRequireAuthAction } from "@/hooks/use-require-auth-action";
 import { usePublicShortlists } from "@/hooks/use-public-shortlists";
 import type { PublicPropertyCard } from "@/server/public-b2c";
 
@@ -13,6 +15,7 @@ function formatPrice(value: number): string {
 
 export function PropertyPublicCard({ property }: { property: PublicPropertyCard }) {
   const shortlists = usePublicShortlists();
+  const authAction = useRequireAuthAction();
   const favorite = shortlists.isFavorite(property.id);
   const inCompare = shortlists.isInCompare(property.id);
 
@@ -58,20 +61,21 @@ export function PropertyPublicCard({ property }: { property: PublicPropertyCard 
         <div className="flex items-center gap-2 pt-1">
           <button
             type="button"
-            onClick={() => shortlists.toggleFavorite(property)}
+            onClick={() => authAction.requireAuth(() => shortlists.toggleFavorite(property))}
             className={`rounded-lg border px-3 py-2 text-xs font-semibold ${favorite ? "border-emerald-200 bg-emerald-50 text-emerald-700" : "border-slate-200 text-slate-700"}`}
           >
             {favorite ? "En favoritos" : "Guardar"}
           </button>
           <button
             type="button"
-            onClick={() => shortlists.toggleCompare(property)}
+            onClick={() => authAction.requireAuth(() => shortlists.toggleCompare(property))}
             className={`rounded-lg border px-3 py-2 text-xs font-semibold ${inCompare ? "border-indigo-200 bg-indigo-50 text-indigo-700" : "border-slate-200 text-slate-700"}`}
           >
             {inCompare ? "En comparador" : "Comparar"}
           </button>
         </div>
       </div>
+      <AuthRequiredDialog {...authAction.authDialog} />
     </article>
   );
 }

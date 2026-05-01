@@ -2,11 +2,14 @@ import { useMutation } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { useState } from "react";
 
+import { AuthRequiredDialog } from "@/components/public/AuthRequiredDialog";
+import { useRequireAuthAction } from "@/hooks/use-require-auth-action";
 import { contactAgentFromPublic } from "@/server/public-engagement";
 import { formatMutationError } from "@/utils/mutation-error";
 
 export function ContactAgentForm({ propertySlug }: { propertySlug: string }) {
   const contactFn = useServerFn(contactAgentFromPublic);
+  const authAction = useRequireAuthAction();
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
@@ -56,7 +59,7 @@ export function ContactAgentForm({ propertySlug }: { propertySlug: string }) {
         <button
           type="button"
           disabled={mutation.isPending || name.trim().length < 2}
-          onClick={() => mutation.mutate()}
+          onClick={() => authAction.requireAuth(() => mutation.mutate())}
           className="rounded-xl bg-habitra-action px-4 py-2 text-sm font-semibold text-white disabled:opacity-60"
         >
           {mutation.isPending ? "Enviando..." : "Enviar contacto"}
@@ -68,6 +71,7 @@ export function ContactAgentForm({ propertySlug }: { propertySlug: string }) {
       {mutation.isSuccess ? (
         <p className="mt-2 text-sm text-emerald-700">Contacto enviado. Se genero un lead en CRM.</p>
       ) : null}
+      <AuthRequiredDialog {...authAction.authDialog} />
     </section>
   );
 }
