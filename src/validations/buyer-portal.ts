@@ -3,15 +3,20 @@ import { z } from "zod";
 import { creditTypeSchema, propertyTypeSchema } from "./buyer";
 
 export const buyerPortalProfileUpdateSchema = z.object({
+  name: z.string().trim().min(2).max(120).optional(),
+  email: z.string().email().optional(),
   phone: z.string().trim().max(40).optional(),
   maxBudget: z.preprocess((v) => (v === "" || v == null ? undefined : Number(v)), z.number().positive().optional()),
   downPayment: z.preprocess((v) => (v === "" || v == null ? undefined : Number(v)), z.number().positive().optional()),
   monthlyIncome: z.preprocess((v) => (v === "" || v == null ? undefined : Number(v)), z.number().positive().optional()),
   creditType: creditTypeSchema.optional(),
-  desiredZone: z.string().trim().max(300).optional(),
-  desiredPropertyType: propertyTypeSchema.optional(),
+  /** Se fusionan en `desiredZone` en servidor (ver `mergeDesiredZone`). */
+  city: z.string().trim().max(120).optional(),
+  interestZones: z.string().trim().max(500).optional(),
+  desiredPropertyType: z.union([propertyTypeSchema, z.null()]).optional(),
   bedrooms: z.preprocess((v) => (v === "" || v == null ? undefined : Number(v)), z.number().int().min(0).max(20).optional()),
   bathrooms: z.preprocess((v) => (v === "" || v == null ? undefined : Number(v)), z.number().int().min(0).max(20).optional()),
+  urgency: z.number().int().min(1).max(5).optional(),
 });
 
 export const buyerPortalTransactionIdSchema = z.object({

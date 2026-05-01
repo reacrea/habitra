@@ -1,7 +1,10 @@
+import { UserRole } from "@prisma/client";
 import { Outlet, createFileRoute, redirect } from "@tanstack/react-router";
 
 import { PublicLayout } from "@/components/public/PublicLayout";
 import { getAppSession } from "@/server/get-app-session";
+import { canAccessCrm } from "@/utils/crm-role";
+import { parseUserRole } from "@/utils/user-role";
 
 export const Route = createFileRoute("/buyer")({
   beforeLoad: async ({ location }) => {
@@ -11,6 +14,13 @@ export const Route = createFileRoute("/buyer")({
         to: "/login",
         search: { redirect: location.href },
       });
+    }
+    const role = parseUserRole(session.role);
+    if (canAccessCrm(role)) {
+      throw redirect({ to: "/app/dashboard" });
+    }
+    if (role !== UserRole.BUYER) {
+      throw redirect({ to: "/" });
     }
     if (location.pathname === "/buyer" || location.pathname === "/buyer/") {
       throw redirect({ to: "/buyer/dashboard" });

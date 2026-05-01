@@ -1,9 +1,13 @@
+import type { CreditType, PropertyType } from "@prisma/client";
+import { UserRole } from "@prisma/client";
 import { createServerFn } from "@tanstack/react-start";
 import { getRequest } from "@tanstack/react-start/server";
 
 import { auth } from "@/lib/auth/better-auth";
+import { mergeDesiredZone, splitDesiredZone } from "@/lib/buyer-desired-zone";
 import { prisma } from "@/lib/db/prisma";
 import { buildAiDummyInsights } from "@/server/ai-dummy";
+import { parseUserRole } from "@/utils/user-role";
 import {
   buyerPortalProfileUpdateSchema,
   buyerPortalTransactionIdSchema,
@@ -24,8 +28,12 @@ async function requireBuyerPortalContext() {
   const session = await auth.api.getSession({ headers: request.headers });
   if (!session?.user) throw new Response("Unauthorized", { status: 401 });
 
-  const user = session.user as typeof session.user & { id: string };
-  const buyer = await prisma.buyer.findFirst({
+  const user = session.user as typeof session.user & { id: string; role?: string | null };
+  if (parseUserRole(user.role) !== UserRole.BUYER) {
+    throw new Response("Forbidden", { status: 403 });
+  }
+
+  let buyer = await prisma.buyer.findFirst({
     where: { userId: user.id },
     select: {
       id: true,
@@ -48,7 +56,44 @@ async function requireBuyerPortalContext() {
       updatedAt: true,
     },
   });
-  if (!buyer) throw new Response("Buyer profile not found", { status: 404 });
+
+  if (!buyer) {
+    const org = await prisma.organization.findFirst({ orderBy: { createdAt: "asc" } });
+    if (!org) throw new Response("Sin organizacion disponible", { status: 503 });
+    const created = await prisma.buyer.create({
+      data: {
+        organizationId: org.id,
+        userId: user.id,
+        name: user.name ?? "Comprador",
+        email: user.email ?? null,
+        phone: user.phone ?? null,
+        creditType: "BANCARIO",
+        urgency: 3,
+      },
+      select: {
+        id: true,
+        organizationId: true,
+        name: true,
+        email: true,
+        phone: true,
+        maxBudget: true,
+        downPayment: true,
+        monthlyIncome: true,
+        creditType: true,
+        desiredZone: true,
+        desiredPropertyType: true,
+        bedrooms: true,
+        bathrooms: true,
+        buyingScore: true,
+        urgency: true,
+        assignedAgentId: true,
+        createdAt: true,
+        updatedAt: true,
+      },
+    });
+    buyer = created;
+  }
+
   return { user, buyer };
 }
 
@@ -109,23 +154,44 @@ export const getBuyerDashboardData = createServerFn({ method: "GET" }).handler(a
   };
 });
 
-export const getBuyerProfileData = createServerFn({ method: "GET" }).handler(async () => {
-  const { buyer } = await requireBuyerPortalContext();
+export type BuyerPortalProfileDto = {
+  id: string;
+  name: string;
+  email: string | null;
+  phone: string | null;
+  maxBudget: number | null;
+  downPayment: number | null;
+  monthlyIncome: number | null;
+  creditType: CreditType;
+  city: string;
+  interestZones: string;
+  desiredPropertyType: PropertyType | null;
+  bedrooms: number | null;
+  bathrooms: number | null;
+  buyingScore: number | null;
+  urgency: number;
+  updatedAt: string;
+};
+
+export const getBuyerProfileData = createServerFn({ method: "GET" }).handler(async (): Promise<BuyerPortalProfileDto> => {
+  const { user, buyer } = await requireBuyerPortalContext();
+  const { city, interestZones } = splitDesiredZone(buyer.desiredZone);
   return {
     id: buyer.id,
-    name: buyer.name,
-    email: buyer.email,
-    phone: buyer.phone,
+    name: buyer.name || user.name,
+    email: (buyer.email ?? user.email) ?? null,
+    phone: (buyer.phone ?? user.phone) ?? null,
     maxBudget: toNumber(buyer.maxBudget),
     downPayment: toNumber(buyer.downPayment),
     monthlyIncome: toNumber(buyer.monthlyIncome),
     creditType: buyer.creditType,
-    desiredZone: buyer.desiredZone,
+    city,
+    interestZones,
     desiredPropertyType: buyer.desiredPropertyType,
     bedrooms: buyer.bedrooms,
     bathrooms: buyer.bathrooms,
     buyingScore: buyer.buyingScore,
-    urgency: buyer.urgency,
+    urgency: buyer.urgency ?? 3,
     updatedAt: buyer.updatedAt.toISOString(),
   };
 });
@@ -133,24 +199,48 @@ export const getBuyerProfileData = createServerFn({ method: "GET" }).handler(asy
 export const updateBuyerProfileData = createServerFn({ method: "POST" })
   .inputValidator((data: unknown) => buyerPortalProfileUpdateSchema.parse(data))
   .handler(async ({ data }) => {
-    const { buyer } = await requireBuyerPortalContext();
+    const { user, buyer } = await requireBuyerPortalContext();
+
+    const { city: prevCity, interestZones: prevZones } = splitDesiredZone(buyer.desiredZone);
+    const nextCity = data.city !== undefined ? data.city : prevCity;
+    const nextZones = data.interestZones !== undefined ? data.interestZones : prevZones;
+    const mergedZone =
+      data.city !== undefined || data.interestZones !== undefined
+        ? mergeDesiredZone(nextCity, nextZones)
+        : undefined;
+
     const updated = await prisma.buyer.update({
       where: { id: buyer.id },
       data: {
+        ...(data.name !== undefined ? { name: data.name } : {}),
+        ...(data.email !== undefined ? { email: data.email || null } : {}),
         ...(data.phone !== undefined ? { phone: data.phone || null } : {}),
         ...(data.maxBudget !== undefined ? { maxBudget: data.maxBudget } : {}),
         ...(data.downPayment !== undefined ? { downPayment: data.downPayment } : {}),
         ...(data.monthlyIncome !== undefined ? { monthlyIncome: data.monthlyIncome } : {}),
         ...(data.creditType !== undefined ? { creditType: data.creditType } : {}),
-        ...(data.desiredZone !== undefined ? { desiredZone: data.desiredZone || null } : {}),
+        ...(mergedZone !== undefined ? { desiredZone: mergedZone } : {}),
         ...(data.desiredPropertyType !== undefined
           ? { desiredPropertyType: data.desiredPropertyType }
           : {}),
         ...(data.bedrooms !== undefined ? { bedrooms: data.bedrooms } : {}),
         ...(data.bathrooms !== undefined ? { bathrooms: data.bathrooms } : {}),
+        ...(data.urgency !== undefined ? { urgency: data.urgency } : {}),
       },
       select: { id: true, updatedAt: true },
     });
+
+    if (data.name !== undefined || data.email !== undefined || data.phone !== undefined) {
+      await prisma.user.update({
+        where: { id: user.id },
+        data: {
+          ...(data.name !== undefined ? { name: data.name } : {}),
+          ...(data.email !== undefined ? { email: data.email } : {}),
+          ...(data.phone !== undefined ? { phone: data.phone || null } : {}),
+        },
+      });
+    }
+
     return { id: updated.id, updatedAt: updated.updatedAt.toISOString() };
   });
 

@@ -14,7 +14,7 @@ export const Route = createFileRoute("/register")({
   beforeLoad: async () => {
     const session = await getAppSession();
     if (session) {
-      throw redirect({ to: "/buyer/profile" });
+      throw redirect({ to: "/buyer/dashboard" });
     }
   },
   component: RegisterPage,
@@ -53,7 +53,7 @@ function RegisterPage() {
           password: values.password,
         });
         await router.invalidate();
-        await navigate({ to: "/buyer/profile" });
+        await navigate({ to: "/buyer/dashboard" });
         return;
       } catch {
         await navigate({ to: "/login" });

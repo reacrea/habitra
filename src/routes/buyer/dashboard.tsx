@@ -2,6 +2,7 @@ import { Link, createFileRoute } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 
+import { BuyerProfileSection } from "@/components/buyer/BuyerProfileSection";
 import { CrmInlineError, CrmLoading } from "@/components/crm/CrmStates";
 import { getBuyerDashboardData } from "@/server/buyer-portal";
 
@@ -25,6 +26,10 @@ function BuyerDashboardPage() {
         <h1 className="text-3xl font-bold text-habitra-text">Mi dashboard</h1>
         <p className="mt-1 text-sm text-slate-600">Resumen de avance de compra y recomendaciones.</p>
       </div>
+      <BuyerProfileSection
+        title="Perfil del comprador"
+        description="Tus datos de contacto y preferencias. Edita para que el agente te asesore mejor."
+      />
       <div className="grid gap-4 md:grid-cols-3">
         <MetricCard label="Transacciones activas" value={String(query.data.metrics.activeTransactions)} />
         <MetricCard label="Documentos pendientes" value={String(query.data.metrics.pendingDocuments)} />

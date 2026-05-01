@@ -1,3 +1,4 @@
+import { UserRole } from "@prisma/client";
 import { Link } from "@tanstack/react-router";
 import { authClient } from "@/lib/auth/auth-client";
 import { canAccessCrm } from "@/utils/crm-role";
@@ -8,14 +9,13 @@ type SessionUser = {
   role?: string | null;
 };
 
-function getUserProfileRoute(role: string | null): "/buyer/profile" | "/app/dashboard" {
-  if (!role) {
-    return "/buyer/profile";
-  }
-  if (role === "BUYER") {
-    return "/buyer/profile";
-  }
-  return canAccessCrm(parseUserRole(role)) ? "/app/dashboard" : "/buyer/profile";
+/** Avatar: CRM al dashboard interno; comprador al portal buyer; otros (p. ej. seller B2C) al inicio. */
+function getAvatarDestination(role: string | null): string {
+  if (!role) return "/buyer/dashboard";
+  const r = parseUserRole(role);
+  if (canAccessCrm(r)) return "/app/dashboard";
+  if (r === UserRole.BUYER) return "/buyer/dashboard";
+  return "/";
 }
 
 function getUserInitial(name: string | null | undefined): string {
@@ -30,7 +30,7 @@ export function PublicHeader() {
   const isAuthenticated = Boolean(user);
   const userRole = user?.role ?? null;
   const showCrm = userRole ? canAccessCrm(parseUserRole(userRole)) : false;
-  const profileRoute = getUserProfileRoute(userRole);
+  const profileRoute = getAvatarDestination(userRole);
 
   return (
     <header className="sticky top-0 z-40 border-b border-slate-200/80 bg-white/95 backdrop-blur">
