@@ -8,7 +8,7 @@ Plataforma PropTech para organizar y acelerar compraventas inmobiliarias en Mexi
 - React + TypeScript + Vite
 - Tailwind CSS + shadcn/ui (config inicial)
 - Prisma + PostgreSQL
-- Better Auth (preparado para fase siguiente)
+- Better Auth (sesiones, email/contrasena, plugin TanStack Start cookies)
 
 ## Requisitos
 
@@ -21,13 +21,13 @@ Plataforma PropTech para organizar y acelerar compraventas inmobiliarias en Mexi
 npm install
 ```
 
-1) Copia `.env.example` a `.env` y actualiza `DATABASE_URL`.
+1) Copia `.env.example` a `.env` y actualiza `DATABASE_URL`, `BETTER_AUTH_SECRET` (minimo 32 caracteres) y `BETTER_AUTH_URL` (misma URL que usas en el navegador, por ejemplo `http://localhost:3000`).
 
-2) Genera cliente Prisma y aplica migracion inicial:
+2) Genera cliente Prisma y aplica migraciones (incluyen tablas Better Auth: `session`, `account`, `verification` y columnas de usuario):
 
 ```bash
 npm run db:generate
-npx prisma migrate dev --name init
+npx prisma migrate dev --name auth_and_domain
 ```
 
 3) Carga seed base:
@@ -66,6 +66,14 @@ npm run build
 3. Build command: `npm run build`.
 4. Start command: `npm run start`.
 
+## Auth y rutas protegidas (FASE 3)
+
+- API Better Auth: prefijo `/api/auth/*` (manejado por middleware en `src/start.ts`).
+- Login: `/login` (React Hook Form + Zod).
+- Area autenticada: `/app/*` (layout en `src/routes/app.tsx` con `beforeLoad` + `getAppSession`).
+- Credenciales demo (tras `npm run db:seed`): `admin@habitra.mx`, `broker@habitra.mx`, `agente1@habitra.mx`, `buyer@habitra.mx`, `seller@habitra.mx` con contrasena `Habitra123!`.
+- Ejemplo de validacion server-side: `listLeadsForCurrentUser` en `src/server/leads-for-user.ts` (sesion + rol + `organizationId` derivado en servidor).
+
 ## Estado actual
 
-FASE 1 completada con estructura base funcional. FASE 2 expandira el schema Prisma completo, enums de dominio y seed realista.
+FASE 1 base, FASE 2 modelo de datos + seed demo, FASE 3 Better Auth + proteccion `/app` + ejemplo de acceso a datos por organizacion.

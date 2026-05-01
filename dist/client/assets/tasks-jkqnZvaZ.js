@@ -1,0 +1,1 @@
+import{t as e}from"./jsx-dev-runtime-CKlSMCfp.js";import{t}from"./CrmPlaceholderPage-CcfTdI2F.js";var n=e(),r=`C:/Jcrea/Projects/Habitra/src/routes/app/tasks.tsx?tsr-split=component`,i=()=>(0,n.jsxDEV)(t,{title:`Tareas`},void 0,!1,{fileName:r,lineNumber:2,columnNumber:30},void 0);export{i as component};

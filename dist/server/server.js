@@ -1,10 +1,10 @@
+import { i as requestHandler, r as getResponse } from "./assets/server-DcmvO1qi.js";
 import "react";
 import { RouterProvider } from "@tanstack/react-router";
 import { jsx } from "react/jsx-runtime";
 import { defineHandlerCallback, renderRouterToStream } from "@tanstack/react-router/ssr/server";
 import { AsyncLocalStorage } from "node:async_hooks";
-import { H3Event, toResponse } from "h3-v2";
-import { createRawStreamRPCPlugin, createSerializationAdapter, defaultSerovalPlugins, executeRewriteInput, invariant, isNotFound, isRedirect, isResolvedRedirect, makeSerovalPlugin, parseRedirect, resolveManifestAssetLink, rootRouteId } from "@tanstack/router-core";
+import { createRawStreamRPCPlugin, createSerializationAdapter, defaultSerovalPlugins, executeRewriteInput, isNotFound, isRedirect as isRedirect$1, isResolvedRedirect, makeSerovalPlugin, parseRedirect, resolveManifestAssetLink, rootRouteId } from "@tanstack/router-core";
 import { mergeHeaders, mergeHeaders as mergeHeaders$1 } from "@tanstack/router-core/ssr/client";
 import { fromJSON, toCrossJSONAsync, toCrossJSONStream } from "seroval";
 import { createMemoryHistory } from "@tanstack/history";
@@ -21,61 +21,6 @@ var defaultStreamHandler = defineHandlerCallback(({ request, router, responseHea
 	responseHeaders,
 	children: /* @__PURE__ */ jsx(StartServer, { router })
 }));
-//#endregion
-//#region node_modules/@tanstack/start-server-core/dist/esm/request-response.js
-var GLOBAL_EVENT_STORAGE_KEY = Symbol.for("tanstack-start:event-storage");
-var globalObj$1 = globalThis;
-if (!globalObj$1[GLOBAL_EVENT_STORAGE_KEY]) globalObj$1[GLOBAL_EVENT_STORAGE_KEY] = new AsyncLocalStorage();
-var eventStorage = globalObj$1[GLOBAL_EVENT_STORAGE_KEY];
-function isPromiseLike(value) {
-	return typeof value.then === "function";
-}
-function getSetCookieValues(headers) {
-	const headersWithSetCookie = headers;
-	if (typeof headersWithSetCookie.getSetCookie === "function") return headersWithSetCookie.getSetCookie();
-	const value = headers.get("set-cookie");
-	return value ? [value] : [];
-}
-function mergeEventResponseHeaders(response, event) {
-	if (response.ok) return;
-	const eventSetCookies = getSetCookieValues(event.res.headers);
-	if (eventSetCookies.length === 0) return;
-	const responseSetCookies = getSetCookieValues(response.headers);
-	response.headers.delete("set-cookie");
-	for (const cookie of responseSetCookies) response.headers.append("set-cookie", cookie);
-	for (const cookie of eventSetCookies) response.headers.append("set-cookie", cookie);
-}
-function attachResponseHeaders(value, event) {
-	if (isPromiseLike(value)) return value.then((resolved) => {
-		if (resolved instanceof Response) mergeEventResponseHeaders(resolved, event);
-		return resolved;
-	});
-	if (value instanceof Response) mergeEventResponseHeaders(value, event);
-	return value;
-}
-function requestHandler(handler) {
-	return (request, requestOpts) => {
-		let h3Event;
-		try {
-			h3Event = new H3Event(request);
-		} catch (error) {
-			if (error instanceof URIError) return new Response(null, {
-				status: 400,
-				statusText: "Bad Request"
-			});
-			throw error;
-		}
-		return toResponse(attachResponseHeaders(eventStorage.run({ h3Event }, () => handler(request, requestOpts)), h3Event), h3Event);
-	};
-}
-function getH3Event() {
-	const event = eventStorage.getStore();
-	if (!event) throw new Error(`No StartEvent found in AsyncLocalStorage. Make sure you are using the function within the server runtime.`);
-	return event.h3Event;
-}
-function getResponse() {
-	return getH3Event().res;
-}
 //#endregion
 //#region node_modules/@tanstack/start-server-core/dist/esm/constants.js
 var HEADERS = { TSS_SHELL: "X-TSS_SHELL" };
@@ -94,7 +39,7 @@ var HEADERS = { TSS_SHELL: "X-TSS_SHELL" };
 * the dev styles URL for route-scoped CSS collection.
 */
 async function getStartManifest(matchedRoutes) {
-	const { tsrStartManifest } = await import("./assets/_tanstack-start-manifest_v-R68xB5Gm.js");
+	const { tsrStartManifest } = await import("./assets/_tanstack-start-manifest_v-xoeyKwlA.js");
 	const startManifest = tsrStartManifest();
 	const rootRoute = startManifest.routes[rootRouteId] = startManifest.routes[rootRouteId] || {};
 	rootRoute.assets = rootRoute.assets || [];
@@ -123,10 +68,72 @@ async function getStartManifest(matchedRoutes) {
 }
 //#endregion
 //#region \0%23tanstack-start-server-fn-resolver
-var manifest = { "db8b8d17a81e6a91b62ecb5dc1f9478957904daf88c90cf85344bd0406bbdf57": {
-	functionName: "getPlatformMessage_createServerFn_handler",
-	importer: () => import("./assets/routes-sDqICaGl.js")
-} };
+var manifest = {
+	"05da3d02fdf6162abc21e4be545554878d63902c3875f38ac6b44c94c114126e": {
+		functionName: "createSeller_createServerFn_handler",
+		importer: () => import("./assets/sellers-crud-DYxYdaaH.js")
+	},
+	"1912b17146cd4f5212efe519585dc393fc2c0026800b3004f06c2aa0e9a346df": {
+		functionName: "getAppSession_createServerFn_handler",
+		importer: () => import("./assets/get-app-session-BSf8nvfO.js")
+	},
+	"1d1aa721a3c1b87b28e38926402bbc33d68ba4d944d25bafe00a06aa1ee4771d": {
+		functionName: "createBuyer_createServerFn_handler",
+		importer: () => import("./assets/buyers-crud-D6ciWVbB.js")
+	},
+	"1d445d521a19844b47b8b37b2ae6f0acdfd470252618a5ce5dcc6c2e5ce81bca": {
+		functionName: "getLeadById_createServerFn_handler",
+		importer: () => import("./assets/leads-crud-_uWkWeQd.js")
+	},
+	"2acbfcf6ed50e4b346efe2e358363f3f171e1ead3b19cdf1169c634927fc1134": {
+		functionName: "listBuyers_createServerFn_handler",
+		importer: () => import("./assets/buyers-crud-D6ciWVbB.js")
+	},
+	"3469f877d7055ecf9ceec4282d96a8dde629170127705f44aa63d7030553c650": {
+		functionName: "listSellers_createServerFn_handler",
+		importer: () => import("./assets/sellers-crud-DYxYdaaH.js")
+	},
+	"4c167f198e2fc3d046cce1bb567ef6113e3fec12b8ec414bbe73cdf672b4eb64": {
+		functionName: "updateSeller_createServerFn_handler",
+		importer: () => import("./assets/sellers-crud-DYxYdaaH.js")
+	},
+	"5ba978d6d7dba989da381fc6c7fa8289c58e388ec5bed46bd150c2ac4c962cb9": {
+		functionName: "updateLead_createServerFn_handler",
+		importer: () => import("./assets/leads-crud-_uWkWeQd.js")
+	},
+	"602b14db23b728ffff78855a6f6b774c5dabf80cb08b198d6b7642747afbba79": {
+		functionName: "getAppLayoutData_createServerFn_handler",
+		importer: () => import("./assets/app-layout-data-Umy-vRVB.js")
+	},
+	"733d61339d01d5150d0dd72aaee28e5ecbe2e0c9c3c1974e8c0d7865daf2609c": {
+		functionName: "getDashboardMetrics_createServerFn_handler",
+		importer: () => import("./assets/dashboard-metrics-DgskUXZo.js")
+	},
+	"7c118fa3faa78432195d37ce6bb939d63ae1c840513f9bd3d787b9b7d6cd2229": {
+		functionName: "getSellerById_createServerFn_handler",
+		importer: () => import("./assets/sellers-crud-DYxYdaaH.js")
+	},
+	"9ffb2ba70d8dd7be0731527e86d3b6a2f17d8561b2a0e310ca2fc729303d7c58": {
+		functionName: "createLead_createServerFn_handler",
+		importer: () => import("./assets/leads-crud-_uWkWeQd.js")
+	},
+	"b33611eb61d6ab83ace351250bd6ebd372ba59abdeac03e4a161fb4e20e52a58": {
+		functionName: "getBuyerById_createServerFn_handler",
+		importer: () => import("./assets/buyers-crud-D6ciWVbB.js")
+	},
+	"c28401fa152769540a66eea75a10c37abad67684736b91ee6e83fa7aabb2a056": {
+		functionName: "listLeads_createServerFn_handler",
+		importer: () => import("./assets/leads-crud-_uWkWeQd.js")
+	},
+	"db8b8d17a81e6a91b62ecb5dc1f9478957904daf88c90cf85344bd0406bbdf57": {
+		functionName: "getPlatformMessage_createServerFn_handler",
+		importer: () => import("./assets/routes-DNBQBfSU.js")
+	},
+	"f529dfac7ea07eaee4a2b9834bdf1b989722926ca0c945202bb7a7f1a2d4e07d": {
+		functionName: "updateBuyer_createServerFn_handler",
+		importer: () => import("./assets/buyers-crud-D6ciWVbB.js")
+	}
+};
 async function getServerFnById(id, access) {
 	const serverFnInfo = manifest[id];
 	if (!serverFnInfo) throw new Error("Server function info not found for " + id);
@@ -317,7 +324,7 @@ async function executeMiddleware$1(middlewares, env, opts) {
 					...ctx,
 					next: userNext
 				});
-				if (isRedirect(result)) return {
+				if (isRedirect$1(result)) return {
 					...ctx,
 					error: result
 				};
@@ -632,7 +639,7 @@ var handleServerAction = async ({ request, context, serverFnId }) => {
 		try {
 			let res = await (async () => {
 				if (FORM_DATA_CONTENT_TYPES.some((type) => contentType && contentType.includes(type))) {
-					if (methodUpper === "GET") invariant();
+					if (methodUpper === "GET") throw new Error("Invariant failed: GET requests with FormData payloads are not supported");
 					const formData = await request.formData();
 					const serializedContext = formData.get(TSS_FORMDATA_CONTEXT);
 					formData.delete(TSS_FORMDATA_CONTEXT);
@@ -644,7 +651,9 @@ var handleServerAction = async ({ request, context, serverFnId }) => {
 					if (typeof serializedContext === "string") try {
 						const deserializedContext = fromJSON(JSON.parse(serializedContext), { plugins: serovalPlugins });
 						if (typeof deserializedContext === "object" && deserializedContext) params.context = safeObjectMerge(deserializedContext, context);
-					} catch (e) {}
+					} catch (e) {
+						console.warn("Failed to parse FormData context:", e);
+					}
 					return await action(params);
 				}
 				if (methodUpper === "GET") {
@@ -666,7 +675,7 @@ var handleServerAction = async ({ request, context, serverFnId }) => {
 			if (isNotFound(res)) res = isNotFoundResponse(res);
 			if (!isServerFn) return unwrapped;
 			if (unwrapped instanceof Response) {
-				if (isRedirect(unwrapped)) return unwrapped;
+				if (isRedirect$1(unwrapped)) return unwrapped;
 				unwrapped.headers.set(X_TSS_RAW_RESPONSE, "true");
 				return unwrapped;
 			}
@@ -813,7 +822,13 @@ function isNotFoundResponse(error) {
 }
 //#endregion
 //#region node_modules/@tanstack/start-server-core/dist/esm/transformAssetUrls.js
-function warnDeprecatedTransformAssetUrls() {}
+var hasWarnedAboutDeprecatedTransformAssetUrls = false;
+function warnDeprecatedTransformAssetUrls() {
+	if (!hasWarnedAboutDeprecatedTransformAssetUrls) {
+		hasWarnedAboutDeprecatedTransformAssetUrls = true;
+		console.warn("[TanStack Start] `transformAssetUrls` is deprecated. Use `transformAssets` instead.");
+	}
+}
 function normalizeTransformAssetResult(result) {
 	if (typeof result === "string") return { href: result };
 	return result;
@@ -998,9 +1013,9 @@ var baseManifestPromise;
 var cachedFinalManifestPromise;
 async function loadEntries() {
 	const [routerEntry, startEntry, pluginAdapters] = await Promise.all([
-		import("./assets/router-DWsmOxF2.js"),
-		import("./assets/start-d-GAV2wY.js"),
-		import("./assets/__23tanstack-start-plugin-adapters-y_fshQDY.js")
+		import("./assets/router-BmH8giTl.js"),
+		import("./assets/start-BDAXNccX.js"),
+		import("./assets/__23tanstack-start-plugin-adapters-BWZzj-RW.js")
 	]);
 	return {
 		routerEntry,
@@ -1042,7 +1057,7 @@ var ROUTER_BASEPATH = "/";
 var SERVER_FN_BASE = "/_serverFn/";
 var IS_PRERENDERING = process.env.TSS_PRERENDERING === "true";
 var IS_SHELL_ENV = process.env.TSS_SHELL === "true";
-var IS_DEV = false;
+var IS_DEV = true;
 var ERR_NO_RESPONSE = IS_DEV ? `It looks like you forgot to return a response from your server route handler. If you want to defer to the app router, make sure to have a component set in this route.` : "Internal Server Error";
 var ERR_NO_DEFER = IS_DEV ? `You cannot defer to the app router if there is no component defined on this route.` : "Internal Server Error";
 function throwRouteHandlerError() {
@@ -1055,7 +1070,7 @@ function throwIfMayNotDefer() {
 * Check if a value is a special response (Response or Redirect)
 */
 function isSpecialResponse(value) {
-	return value instanceof Response || isRedirect(value);
+	return value instanceof Response || isRedirect$1(value);
 }
 /**
 * Normalize middleware result to context shape
@@ -1305,7 +1320,7 @@ function createStartHandler(cbOrOptions) {
 	return requestHandler(startRequestResolver);
 }
 async function handleRedirectResponse(response, request, getRouter) {
-	if (!isRedirect(response)) return response;
+	if (!isRedirect$1(response)) return response;
 	if (isResolvedRedirect(response)) {
 		if (request.headers.get("x-tsr-serverFn") === "true") return Response.json({
 			...response.options,
@@ -1374,4 +1389,4 @@ function createServerEntry(entry) {
 }
 var server_default = createServerEntry({ fetch });
 //#endregion
-export { createServerEntry, server_default as default, getServerFnById as i, createServerFn as n, TSS_SERVER_FUNCTION as r, createStart as t };
+export { getServerFnById as a, createServerEntry, server_default as default, TSS_SERVER_FUNCTION as i, createMiddleware as n, createServerFn as r, createStart as t };

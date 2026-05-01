@@ -19,6 +19,7 @@ import {
   TransactionStatus,
   UserRole,
 } from "@prisma/client";
+import { hashPassword } from "better-auth/crypto";
 
 const prisma = new PrismaClient();
 
@@ -49,6 +50,9 @@ async function main() {
   await prisma.subscription.deleteMany();
   await prisma.plan.deleteMany();
   await prisma.membership.deleteMany();
+  await prisma.session.deleteMany();
+  await prisma.account.deleteMany();
+  await prisma.verification.deleteMany();
   await prisma.user.deleteMany();
   await prisma.organization.deleteMany();
 
@@ -119,69 +123,76 @@ async function main() {
     },
   });
 
+  const demoPasswordHash = await hashPassword("Habitra123!");
+
+  async function createUserWithCredential(input: {
+    email: string;
+    name: string;
+    phone: string;
+    role: UserRole;
+  }) {
+    const user = await prisma.user.create({
+      data: {
+        email: input.email,
+        name: input.name,
+        phone: input.phone,
+        emailVerified: true,
+        role: input.role,
+      },
+    });
+    await prisma.account.create({
+      data: {
+        userId: user.id,
+        accountId: user.email,
+        providerId: "credential",
+        password: demoPasswordHash,
+      },
+    });
+    return user;
+  }
+
   const users = await Promise.all([
-    prisma.user.create({
-      data: {
-        email: "admin@habitra.mx",
-        name: "Admin Habitra",
-        phone: "3331001000",
-        passwordHash: "DEMO_HASH_Habitra123!",
-        role: UserRole.ADMIN,
-      },
+    createUserWithCredential({
+      email: "admin@habitra.mx",
+      name: "Admin Habitra",
+      phone: "3331001000",
+      role: UserRole.ADMIN,
     }),
-    prisma.user.create({
-      data: {
-        email: "broker@habitra.mx",
-        name: "Fernanda Rivera",
-        phone: "3331001001",
-        passwordHash: "DEMO_HASH_Habitra123!",
-        role: UserRole.BROKER_OWNER,
-      },
+    createUserWithCredential({
+      email: "broker@habitra.mx",
+      name: "Fernanda Rivera",
+      phone: "3331001001",
+      role: UserRole.BROKER_OWNER,
     }),
-    prisma.user.create({
-      data: {
-        email: "agente1@habitra.mx",
-        name: "Luis Hernandez",
-        phone: "3331001002",
-        passwordHash: "DEMO_HASH_Habitra123!",
-        role: UserRole.AGENT,
-      },
+    createUserWithCredential({
+      email: "agente1@habitra.mx",
+      name: "Luis Hernandez",
+      phone: "3331001002",
+      role: UserRole.AGENT,
     }),
-    prisma.user.create({
-      data: {
-        email: "agente2@habitra.mx",
-        name: "Camila Ortega",
-        phone: "3331001003",
-        passwordHash: "DEMO_HASH_Habitra123!",
-        role: UserRole.AGENT,
-      },
+    createUserWithCredential({
+      email: "agente2@habitra.mx",
+      name: "Camila Ortega",
+      phone: "3331001003",
+      role: UserRole.AGENT,
     }),
-    prisma.user.create({
-      data: {
-        email: "agente3@habitra.mx",
-        name: "Ricardo Sosa",
-        phone: "3331001004",
-        passwordHash: "DEMO_HASH_Habitra123!",
-        role: UserRole.AGENT,
-      },
+    createUserWithCredential({
+      email: "agente3@habitra.mx",
+      name: "Ricardo Sosa",
+      phone: "3331001004",
+      role: UserRole.AGENT,
     }),
-    prisma.user.create({
-      data: {
-        email: "buyer@habitra.mx",
-        name: "Mariana Gomez",
-        phone: "3331001005",
-        passwordHash: "DEMO_HASH_Habitra123!",
-        role: UserRole.BUYER,
-      },
+    createUserWithCredential({
+      email: "buyer@habitra.mx",
+      name: "Mariana Gomez",
+      phone: "3331001005",
+      role: UserRole.BUYER,
     }),
-    prisma.user.create({
-      data: {
-        email: "seller@habitra.mx",
-        name: "Jorge Martinez",
-        phone: "3331001006",
-        passwordHash: "DEMO_HASH_Habitra123!",
-        role: UserRole.SELLER,
-      },
+    createUserWithCredential({
+      email: "seller@habitra.mx",
+      name: "Jorge Martinez",
+      phone: "3331001006",
+      role: UserRole.SELLER,
     }),
   ]);
 
