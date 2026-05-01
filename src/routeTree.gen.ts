@@ -14,7 +14,9 @@ import { Route as RentRouteImport } from './routes/rent'
 import { Route as PropertiesRouteImport } from './routes/properties'
 import { Route as MortgageCalculatorRouteImport } from './routes/mortgage-calculator'
 import { Route as LoginRouteImport } from './routes/login'
+import { Route as FavoritesRouteImport } from './routes/favorites'
 import { Route as DemoRouteImport } from './routes/demo'
+import { Route as CompareRouteImport } from './routes/compare'
 import { Route as BuyRouteImport } from './routes/buy'
 import { Route as AppRouteImport } from './routes/app'
 import { Route as IndexRouteImport } from './routes/index'
@@ -79,9 +81,19 @@ const LoginRoute = LoginRouteImport.update({
   path: '/login',
   getParentRoute: () => rootRouteImport,
 } as any)
+const FavoritesRoute = FavoritesRouteImport.update({
+  id: '/favorites',
+  path: '/favorites',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const DemoRoute = DemoRouteImport.update({
   id: '/demo',
   path: '/demo',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CompareRoute = CompareRouteImport.update({
+  id: '/compare',
+  path: '/compare',
   getParentRoute: () => rootRouteImport,
 } as any)
 const BuyRoute = BuyRouteImport.update({
@@ -280,7 +292,9 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/app': typeof AppRouteWithChildren
   '/buy': typeof BuyRoute
+  '/compare': typeof CompareRoute
   '/demo': typeof DemoRoute
+  '/favorites': typeof FavoritesRoute
   '/login': typeof LoginRoute
   '/mortgage-calculator': typeof MortgageCalculatorRoute
   '/properties': typeof PropertiesRouteWithChildren
@@ -326,7 +340,9 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/app': typeof AppRouteWithChildren
   '/buy': typeof BuyRoute
+  '/compare': typeof CompareRoute
   '/demo': typeof DemoRoute
+  '/favorites': typeof FavoritesRoute
   '/login': typeof LoginRoute
   '/mortgage-calculator': typeof MortgageCalculatorRoute
   '/properties': typeof PropertiesRouteWithChildren
@@ -366,7 +382,9 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/app': typeof AppRouteWithChildren
   '/buy': typeof BuyRoute
+  '/compare': typeof CompareRoute
   '/demo': typeof DemoRoute
+  '/favorites': typeof FavoritesRoute
   '/login': typeof LoginRoute
   '/mortgage-calculator': typeof MortgageCalculatorRoute
   '/properties': typeof PropertiesRouteWithChildren
@@ -414,7 +432,9 @@ export interface FileRouteTypes {
     | '/'
     | '/app'
     | '/buy'
+    | '/compare'
     | '/demo'
+    | '/favorites'
     | '/login'
     | '/mortgage-calculator'
     | '/properties'
@@ -460,7 +480,9 @@ export interface FileRouteTypes {
     | '/'
     | '/app'
     | '/buy'
+    | '/compare'
     | '/demo'
+    | '/favorites'
     | '/login'
     | '/mortgage-calculator'
     | '/properties'
@@ -499,7 +521,9 @@ export interface FileRouteTypes {
     | '/'
     | '/app'
     | '/buy'
+    | '/compare'
     | '/demo'
+    | '/favorites'
     | '/login'
     | '/mortgage-calculator'
     | '/properties'
@@ -546,7 +570,9 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AppRoute: typeof AppRouteWithChildren
   BuyRoute: typeof BuyRoute
+  CompareRoute: typeof CompareRoute
   DemoRoute: typeof DemoRoute
+  FavoritesRoute: typeof FavoritesRoute
   LoginRoute: typeof LoginRoute
   MortgageCalculatorRoute: typeof MortgageCalculatorRoute
   PropertiesRoute: typeof PropertiesRouteWithChildren
@@ -591,11 +617,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LoginRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/favorites': {
+      id: '/favorites'
+      path: '/favorites'
+      fullPath: '/favorites'
+      preLoaderRoute: typeof FavoritesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/demo': {
       id: '/demo'
       path: '/demo'
       fullPath: '/demo'
       preLoaderRoute: typeof DemoRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/compare': {
+      id: '/compare'
+      path: '/compare'
+      fullPath: '/compare'
+      preLoaderRoute: typeof CompareRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/buy': {
@@ -1026,7 +1066,9 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AppRoute: AppRouteWithChildren,
   BuyRoute: BuyRoute,
+  CompareRoute: CompareRoute,
   DemoRoute: DemoRoute,
+  FavoritesRoute: FavoritesRoute,
   LoginRoute: LoginRoute,
   MortgageCalculatorRoute: MortgageCalculatorRoute,
   PropertiesRoute: PropertiesRouteWithChildren,

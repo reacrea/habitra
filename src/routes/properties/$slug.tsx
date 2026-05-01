@@ -10,6 +10,7 @@ import { PropertyGallery } from "@/components/public/PropertyGallery";
 import { PropertyPublicCard } from "@/components/public/PropertyPublicCard";
 import { PropertyTimelinePreview } from "@/components/public/PropertyTimelinePreview";
 import { PublicLayout } from "@/components/public/PublicLayout";
+import { usePublicShortlists } from "@/hooks/use-public-shortlists";
 import { getPublicPropertyBySlug, getPublicSimilarProperties } from "@/server/public-b2c";
 
 export const Route = createFileRoute("/properties/$slug")({
@@ -20,6 +21,7 @@ function PublicPropertyDetailPage() {
   const { slug } = Route.useParams();
   const fetchDetail = useServerFn(getPublicPropertyBySlug);
   const fetchSimilar = useServerFn(getPublicSimilarProperties);
+  const shortlists = usePublicShortlists();
 
   const detailQuery = useQuery({
     queryKey: ["public-property-detail", slug],
@@ -54,6 +56,24 @@ function PublicPropertyDetailPage() {
   }
 
   const { property, estimatedTimeline } = detailQuery.data;
+  const cardProperty = {
+    id: property.id,
+    slug: property.slug,
+    title: property.title,
+    operationType: property.operationType,
+    propertyType: property.propertyType,
+    price: property.price,
+    city: property.city,
+    neighborhood: property.neighborhood,
+    bedrooms: property.bedrooms,
+    bathrooms: property.bathrooms,
+    parkingSpaces: property.parkingSpaces,
+    readinessScore: property.readinessScore,
+    imageUrl: property.imageUrl,
+    organizationName: property.organizationName,
+  };
+  const favorite = shortlists.isFavorite(property.id);
+  const inCompare = shortlists.isInCompare(property.id);
 
   return (
     <PublicLayout>
@@ -129,6 +149,20 @@ function PublicPropertyDetailPage() {
                 </Link>
                 <button className="rounded-xl border border-slate-200 px-4 py-2 text-sm font-semibold text-slate-700">
                   Iniciar proceso
+                </button>
+                <button
+                  type="button"
+                  onClick={() => shortlists.toggleFavorite(cardProperty)}
+                  className={`rounded-xl border px-4 py-2 text-sm font-semibold ${favorite ? "border-emerald-200 bg-emerald-50 text-emerald-700" : "border-slate-200 text-slate-700"}`}
+                >
+                  {favorite ? "En favoritos" : "Guardar favorito"}
+                </button>
+                <button
+                  type="button"
+                  onClick={() => shortlists.toggleCompare(cardProperty)}
+                  className={`rounded-xl border px-4 py-2 text-sm font-semibold ${inCompare ? "border-indigo-200 bg-indigo-50 text-indigo-700" : "border-slate-200 text-slate-700"}`}
+                >
+                  {inCompare ? "En comparador" : "Agregar a comparar"}
                 </button>
               </div>
             </div>

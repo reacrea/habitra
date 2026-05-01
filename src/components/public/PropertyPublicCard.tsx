@@ -1,5 +1,6 @@
 import { Link } from "@tanstack/react-router";
 
+import { usePublicShortlists } from "@/hooks/use-public-shortlists";
 import type { PublicPropertyCard } from "@/server/public-b2c";
 
 function formatPrice(value: number): string {
@@ -11,6 +12,10 @@ function formatPrice(value: number): string {
 }
 
 export function PropertyPublicCard({ property }: { property: PublicPropertyCard }) {
+  const shortlists = usePublicShortlists();
+  const favorite = shortlists.isFavorite(property.id);
+  const inCompare = shortlists.isInCompare(property.id);
+
   return (
     <article className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
       <div className="h-44 w-full bg-slate-100">
@@ -43,8 +48,27 @@ export function PropertyPublicCard({ property }: { property: PublicPropertyCard 
           >
             Ver propiedad
           </Link>
-          <button className="rounded-lg border border-slate-200 px-3 py-2 text-xs font-semibold text-slate-700">
+          <Link
+            to="/mortgage-calculator"
+            className="rounded-lg border border-slate-200 px-3 py-2 text-xs font-semibold text-slate-700"
+          >
             Simular compra
+          </Link>
+        </div>
+        <div className="flex items-center gap-2 pt-1">
+          <button
+            type="button"
+            onClick={() => shortlists.toggleFavorite(property)}
+            className={`rounded-lg border px-3 py-2 text-xs font-semibold ${favorite ? "border-emerald-200 bg-emerald-50 text-emerald-700" : "border-slate-200 text-slate-700"}`}
+          >
+            {favorite ? "En favoritos" : "Guardar"}
+          </button>
+          <button
+            type="button"
+            onClick={() => shortlists.toggleCompare(property)}
+            className={`rounded-lg border px-3 py-2 text-xs font-semibold ${inCompare ? "border-indigo-200 bg-indigo-50 text-indigo-700" : "border-slate-200 text-slate-700"}`}
+          >
+            {inCompare ? "En comparador" : "Comparar"}
           </button>
         </div>
       </div>
