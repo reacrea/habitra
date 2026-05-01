@@ -3,6 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 
 import { CrmInlineError, CrmLoading } from "@/components/crm/CrmStates";
+import { HomeFeaturedPropertyGrid } from "@/components/public/HomeFeaturedPropertyGrid";
 import { HOME_FEATURED_CITIES, totalForFeaturedCity } from "@/constants/home-featured-cities";
 import { PropertySearchBar } from "@/components/public/PropertySearchBar";
 import { PublicLayout } from "@/components/public/PublicLayout";
@@ -69,28 +70,20 @@ function LandingPage() {
 
         {homeQuery.data ? (
           <>
-            <section className="grid gap-4 md:grid-cols-2">
-              <div className="rounded-2xl border border-slate-200 bg-white p-5">
-                <p className="text-sm font-semibold text-habitra-text">Propiedades recomendadas en venta</p>
-                <div className="mt-3 space-y-2 text-sm text-slate-700">
-                  {homeQuery.data.featuredSale.slice(0, 4).map((p: { id: string; title: string; city: string }) => (
-                    <p key={p.id}>
-                      {p.title} - {p.city}
-                    </p>
-                  ))}
-                </div>
-              </div>
-              <div className="rounded-2xl border border-slate-200 bg-white p-5">
-                <p className="text-sm font-semibold text-habitra-text">Propiedades recomendadas en renta</p>
-                <div className="mt-3 space-y-2 text-sm text-slate-700">
-                  {homeQuery.data.featuredRent.slice(0, 4).map((p: { id: string; title: string; city: string }) => (
-                    <p key={p.id}>
-                      {p.title} - {p.city}
-                    </p>
-                  ))}
-                </div>
-              </div>
-            </section>
+            <HomeFeaturedPropertyGrid
+              title="Propiedades en venta"
+              description="Listings publicados con mayor readiness: casas, departamentos y mas."
+              properties={homeQuery.data.featuredSale}
+              emptyTitle="Aun no hay propiedades en venta publicadas"
+              emptyHint="Cuando la inmobiliaria publique anuncios de venta, apareceran aqui."
+            />
+            <HomeFeaturedPropertyGrid
+              title="Propiedades en renta"
+              description="Renta con la misma claridad: precio, zona y detalle al hacer clic."
+              properties={homeQuery.data.featuredRent}
+              emptyTitle="Aun no hay propiedades en renta publicadas"
+              emptyHint="Cuando haya anuncios de renta, los mostraremos en esta seccion."
+            />
 
             <section className="rounded-2xl border border-slate-200 bg-white p-6">
               <h2 className="text-xl font-semibold text-habitra-text">Ciudades principales</h2>
