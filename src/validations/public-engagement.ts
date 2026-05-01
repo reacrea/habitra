@@ -1,11 +1,12 @@
 import { z } from "zod";
 
+/** Payload B2C; nombre/email/teléfono los resuelve el servidor desde sesión + Buyer. */
 export const contactAgentSchema = z.object({
   propertySlug: z.string().trim().min(1),
-  name: z.string().trim().min(2),
-  email: z.string().email().optional(),
-  phone: z.string().trim().min(7).max(30).optional(),
-  message: z.string().trim().max(1000).optional(),
+  message: z.string().trim().max(2000).optional(),
+  interestType: z.enum(["COMPRAR", "RENTAR", "INVERTIR", "INFORMES", "OTRO"]),
+  availability: z.enum(["MANANA", "TARDE", "FIN_SEMANA", "CUALQUIERA", "AGENDAR", "OTRO"]),
+  preferredContactMethod: z.enum(["WHATSAPP", "LLAMADA", "EMAIL", "VIDEO", "CUALQUIERA"]),
 });
 
 export const scheduleVisitSchema = z.object({

@@ -3,6 +3,11 @@ import { TaskStatus, TransactionStage } from "@prisma/client";
 import { createServerFn } from "@tanstack/react-start";
 import { getRequest } from "@tanstack/react-start/server";
 
+import {
+  CONTACT_AVAILABILITY,
+  CONTACT_INTEREST_TYPES,
+  CONTACT_PREFERRED_METHODS,
+} from "@/constants/public-contact-agent";
 import { auth } from "@/lib/auth/better-auth";
 import { prisma } from "@/lib/db/prisma";
 import { parseUserRole } from "@/utils/user-role";
@@ -125,20 +130,50 @@ export const contactAgentFromPublic = createServerFn({ method: "POST" })
       property.assignedAgentId,
     );
 
+    const buyer = await prisma.buyer.findFirst({
+      where: { userId: user.id, organizationId: property.organizationId },
+      select: { id: true, name: true, email: true, phone: true },
+    });
+
+    const displayName =
+      [buyer?.name, user.name].find((n) => typeof n === "string" && n.trim().length >= 2)?.trim() ??
+      user.email?.split("@")[0]?.trim() ??
+      "Contacto";
+
+    const email = buyer?.email ?? user.email ?? null;
+    const phone = buyer?.phone ?? user.phone ?? null;
+
+    const interestLabel =
+      CONTACT_INTEREST_TYPES.find((x) => x.value === data.interestType)?.label ?? data.interestType;
+    const availabilityLabel =
+      CONTACT_AVAILABILITY.find((x) => x.value === data.availability)?.label ?? data.availability;
+    const methodLabel =
+      CONTACT_PREFERRED_METHODS.find((x) => x.value === data.preferredContactMethod)?.label ??
+      data.preferredContactMethod;
+
+    const noteLines: string[] = [];
+    if (data.message?.trim()) noteLines.push(data.message.trim());
+    noteLines.push(
+      `Tipo de interes: ${interestLabel}`,
+      `Disponibilidad: ${availabilityLabel}`,
+      `Metodo preferido: ${methodLabel}`,
+      "",
+      `Propiedad de interes: ${property.title} (${property.slug})`,
+    );
+    const notesText = noteLines.join("\n");
+
     const lead = await prisma.lead.create({
       data: {
         organizationId: property.organizationId,
-        name: data.name,
-        email: data.email ?? user.email ?? null,
-        phone: data.phone ?? user.phone ?? null,
+        name: displayName,
+        email,
+        phone,
         type: "COMPRADOR",
         source: "PUBLIC_PROPERTY_CONTACT",
         status: "NUEVO",
         temperature: "TIBIO",
         assignedAgentId: listingAgentId,
-        notesText: data.message
-          ? `${data.message}\n\nPropiedad interes: ${property.title} (${property.slug})`
-          : `Propiedad interes: ${property.title} (${property.slug})`,
+        notesText,
       },
       select: { id: true },
     });
@@ -153,7 +188,15 @@ export const contactAgentFromPublic = createServerFn({ method: "POST" })
         description: `Contacto publico para ${property.title}`,
         leadId: lead.id,
         propertyId: property.id,
-        metadata: { propertySlug: property.slug, via: "public-b2c" },
+        buyerId: buyer?.id ?? null,
+        metadata: {
+          propertySlug: property.slug,
+          via: "public-b2c",
+          interestType: data.interestType,
+          availability: data.availability,
+          preferredContactMethod: data.preferredContactMethod,
+          buyerProfileId: buyer?.id ?? null,
+        },
       },
     });
 
