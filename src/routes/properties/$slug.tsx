@@ -3,6 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 
 import { CrmInlineError, CrmLoading } from "@/components/crm/CrmStates";
+import { MortgageCalculatorWidget } from "@/components/public/MortgageCalculatorWidget";
 import { PropertyAgentContactCard } from "@/components/public/PropertyAgentContactCard";
 import { PropertyDocumentClarity } from "@/components/public/PropertyDocumentClarity";
 import { PropertyGallery } from "@/components/public/PropertyGallery";
@@ -91,6 +92,11 @@ function PublicPropertyDetailPage() {
 
             <PropertyDocumentClarity score={property.documentClarityScore} items={property.documentClarity} />
             <PropertyTimelinePreview timeline={estimatedTimeline} />
+            <MortgageCalculatorWidget
+              compact
+              defaultPrice={property.price}
+              title="Simulador rapido para esta propiedad"
+            />
 
             <section className="rounded-2xl border border-slate-200 bg-white p-5">
               <h3 className="text-lg font-semibold text-habitra-text">Propiedades similares</h3>
@@ -115,9 +121,12 @@ function PublicPropertyDetailPage() {
                 <button className="rounded-xl border border-slate-200 px-4 py-2 text-sm font-semibold text-slate-700">
                   Agendar visita
                 </button>
-                <button className="rounded-xl border border-slate-200 px-4 py-2 text-sm font-semibold text-slate-700">
+                <Link
+                  to="/mortgage-calculator"
+                  className="rounded-xl border border-slate-200 px-4 py-2 text-center text-sm font-semibold text-slate-700"
+                >
                   Simular compra
-                </button>
+                </Link>
                 <button className="rounded-xl border border-slate-200 px-4 py-2 text-sm font-semibold text-slate-700">
                   Iniciar proceso
                 </button>
@@ -136,9 +145,12 @@ function PublicPropertyDetailPage() {
           <button className="flex-1 rounded-xl border border-slate-200 px-3 py-2 text-sm font-semibold text-slate-700">
             Visitar
           </button>
-          <button className="flex-1 rounded-xl border border-slate-200 px-3 py-2 text-sm font-semibold text-slate-700">
+          <Link
+            to="/mortgage-calculator"
+            className="flex-1 rounded-xl border border-slate-200 px-3 py-2 text-center text-sm font-semibold text-slate-700"
+          >
             Simular
-          </button>
+          </Link>
         </div>
       </div>
     </PublicLayout>

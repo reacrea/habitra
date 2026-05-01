@@ -1,13 +1,10 @@
 import { createServerFn } from "@tanstack/react-start";
 
 import { prisma } from "@/lib/db/prisma";
+import { simulateMortgage } from "@/services/mortgage";
 import { financialSimulationSchema } from "@/validations/phase8";
 
 import { requireCrmOrganization } from "./crm-session";
-
-function round2(n: number): number {
-  return Math.round(n * 100) / 100;
-}
 
 export const getFinancialSimulationOptions = createServerFn({ method: "GET" }).handler(async () => {
   const ctx = await requireCrmOrganization();
@@ -50,23 +47,16 @@ export const runFinancialSimulation = createServerFn({ method: "POST" })
   .inputValidator((data: unknown) => financialSimulationSchema.parse(data))
   .handler(async ({ data }) => {
     const ctx = await requireCrmOrganization();
-    const loanAmount = data.propertyPrice - data.downPayment;
-    const monthlyRate = data.annualRate / 100 / 12;
-    const months = data.years * 12;
-    const estimatedMonthly =
-      monthlyRate === 0
-        ? loanAmount / months
-        : (loanAmount * monthlyRate) / (1 - Math.pow(1 + monthlyRate, -months));
-    const estimatedClosingCosts =
-      data.propertyPrice * (data.notaryCostPct / 100) + data.appraisalCost + data.otherCosts;
-    const initialTotalNeeded = data.downPayment + estimatedClosingCosts;
-    const affordabilityRatio = data.monthlyIncome ? estimatedMonthly / data.monthlyIncome : 0;
-    const recommendation =
-      affordabilityRatio <= 0.3
-        ? "Perfil saludable para avanzar."
-        : affordabilityRatio <= 0.4
-          ? "Viable con seguimiento de riesgo moderado."
-          : "Riesgo alto: sugerir ajuste de monto/plazo.";
+    const result = simulateMortgage({
+      propertyPrice: data.propertyPrice,
+      downPayment: data.downPayment,
+      years: data.years,
+      annualRate: data.annualRate,
+      notaryCostPct: data.notaryCostPct,
+      appraisalCost: data.appraisalCost,
+      otherCosts: data.otherCosts,
+      monthlyIncome: data.monthlyIncome ?? null,
+    });
 
     const saved = await prisma.financialSimulation.create({
       data: {
@@ -82,11 +72,11 @@ export const runFinancialSimulation = createServerFn({ method: "POST" })
         notaryCostPct: data.notaryCostPct,
         appraisalCost: data.appraisalCost,
         otherCosts: data.otherCosts,
-        estimatedMonthly: round2(estimatedMonthly),
-        estimatedClosingCosts: round2(estimatedClosingCosts),
-        initialTotalNeeded: round2(initialTotalNeeded),
-        affordabilityRatio: round2(affordabilityRatio),
-        recommendation,
+        estimatedMonthly: result.estimatedMonthly,
+        estimatedClosingCosts: result.estimatedClosingCosts,
+        initialTotalNeeded: result.initialTotalNeeded,
+        affordabilityRatio: result.affordabilityRatio,
+        recommendation: result.recommendation,
       },
     });
 

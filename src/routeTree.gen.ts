@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as SellRouteImport } from './routes/sell'
 import { Route as RentRouteImport } from './routes/rent'
 import { Route as PropertiesRouteImport } from './routes/properties'
+import { Route as MortgageCalculatorRouteImport } from './routes/mortgage-calculator'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as DemoRouteImport } from './routes/demo'
 import { Route as BuyRouteImport } from './routes/buy'
@@ -66,6 +67,11 @@ const RentRoute = RentRouteImport.update({
 const PropertiesRoute = PropertiesRouteImport.update({
   id: '/properties',
   path: '/properties',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MortgageCalculatorRoute = MortgageCalculatorRouteImport.update({
+  id: '/mortgage-calculator',
+  path: '/mortgage-calculator',
   getParentRoute: () => rootRouteImport,
 } as any)
 const LoginRoute = LoginRouteImport.update({
@@ -276,6 +282,7 @@ export interface FileRoutesByFullPath {
   '/buy': typeof BuyRoute
   '/demo': typeof DemoRoute
   '/login': typeof LoginRoute
+  '/mortgage-calculator': typeof MortgageCalculatorRoute
   '/properties': typeof PropertiesRouteWithChildren
   '/rent': typeof RentRoute
   '/sell': typeof SellRoute
@@ -321,6 +328,7 @@ export interface FileRoutesByTo {
   '/buy': typeof BuyRoute
   '/demo': typeof DemoRoute
   '/login': typeof LoginRoute
+  '/mortgage-calculator': typeof MortgageCalculatorRoute
   '/properties': typeof PropertiesRouteWithChildren
   '/rent': typeof RentRoute
   '/sell': typeof SellRoute
@@ -360,6 +368,7 @@ export interface FileRoutesById {
   '/buy': typeof BuyRoute
   '/demo': typeof DemoRoute
   '/login': typeof LoginRoute
+  '/mortgage-calculator': typeof MortgageCalculatorRoute
   '/properties': typeof PropertiesRouteWithChildren
   '/rent': typeof RentRoute
   '/sell': typeof SellRoute
@@ -407,6 +416,7 @@ export interface FileRouteTypes {
     | '/buy'
     | '/demo'
     | '/login'
+    | '/mortgage-calculator'
     | '/properties'
     | '/rent'
     | '/sell'
@@ -452,6 +462,7 @@ export interface FileRouteTypes {
     | '/buy'
     | '/demo'
     | '/login'
+    | '/mortgage-calculator'
     | '/properties'
     | '/rent'
     | '/sell'
@@ -490,6 +501,7 @@ export interface FileRouteTypes {
     | '/buy'
     | '/demo'
     | '/login'
+    | '/mortgage-calculator'
     | '/properties'
     | '/rent'
     | '/sell'
@@ -536,6 +548,7 @@ export interface RootRouteChildren {
   BuyRoute: typeof BuyRoute
   DemoRoute: typeof DemoRoute
   LoginRoute: typeof LoginRoute
+  MortgageCalculatorRoute: typeof MortgageCalculatorRoute
   PropertiesRoute: typeof PropertiesRouteWithChildren
   RentRoute: typeof RentRoute
   SellRoute: typeof SellRoute
@@ -562,6 +575,13 @@ declare module '@tanstack/react-router' {
       path: '/properties'
       fullPath: '/properties'
       preLoaderRoute: typeof PropertiesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/mortgage-calculator': {
+      id: '/mortgage-calculator'
+      path: '/mortgage-calculator'
+      fullPath: '/mortgage-calculator'
+      preLoaderRoute: typeof MortgageCalculatorRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/login': {
@@ -1008,6 +1028,7 @@ const rootRouteChildren: RootRouteChildren = {
   BuyRoute: BuyRoute,
   DemoRoute: DemoRoute,
   LoginRoute: LoginRoute,
+  MortgageCalculatorRoute: MortgageCalculatorRoute,
   PropertiesRoute: PropertiesRouteWithChildren,
   RentRoute: RentRoute,
   SellRoute: SellRoute,

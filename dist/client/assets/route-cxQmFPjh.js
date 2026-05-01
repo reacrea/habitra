@@ -1,1 +1,0 @@
-import{t as e}from"./jsx-dev-runtime-CKlSMCfp.js";import{jt as t}from"./index-DMlNAkqO.js";var n=e(),r=`C:/Jcrea/Projects/Habitra/src/routes/app/leads/route.tsx?tsr-split=component`,i=()=>(0,n.jsxDEV)(t,{},void 0,!1,{fileName:r,lineNumber:2,columnNumber:30},void 0);export{i as component};
