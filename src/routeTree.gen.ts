@@ -9,13 +9,15 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as SellRouteImport } from './routes/sell'
+import { Route as RentRouteImport } from './routes/rent'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as DemoRouteImport } from './routes/demo'
+import { Route as BuyRouteImport } from './routes/buy'
 import { Route as AppRouteImport } from './routes/app'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AppTasksRouteImport } from './routes/app/tasks'
 import { Route as AppSettingsRouteImport } from './routes/app/settings'
-import { Route as AppReportsRouteImport } from './routes/app/reports'
 import { Route as AppOrganizationsRouteImport } from './routes/app/organizations'
 import { Route as AppDashboardRouteImport } from './routes/app/dashboard'
 import { Route as AppCalendarRouteImport } from './routes/app/calendar'
@@ -23,12 +25,14 @@ import { Route as AppBillingRouteImport } from './routes/app/billing'
 import { Route as AppAdminRouteImport } from './routes/app/admin'
 import { Route as AppTransactionsRouteRouteImport } from './routes/app/transactions/route'
 import { Route as AppSellersRouteRouteImport } from './routes/app/sellers/route'
+import { Route as AppReportsRouteRouteImport } from './routes/app/reports/route'
 import { Route as AppPropertiesRouteRouteImport } from './routes/app/properties/route'
 import { Route as AppLeadsRouteRouteImport } from './routes/app/leads/route'
 import { Route as AppDocumentsRouteRouteImport } from './routes/app/documents/route'
 import { Route as AppBuyersRouteRouteImport } from './routes/app/buyers/route'
 import { Route as AppTransactionsIndexRouteImport } from './routes/app/transactions/index'
 import { Route as AppSellersIndexRouteImport } from './routes/app/sellers/index'
+import { Route as AppReportsIndexRouteImport } from './routes/app/reports/index'
 import { Route as AppPropertiesIndexRouteImport } from './routes/app/properties/index'
 import { Route as AppLeadsIndexRouteImport } from './routes/app/leads/index'
 import { Route as AppDocumentsIndexRouteImport } from './routes/app/documents/index'
@@ -37,6 +41,8 @@ import { Route as AppTransactionsNewRouteImport } from './routes/app/transaction
 import { Route as AppTransactionsTransactionIdRouteImport } from './routes/app/transactions/$transactionId'
 import { Route as AppSellersNewRouteImport } from './routes/app/sellers/new'
 import { Route as AppSellersSellerIdRouteImport } from './routes/app/sellers/$sellerId'
+import { Route as AppReportsSimulatorRouteImport } from './routes/app/reports/simulator'
+import { Route as AppReportsAiRouteImport } from './routes/app/reports/ai'
 import { Route as AppPropertiesPropertyIdRouteImport } from './routes/app/properties/$propertyId'
 import { Route as AppLeadsNewRouteImport } from './routes/app/leads/new'
 import { Route as AppLeadsLeadIdRouteImport } from './routes/app/leads/$leadId'
@@ -45,6 +51,16 @@ import { Route as AppDocumentsDocumentIdRouteImport } from './routes/app/documen
 import { Route as AppBuyersNewRouteImport } from './routes/app/buyers/new'
 import { Route as AppBuyersBuyerIdRouteImport } from './routes/app/buyers/$buyerId'
 
+const SellRoute = SellRouteImport.update({
+  id: '/sell',
+  path: '/sell',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const RentRoute = RentRouteImport.update({
+  id: '/rent',
+  path: '/rent',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const LoginRoute = LoginRouteImport.update({
   id: '/login',
   path: '/login',
@@ -53,6 +69,11 @@ const LoginRoute = LoginRouteImport.update({
 const DemoRoute = DemoRouteImport.update({
   id: '/demo',
   path: '/demo',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const BuyRoute = BuyRouteImport.update({
+  id: '/buy',
+  path: '/buy',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AppRoute = AppRouteImport.update({
@@ -73,11 +94,6 @@ const AppTasksRoute = AppTasksRouteImport.update({
 const AppSettingsRoute = AppSettingsRouteImport.update({
   id: '/settings',
   path: '/settings',
-  getParentRoute: () => AppRoute,
-} as any)
-const AppReportsRoute = AppReportsRouteImport.update({
-  id: '/reports',
-  path: '/reports',
   getParentRoute: () => AppRoute,
 } as any)
 const AppOrganizationsRoute = AppOrganizationsRouteImport.update({
@@ -115,6 +131,11 @@ const AppSellersRouteRoute = AppSellersRouteRouteImport.update({
   path: '/sellers',
   getParentRoute: () => AppRoute,
 } as any)
+const AppReportsRouteRoute = AppReportsRouteRouteImport.update({
+  id: '/reports',
+  path: '/reports',
+  getParentRoute: () => AppRoute,
+} as any)
 const AppPropertiesRouteRoute = AppPropertiesRouteRouteImport.update({
   id: '/properties',
   path: '/properties',
@@ -144,6 +165,11 @@ const AppSellersIndexRoute = AppSellersIndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => AppSellersRouteRoute,
+} as any)
+const AppReportsIndexRoute = AppReportsIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => AppReportsRouteRoute,
 } as any)
 const AppPropertiesIndexRoute = AppPropertiesIndexRouteImport.update({
   id: '/',
@@ -186,6 +212,16 @@ const AppSellersSellerIdRoute = AppSellersSellerIdRouteImport.update({
   path: '/$sellerId',
   getParentRoute: () => AppSellersRouteRoute,
 } as any)
+const AppReportsSimulatorRoute = AppReportsSimulatorRouteImport.update({
+  id: '/simulator',
+  path: '/simulator',
+  getParentRoute: () => AppReportsRouteRoute,
+} as any)
+const AppReportsAiRoute = AppReportsAiRouteImport.update({
+  id: '/ai',
+  path: '/ai',
+  getParentRoute: () => AppReportsRouteRoute,
+} as any)
 const AppPropertiesPropertyIdRoute = AppPropertiesPropertyIdRouteImport.update({
   id: '/$propertyId',
   path: '/$propertyId',
@@ -225,12 +261,16 @@ const AppBuyersBuyerIdRoute = AppBuyersBuyerIdRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/app': typeof AppRouteWithChildren
+  '/buy': typeof BuyRoute
   '/demo': typeof DemoRoute
   '/login': typeof LoginRoute
+  '/rent': typeof RentRoute
+  '/sell': typeof SellRoute
   '/app/buyers': typeof AppBuyersRouteRouteWithChildren
   '/app/documents': typeof AppDocumentsRouteRouteWithChildren
   '/app/leads': typeof AppLeadsRouteRouteWithChildren
   '/app/properties': typeof AppPropertiesRouteRouteWithChildren
+  '/app/reports': typeof AppReportsRouteRouteWithChildren
   '/app/sellers': typeof AppSellersRouteRouteWithChildren
   '/app/transactions': typeof AppTransactionsRouteRouteWithChildren
   '/app/admin': typeof AppAdminRoute
@@ -238,7 +278,6 @@ export interface FileRoutesByFullPath {
   '/app/calendar': typeof AppCalendarRoute
   '/app/dashboard': typeof AppDashboardRoute
   '/app/organizations': typeof AppOrganizationsRoute
-  '/app/reports': typeof AppReportsRoute
   '/app/settings': typeof AppSettingsRoute
   '/app/tasks': typeof AppTasksRoute
   '/app/buyers/$buyerId': typeof AppBuyersBuyerIdRoute
@@ -248,6 +287,8 @@ export interface FileRoutesByFullPath {
   '/app/leads/$leadId': typeof AppLeadsLeadIdRoute
   '/app/leads/new': typeof AppLeadsNewRoute
   '/app/properties/$propertyId': typeof AppPropertiesPropertyIdRoute
+  '/app/reports/ai': typeof AppReportsAiRoute
+  '/app/reports/simulator': typeof AppReportsSimulatorRoute
   '/app/sellers/$sellerId': typeof AppSellersSellerIdRoute
   '/app/sellers/new': typeof AppSellersNewRoute
   '/app/transactions/$transactionId': typeof AppTransactionsTransactionIdRoute
@@ -256,20 +297,23 @@ export interface FileRoutesByFullPath {
   '/app/documents/': typeof AppDocumentsIndexRoute
   '/app/leads/': typeof AppLeadsIndexRoute
   '/app/properties/': typeof AppPropertiesIndexRoute
+  '/app/reports/': typeof AppReportsIndexRoute
   '/app/sellers/': typeof AppSellersIndexRoute
   '/app/transactions/': typeof AppTransactionsIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/app': typeof AppRouteWithChildren
+  '/buy': typeof BuyRoute
   '/demo': typeof DemoRoute
   '/login': typeof LoginRoute
+  '/rent': typeof RentRoute
+  '/sell': typeof SellRoute
   '/app/admin': typeof AppAdminRoute
   '/app/billing': typeof AppBillingRoute
   '/app/calendar': typeof AppCalendarRoute
   '/app/dashboard': typeof AppDashboardRoute
   '/app/organizations': typeof AppOrganizationsRoute
-  '/app/reports': typeof AppReportsRoute
   '/app/settings': typeof AppSettingsRoute
   '/app/tasks': typeof AppTasksRoute
   '/app/buyers/$buyerId': typeof AppBuyersBuyerIdRoute
@@ -279,6 +323,8 @@ export interface FileRoutesByTo {
   '/app/leads/$leadId': typeof AppLeadsLeadIdRoute
   '/app/leads/new': typeof AppLeadsNewRoute
   '/app/properties/$propertyId': typeof AppPropertiesPropertyIdRoute
+  '/app/reports/ai': typeof AppReportsAiRoute
+  '/app/reports/simulator': typeof AppReportsSimulatorRoute
   '/app/sellers/$sellerId': typeof AppSellersSellerIdRoute
   '/app/sellers/new': typeof AppSellersNewRoute
   '/app/transactions/$transactionId': typeof AppTransactionsTransactionIdRoute
@@ -287,6 +333,7 @@ export interface FileRoutesByTo {
   '/app/documents': typeof AppDocumentsIndexRoute
   '/app/leads': typeof AppLeadsIndexRoute
   '/app/properties': typeof AppPropertiesIndexRoute
+  '/app/reports': typeof AppReportsIndexRoute
   '/app/sellers': typeof AppSellersIndexRoute
   '/app/transactions': typeof AppTransactionsIndexRoute
 }
@@ -294,12 +341,16 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/app': typeof AppRouteWithChildren
+  '/buy': typeof BuyRoute
   '/demo': typeof DemoRoute
   '/login': typeof LoginRoute
+  '/rent': typeof RentRoute
+  '/sell': typeof SellRoute
   '/app/buyers': typeof AppBuyersRouteRouteWithChildren
   '/app/documents': typeof AppDocumentsRouteRouteWithChildren
   '/app/leads': typeof AppLeadsRouteRouteWithChildren
   '/app/properties': typeof AppPropertiesRouteRouteWithChildren
+  '/app/reports': typeof AppReportsRouteRouteWithChildren
   '/app/sellers': typeof AppSellersRouteRouteWithChildren
   '/app/transactions': typeof AppTransactionsRouteRouteWithChildren
   '/app/admin': typeof AppAdminRoute
@@ -307,7 +358,6 @@ export interface FileRoutesById {
   '/app/calendar': typeof AppCalendarRoute
   '/app/dashboard': typeof AppDashboardRoute
   '/app/organizations': typeof AppOrganizationsRoute
-  '/app/reports': typeof AppReportsRoute
   '/app/settings': typeof AppSettingsRoute
   '/app/tasks': typeof AppTasksRoute
   '/app/buyers/$buyerId': typeof AppBuyersBuyerIdRoute
@@ -317,6 +367,8 @@ export interface FileRoutesById {
   '/app/leads/$leadId': typeof AppLeadsLeadIdRoute
   '/app/leads/new': typeof AppLeadsNewRoute
   '/app/properties/$propertyId': typeof AppPropertiesPropertyIdRoute
+  '/app/reports/ai': typeof AppReportsAiRoute
+  '/app/reports/simulator': typeof AppReportsSimulatorRoute
   '/app/sellers/$sellerId': typeof AppSellersSellerIdRoute
   '/app/sellers/new': typeof AppSellersNewRoute
   '/app/transactions/$transactionId': typeof AppTransactionsTransactionIdRoute
@@ -325,6 +377,7 @@ export interface FileRoutesById {
   '/app/documents/': typeof AppDocumentsIndexRoute
   '/app/leads/': typeof AppLeadsIndexRoute
   '/app/properties/': typeof AppPropertiesIndexRoute
+  '/app/reports/': typeof AppReportsIndexRoute
   '/app/sellers/': typeof AppSellersIndexRoute
   '/app/transactions/': typeof AppTransactionsIndexRoute
 }
@@ -333,12 +386,16 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/app'
+    | '/buy'
     | '/demo'
     | '/login'
+    | '/rent'
+    | '/sell'
     | '/app/buyers'
     | '/app/documents'
     | '/app/leads'
     | '/app/properties'
+    | '/app/reports'
     | '/app/sellers'
     | '/app/transactions'
     | '/app/admin'
@@ -346,7 +403,6 @@ export interface FileRouteTypes {
     | '/app/calendar'
     | '/app/dashboard'
     | '/app/organizations'
-    | '/app/reports'
     | '/app/settings'
     | '/app/tasks'
     | '/app/buyers/$buyerId'
@@ -356,6 +412,8 @@ export interface FileRouteTypes {
     | '/app/leads/$leadId'
     | '/app/leads/new'
     | '/app/properties/$propertyId'
+    | '/app/reports/ai'
+    | '/app/reports/simulator'
     | '/app/sellers/$sellerId'
     | '/app/sellers/new'
     | '/app/transactions/$transactionId'
@@ -364,20 +422,23 @@ export interface FileRouteTypes {
     | '/app/documents/'
     | '/app/leads/'
     | '/app/properties/'
+    | '/app/reports/'
     | '/app/sellers/'
     | '/app/transactions/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
     | '/app'
+    | '/buy'
     | '/demo'
     | '/login'
+    | '/rent'
+    | '/sell'
     | '/app/admin'
     | '/app/billing'
     | '/app/calendar'
     | '/app/dashboard'
     | '/app/organizations'
-    | '/app/reports'
     | '/app/settings'
     | '/app/tasks'
     | '/app/buyers/$buyerId'
@@ -387,6 +448,8 @@ export interface FileRouteTypes {
     | '/app/leads/$leadId'
     | '/app/leads/new'
     | '/app/properties/$propertyId'
+    | '/app/reports/ai'
+    | '/app/reports/simulator'
     | '/app/sellers/$sellerId'
     | '/app/sellers/new'
     | '/app/transactions/$transactionId'
@@ -395,18 +458,23 @@ export interface FileRouteTypes {
     | '/app/documents'
     | '/app/leads'
     | '/app/properties'
+    | '/app/reports'
     | '/app/sellers'
     | '/app/transactions'
   id:
     | '__root__'
     | '/'
     | '/app'
+    | '/buy'
     | '/demo'
     | '/login'
+    | '/rent'
+    | '/sell'
     | '/app/buyers'
     | '/app/documents'
     | '/app/leads'
     | '/app/properties'
+    | '/app/reports'
     | '/app/sellers'
     | '/app/transactions'
     | '/app/admin'
@@ -414,7 +482,6 @@ export interface FileRouteTypes {
     | '/app/calendar'
     | '/app/dashboard'
     | '/app/organizations'
-    | '/app/reports'
     | '/app/settings'
     | '/app/tasks'
     | '/app/buyers/$buyerId'
@@ -424,6 +491,8 @@ export interface FileRouteTypes {
     | '/app/leads/$leadId'
     | '/app/leads/new'
     | '/app/properties/$propertyId'
+    | '/app/reports/ai'
+    | '/app/reports/simulator'
     | '/app/sellers/$sellerId'
     | '/app/sellers/new'
     | '/app/transactions/$transactionId'
@@ -432,6 +501,7 @@ export interface FileRouteTypes {
     | '/app/documents/'
     | '/app/leads/'
     | '/app/properties/'
+    | '/app/reports/'
     | '/app/sellers/'
     | '/app/transactions/'
   fileRoutesById: FileRoutesById
@@ -439,12 +509,29 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AppRoute: typeof AppRouteWithChildren
+  BuyRoute: typeof BuyRoute
   DemoRoute: typeof DemoRoute
   LoginRoute: typeof LoginRoute
+  RentRoute: typeof RentRoute
+  SellRoute: typeof SellRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/sell': {
+      id: '/sell'
+      path: '/sell'
+      fullPath: '/sell'
+      preLoaderRoute: typeof SellRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/rent': {
+      id: '/rent'
+      path: '/rent'
+      fullPath: '/rent'
+      preLoaderRoute: typeof RentRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/login': {
       id: '/login'
       path: '/login'
@@ -457,6 +544,13 @@ declare module '@tanstack/react-router' {
       path: '/demo'
       fullPath: '/demo'
       preLoaderRoute: typeof DemoRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/buy': {
+      id: '/buy'
+      path: '/buy'
+      fullPath: '/buy'
+      preLoaderRoute: typeof BuyRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/app': {
@@ -485,13 +579,6 @@ declare module '@tanstack/react-router' {
       path: '/settings'
       fullPath: '/app/settings'
       preLoaderRoute: typeof AppSettingsRouteImport
-      parentRoute: typeof AppRoute
-    }
-    '/app/reports': {
-      id: '/app/reports'
-      path: '/reports'
-      fullPath: '/app/reports'
-      preLoaderRoute: typeof AppReportsRouteImport
       parentRoute: typeof AppRoute
     }
     '/app/organizations': {
@@ -543,6 +630,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppSellersRouteRouteImport
       parentRoute: typeof AppRoute
     }
+    '/app/reports': {
+      id: '/app/reports'
+      path: '/reports'
+      fullPath: '/app/reports'
+      preLoaderRoute: typeof AppReportsRouteRouteImport
+      parentRoute: typeof AppRoute
+    }
     '/app/properties': {
       id: '/app/properties'
       path: '/properties'
@@ -584,6 +678,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/app/sellers/'
       preLoaderRoute: typeof AppSellersIndexRouteImport
       parentRoute: typeof AppSellersRouteRoute
+    }
+    '/app/reports/': {
+      id: '/app/reports/'
+      path: '/'
+      fullPath: '/app/reports/'
+      preLoaderRoute: typeof AppReportsIndexRouteImport
+      parentRoute: typeof AppReportsRouteRoute
     }
     '/app/properties/': {
       id: '/app/properties/'
@@ -640,6 +741,20 @@ declare module '@tanstack/react-router' {
       fullPath: '/app/sellers/$sellerId'
       preLoaderRoute: typeof AppSellersSellerIdRouteImport
       parentRoute: typeof AppSellersRouteRoute
+    }
+    '/app/reports/simulator': {
+      id: '/app/reports/simulator'
+      path: '/simulator'
+      fullPath: '/app/reports/simulator'
+      preLoaderRoute: typeof AppReportsSimulatorRouteImport
+      parentRoute: typeof AppReportsRouteRoute
+    }
+    '/app/reports/ai': {
+      id: '/app/reports/ai'
+      path: '/ai'
+      fullPath: '/app/reports/ai'
+      preLoaderRoute: typeof AppReportsAiRouteImport
+      parentRoute: typeof AppReportsRouteRoute
     }
     '/app/properties/$propertyId': {
       id: '/app/properties/$propertyId'
@@ -753,6 +868,22 @@ const AppPropertiesRouteRouteChildren: AppPropertiesRouteRouteChildren = {
 const AppPropertiesRouteRouteWithChildren =
   AppPropertiesRouteRoute._addFileChildren(AppPropertiesRouteRouteChildren)
 
+interface AppReportsRouteRouteChildren {
+  AppReportsAiRoute: typeof AppReportsAiRoute
+  AppReportsSimulatorRoute: typeof AppReportsSimulatorRoute
+  AppReportsIndexRoute: typeof AppReportsIndexRoute
+}
+
+const AppReportsRouteRouteChildren: AppReportsRouteRouteChildren = {
+  AppReportsAiRoute: AppReportsAiRoute,
+  AppReportsSimulatorRoute: AppReportsSimulatorRoute,
+  AppReportsIndexRoute: AppReportsIndexRoute,
+}
+
+const AppReportsRouteRouteWithChildren = AppReportsRouteRoute._addFileChildren(
+  AppReportsRouteRouteChildren,
+)
+
 interface AppSellersRouteRouteChildren {
   AppSellersSellerIdRoute: typeof AppSellersSellerIdRoute
   AppSellersNewRoute: typeof AppSellersNewRoute
@@ -789,6 +920,7 @@ interface AppRouteChildren {
   AppDocumentsRouteRoute: typeof AppDocumentsRouteRouteWithChildren
   AppLeadsRouteRoute: typeof AppLeadsRouteRouteWithChildren
   AppPropertiesRouteRoute: typeof AppPropertiesRouteRouteWithChildren
+  AppReportsRouteRoute: typeof AppReportsRouteRouteWithChildren
   AppSellersRouteRoute: typeof AppSellersRouteRouteWithChildren
   AppTransactionsRouteRoute: typeof AppTransactionsRouteRouteWithChildren
   AppAdminRoute: typeof AppAdminRoute
@@ -796,7 +928,6 @@ interface AppRouteChildren {
   AppCalendarRoute: typeof AppCalendarRoute
   AppDashboardRoute: typeof AppDashboardRoute
   AppOrganizationsRoute: typeof AppOrganizationsRoute
-  AppReportsRoute: typeof AppReportsRoute
   AppSettingsRoute: typeof AppSettingsRoute
   AppTasksRoute: typeof AppTasksRoute
 }
@@ -806,6 +937,7 @@ const AppRouteChildren: AppRouteChildren = {
   AppDocumentsRouteRoute: AppDocumentsRouteRouteWithChildren,
   AppLeadsRouteRoute: AppLeadsRouteRouteWithChildren,
   AppPropertiesRouteRoute: AppPropertiesRouteRouteWithChildren,
+  AppReportsRouteRoute: AppReportsRouteRouteWithChildren,
   AppSellersRouteRoute: AppSellersRouteRouteWithChildren,
   AppTransactionsRouteRoute: AppTransactionsRouteRouteWithChildren,
   AppAdminRoute: AppAdminRoute,
@@ -813,7 +945,6 @@ const AppRouteChildren: AppRouteChildren = {
   AppCalendarRoute: AppCalendarRoute,
   AppDashboardRoute: AppDashboardRoute,
   AppOrganizationsRoute: AppOrganizationsRoute,
-  AppReportsRoute: AppReportsRoute,
   AppSettingsRoute: AppSettingsRoute,
   AppTasksRoute: AppTasksRoute,
 }
@@ -823,8 +954,11 @@ const AppRouteWithChildren = AppRoute._addFileChildren(AppRouteChildren)
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AppRoute: AppRouteWithChildren,
+  BuyRoute: BuyRoute,
   DemoRoute: DemoRoute,
   LoginRoute: LoginRoute,
+  RentRoute: RentRoute,
+  SellRoute: SellRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

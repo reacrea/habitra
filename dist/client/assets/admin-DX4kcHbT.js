@@ -1,1 +1,0 @@
-import{t as e}from"./jsx-dev-runtime-CKlSMCfp.js";import{t}from"./CrmPlaceholderPage-CcfTdI2F.js";var n=e(),r=`C:/Jcrea/Projects/Habitra/src/routes/app/admin.tsx?tsr-split=component`,i=()=>(0,n.jsxDEV)(t,{title:`Panel administrador`},void 0,!1,{fileName:r,lineNumber:2,columnNumber:30},void 0);export{i as component};
