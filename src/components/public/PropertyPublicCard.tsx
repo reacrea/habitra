@@ -37,8 +37,8 @@ export function PropertyPublicCard({ property }: { property: PublicPropertyCard 
         </p>
         <div className="flex items-center gap-2 pt-1">
           <Link
-            to="/properties"
-            search={{ city: property.city }}
+            to="/properties/$slug"
+            params={{ slug: property.slug }}
             className="rounded-lg bg-habitra-action px-3 py-2 text-xs font-semibold text-white"
           >
             Ver propiedad

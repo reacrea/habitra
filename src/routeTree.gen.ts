@@ -17,6 +17,7 @@ import { Route as DemoRouteImport } from './routes/demo'
 import { Route as BuyRouteImport } from './routes/buy'
 import { Route as AppRouteImport } from './routes/app'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as PropertiesSlugRouteImport } from './routes/properties/$slug'
 import { Route as AppTasksRouteImport } from './routes/app/tasks'
 import { Route as AppSettingsRouteImport } from './routes/app/settings'
 import { Route as AppOrganizationsRouteImport } from './routes/app/organizations'
@@ -91,6 +92,11 @@ const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
+} as any)
+const PropertiesSlugRoute = PropertiesSlugRouteImport.update({
+  id: '/$slug',
+  path: '/$slug',
+  getParentRoute: () => PropertiesRoute,
 } as any)
 const AppTasksRoute = AppTasksRouteImport.update({
   id: '/tasks',
@@ -270,7 +276,7 @@ export interface FileRoutesByFullPath {
   '/buy': typeof BuyRoute
   '/demo': typeof DemoRoute
   '/login': typeof LoginRoute
-  '/properties': typeof PropertiesRoute
+  '/properties': typeof PropertiesRouteWithChildren
   '/rent': typeof RentRoute
   '/sell': typeof SellRoute
   '/app/buyers': typeof AppBuyersRouteRouteWithChildren
@@ -287,6 +293,7 @@ export interface FileRoutesByFullPath {
   '/app/organizations': typeof AppOrganizationsRoute
   '/app/settings': typeof AppSettingsRoute
   '/app/tasks': typeof AppTasksRoute
+  '/properties/$slug': typeof PropertiesSlugRoute
   '/app/buyers/$buyerId': typeof AppBuyersBuyerIdRoute
   '/app/buyers/new': typeof AppBuyersNewRoute
   '/app/documents/$documentId': typeof AppDocumentsDocumentIdRoute
@@ -314,7 +321,7 @@ export interface FileRoutesByTo {
   '/buy': typeof BuyRoute
   '/demo': typeof DemoRoute
   '/login': typeof LoginRoute
-  '/properties': typeof PropertiesRoute
+  '/properties': typeof PropertiesRouteWithChildren
   '/rent': typeof RentRoute
   '/sell': typeof SellRoute
   '/app/admin': typeof AppAdminRoute
@@ -324,6 +331,7 @@ export interface FileRoutesByTo {
   '/app/organizations': typeof AppOrganizationsRoute
   '/app/settings': typeof AppSettingsRoute
   '/app/tasks': typeof AppTasksRoute
+  '/properties/$slug': typeof PropertiesSlugRoute
   '/app/buyers/$buyerId': typeof AppBuyersBuyerIdRoute
   '/app/buyers/new': typeof AppBuyersNewRoute
   '/app/documents/$documentId': typeof AppDocumentsDocumentIdRoute
@@ -352,7 +360,7 @@ export interface FileRoutesById {
   '/buy': typeof BuyRoute
   '/demo': typeof DemoRoute
   '/login': typeof LoginRoute
-  '/properties': typeof PropertiesRoute
+  '/properties': typeof PropertiesRouteWithChildren
   '/rent': typeof RentRoute
   '/sell': typeof SellRoute
   '/app/buyers': typeof AppBuyersRouteRouteWithChildren
@@ -369,6 +377,7 @@ export interface FileRoutesById {
   '/app/organizations': typeof AppOrganizationsRoute
   '/app/settings': typeof AppSettingsRoute
   '/app/tasks': typeof AppTasksRoute
+  '/properties/$slug': typeof PropertiesSlugRoute
   '/app/buyers/$buyerId': typeof AppBuyersBuyerIdRoute
   '/app/buyers/new': typeof AppBuyersNewRoute
   '/app/documents/$documentId': typeof AppDocumentsDocumentIdRoute
@@ -415,6 +424,7 @@ export interface FileRouteTypes {
     | '/app/organizations'
     | '/app/settings'
     | '/app/tasks'
+    | '/properties/$slug'
     | '/app/buyers/$buyerId'
     | '/app/buyers/new'
     | '/app/documents/$documentId'
@@ -452,6 +462,7 @@ export interface FileRouteTypes {
     | '/app/organizations'
     | '/app/settings'
     | '/app/tasks'
+    | '/properties/$slug'
     | '/app/buyers/$buyerId'
     | '/app/buyers/new'
     | '/app/documents/$documentId'
@@ -496,6 +507,7 @@ export interface FileRouteTypes {
     | '/app/organizations'
     | '/app/settings'
     | '/app/tasks'
+    | '/properties/$slug'
     | '/app/buyers/$buyerId'
     | '/app/buyers/new'
     | '/app/documents/$documentId'
@@ -524,7 +536,7 @@ export interface RootRouteChildren {
   BuyRoute: typeof BuyRoute
   DemoRoute: typeof DemoRoute
   LoginRoute: typeof LoginRoute
-  PropertiesRoute: typeof PropertiesRoute
+  PropertiesRoute: typeof PropertiesRouteWithChildren
   RentRoute: typeof RentRoute
   SellRoute: typeof SellRoute
 }
@@ -586,6 +598,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
+    }
+    '/properties/$slug': {
+      id: '/properties/$slug'
+      path: '/$slug'
+      fullPath: '/properties/$slug'
+      preLoaderRoute: typeof PropertiesSlugRouteImport
+      parentRoute: typeof PropertiesRoute
     }
     '/app/tasks': {
       id: '/app/tasks'
@@ -971,13 +990,25 @@ const AppRouteChildren: AppRouteChildren = {
 
 const AppRouteWithChildren = AppRoute._addFileChildren(AppRouteChildren)
 
+interface PropertiesRouteChildren {
+  PropertiesSlugRoute: typeof PropertiesSlugRoute
+}
+
+const PropertiesRouteChildren: PropertiesRouteChildren = {
+  PropertiesSlugRoute: PropertiesSlugRoute,
+}
+
+const PropertiesRouteWithChildren = PropertiesRoute._addFileChildren(
+  PropertiesRouteChildren,
+)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AppRoute: AppRouteWithChildren,
   BuyRoute: BuyRoute,
   DemoRoute: DemoRoute,
   LoginRoute: LoginRoute,
-  PropertiesRoute: PropertiesRoute,
+  PropertiesRoute: PropertiesRouteWithChildren,
   RentRoute: RentRoute,
   SellRoute: SellRoute,
 }
