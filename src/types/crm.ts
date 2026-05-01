@@ -1,12 +1,15 @@
 import type {
   CreditType,
+  DocumentStatus,
+  DocumentType,
   LeadStatus,
   LeadTemperature,
   LeadType,
+  OperationType,
+  PropertyStatus,
   PropertyType,
 } from "@prisma/client";
 
-/** Lead serializado para la UI (sin Decimal). */
 export type LeadRow = {
   id: string;
   organizationId: string;
@@ -58,6 +61,67 @@ export type SellerRow = {
   expectedPrice: number | null;
   sellingReason: string | null;
   assignedAgentId: string | null;
+  createdAt: string;
+  updatedAt: string;
+};
+
+export type PropertyImageRow = {
+  id: string;
+  propertyId: string;
+  url: string;
+  alt: string | null;
+  isPrimary: boolean;
+  order: number;
+};
+
+export type PropertyChecklistItem = {
+  id: string;
+  label: string;
+  checked: boolean;
+};
+
+export type PropertyRow = {
+  id: string;
+  organizationId: string;
+  slug: string;
+  title: string;
+  description: string;
+  fullDescription: string | null;
+  propertyType: PropertyType;
+  operationType: OperationType;
+  price: number;
+  currency: string;
+  address: string;
+  city: string;
+  state: string;
+  neighborhood: string | null;
+  postalCode: string | null;
+  bedrooms: number | null;
+  bathrooms: number | null;
+  parkingSpaces: number | null;
+  status: PropertyStatus;
+  sellerId: string | null;
+  assignedAgentId: string | null;
+  readinessScore: number;
+  risks: string[];
+  images: PropertyImageRow[];
+  createdAt: string;
+  updatedAt: string;
+};
+
+export type DocumentRow = {
+  id: string;
+  organizationId: string;
+  type: DocumentType;
+  status: DocumentStatus;
+  title: string;
+  description: string | null;
+  fileName: string | null;
+  fileUrl: string;
+  buyerId: string | null;
+  sellerId: string | null;
+  propertyId: string | null;
+  transactionId: string | null;
   createdAt: string;
   updatedAt: string;
 };

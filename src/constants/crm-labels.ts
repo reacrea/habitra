@@ -1,5 +1,4 @@
 /** Etiquetas cortas para selects y badges en CRM */
-
 export const LEAD_TYPE_LABELS: Record<string, string> = {
   COMPRADOR: "Comprador",
   VENDEDOR: "Vendedor",
@@ -40,4 +39,41 @@ export const PROPERTY_TYPE_LABELS: Record<string, string> = {
   BODEGA: "Bodega",
   PENTHOUSE: "Penthouse",
   OTRO: "Otro",
+};
+
+export const PROPERTY_STATUS_LABELS: Record<string, string> = {
+  BORRADOR: "Borrador",
+  PUBLICADA: "Publicada",
+  EN_NEGOCIACION: "En negociacion",
+  APARTADA: "Apartada",
+  VENDIDA: "Vendida",
+  INACTIVA: "Inactiva",
+};
+
+export const OPERATION_TYPE_LABELS: Record<string, string> = {
+  VENTA: "Venta",
+  RENTA: "Renta",
+};
+
+export const DOCUMENT_STATUS_LABELS: Record<string, string> = {
+  PENDIENTE: "Pendiente",
+  CARGADO: "Cargado",
+  EN_REVISION: "En revision",
+  APROBADO: "Aprobado",
+  RECHAZADO: "Rechazado",
+};
+
+export const DOCUMENT_TYPE_LABELS: Record<string, string> = {
+  ESCRITURA: "Escritura",
+  IDENTIFICACION: "Identificacion",
+  COMPROBANTE_DOMICILIO: "Comprobante domicilio",
+  PREDIAL: "Predial",
+  AGUA: "Agua",
+  LIBERTAD_GRAVAMEN: "Libertad de gravamen",
+  AVALUO: "Avaluo",
+  CARTA_OFERTA: "Carta oferta",
+  CONTRATO_PROMESA: "Contrato promesa",
+  CARTA_APROBACION_CREDITO: "Carta aprobacion credito",
+  ESTADO_CUENTA: "Estado de cuenta",
+  OTROS: "Otros",
 };
