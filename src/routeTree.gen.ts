@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as SellRouteImport } from './routes/sell'
 import { Route as RentRouteImport } from './routes/rent'
+import { Route as PropertiesRouteImport } from './routes/properties'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as DemoRouteImport } from './routes/demo'
 import { Route as BuyRouteImport } from './routes/buy'
@@ -59,6 +60,11 @@ const SellRoute = SellRouteImport.update({
 const RentRoute = RentRouteImport.update({
   id: '/rent',
   path: '/rent',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PropertiesRoute = PropertiesRouteImport.update({
+  id: '/properties',
+  path: '/properties',
   getParentRoute: () => rootRouteImport,
 } as any)
 const LoginRoute = LoginRouteImport.update({
@@ -264,6 +270,7 @@ export interface FileRoutesByFullPath {
   '/buy': typeof BuyRoute
   '/demo': typeof DemoRoute
   '/login': typeof LoginRoute
+  '/properties': typeof PropertiesRoute
   '/rent': typeof RentRoute
   '/sell': typeof SellRoute
   '/app/buyers': typeof AppBuyersRouteRouteWithChildren
@@ -307,6 +314,7 @@ export interface FileRoutesByTo {
   '/buy': typeof BuyRoute
   '/demo': typeof DemoRoute
   '/login': typeof LoginRoute
+  '/properties': typeof PropertiesRoute
   '/rent': typeof RentRoute
   '/sell': typeof SellRoute
   '/app/admin': typeof AppAdminRoute
@@ -344,6 +352,7 @@ export interface FileRoutesById {
   '/buy': typeof BuyRoute
   '/demo': typeof DemoRoute
   '/login': typeof LoginRoute
+  '/properties': typeof PropertiesRoute
   '/rent': typeof RentRoute
   '/sell': typeof SellRoute
   '/app/buyers': typeof AppBuyersRouteRouteWithChildren
@@ -389,6 +398,7 @@ export interface FileRouteTypes {
     | '/buy'
     | '/demo'
     | '/login'
+    | '/properties'
     | '/rent'
     | '/sell'
     | '/app/buyers'
@@ -432,6 +442,7 @@ export interface FileRouteTypes {
     | '/buy'
     | '/demo'
     | '/login'
+    | '/properties'
     | '/rent'
     | '/sell'
     | '/app/admin'
@@ -468,6 +479,7 @@ export interface FileRouteTypes {
     | '/buy'
     | '/demo'
     | '/login'
+    | '/properties'
     | '/rent'
     | '/sell'
     | '/app/buyers'
@@ -512,6 +524,7 @@ export interface RootRouteChildren {
   BuyRoute: typeof BuyRoute
   DemoRoute: typeof DemoRoute
   LoginRoute: typeof LoginRoute
+  PropertiesRoute: typeof PropertiesRoute
   RentRoute: typeof RentRoute
   SellRoute: typeof SellRoute
 }
@@ -530,6 +543,13 @@ declare module '@tanstack/react-router' {
       path: '/rent'
       fullPath: '/rent'
       preLoaderRoute: typeof RentRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/properties': {
+      id: '/properties'
+      path: '/properties'
+      fullPath: '/properties'
+      preLoaderRoute: typeof PropertiesRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/login': {
@@ -957,6 +977,7 @@ const rootRouteChildren: RootRouteChildren = {
   BuyRoute: BuyRoute,
   DemoRoute: DemoRoute,
   LoginRoute: LoginRoute,
+  PropertiesRoute: PropertiesRoute,
   RentRoute: RentRoute,
   SellRoute: SellRoute,
 }

@@ -10,6 +10,11 @@ const publicListingsInput = z.object({
   propertyType: z.nativeEnum(PropertyType).optional(),
   minPrice: z.number().positive().optional(),
   maxPrice: z.number().positive().optional(),
+  bedrooms: z.number().int().min(0).optional(),
+  bathrooms: z.number().int().min(0).optional(),
+  sort: z
+    .enum(["relevance", "price_asc", "price_desc", "recent", "readiness_desc"])
+    .optional(),
   limit: z.number().int().min(1).max(60).optional(),
 });
 
@@ -95,11 +100,29 @@ export const getPublicHomeData = createServerFn({ method: "GET" }).handler(async
 export const getPublicListings = createServerFn({ method: "POST" })
   .inputValidator((data: unknown) => publicListingsInput.parse(data))
   .handler(async ({ data }) => {
+    const orderBy =
+      data.sort === "price_asc"
+        ? [{ price: "asc" as const }]
+        : data.sort === "price_desc"
+          ? [{ price: "desc" as const }]
+          : data.sort === "recent"
+            ? [{ createdAt: "desc" as const }]
+            : data.sort === "readiness_desc"
+              ? [{ readinessScore: "desc" as const }]
+              : [{ readinessScore: "desc" as const }, { createdAt: "desc" as const }];
+
     const rows = await prisma.property.findMany({
       where: {
         status: "PUBLICADA",
         ...(data.operationType ? { operationType: data.operationType } : {}),
-        ...(data.city ? { city: { equals: data.city, mode: "insensitive" } } : {}),
+        ...(data.city
+          ? {
+              OR: [
+                { city: { contains: data.city, mode: "insensitive" } },
+                { neighborhood: { contains: data.city, mode: "insensitive" } },
+              ],
+            }
+          : {}),
         ...(data.propertyType ? { propertyType: data.propertyType } : {}),
         ...(data.minPrice || data.maxPrice
           ? {
@@ -109,12 +132,14 @@ export const getPublicListings = createServerFn({ method: "POST" })
               },
             }
           : {}),
+        ...(data.bedrooms !== undefined ? { bedrooms: { gte: data.bedrooms } } : {}),
+        ...(data.bathrooms !== undefined ? { bathrooms: { gte: data.bathrooms } } : {}),
       },
       include: {
         images: { orderBy: { order: "asc" }, take: 1 },
         organization: { select: { name: true } },
       },
-      orderBy: [{ readinessScore: "desc" }, { createdAt: "desc" }],
+      orderBy,
       take: data.limit ?? 24,
     });
 

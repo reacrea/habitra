@@ -1,0 +1,1 @@
+import{Lt as e,kt as t}from"./index-gGlAZNfZ.js";var n=t({method:`GET`}).handler(e(`a870149fbe3efcb39f82f6b00ae1bc71e3c292a40f7884c0420a07c23059e41b`)),r=t({method:`POST`}).handler(e(`c63035c9133b3fccc81a1b55c50f66ccb7287e5efb92f671368b80d61ca8f5b6`));export{r as n,n as t};
