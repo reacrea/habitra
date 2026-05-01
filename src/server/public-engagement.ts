@@ -1,3 +1,4 @@
+import type { MembershipRole, UserRole } from "@prisma/client";
 import { TaskStatus, TransactionStage } from "@prisma/client";
 import { createServerFn } from "@tanstack/react-start";
 import { getRequest } from "@tanstack/react-start/server";
@@ -11,7 +12,6 @@ import {
   startBuyingProcessSchema,
 } from "@/validations/public-engagement";
 
-import { assertCanAccessCrm } from "./crm-session";
 import { assertOrganizationAccess, getOrganizationScope } from "./org-access";
 
 async function requireAuthedUser() {
@@ -28,6 +28,74 @@ async function requireAuthedUser() {
     phone: user.phone ?? null,
     role: parseUserRole(user.role),
   };
+}
+
+const MEMBERSHIP_AGENT_PRIORITY: Record<MembershipRole, number | null> = {
+  AGENT: 0,
+  MANAGER: 1,
+  OWNER: 2,
+  MEMBER: null,
+};
+
+/**
+ * Portal B2C: compradores/vendedores actúan sin membresía CRM.
+ * Personal CRM solo puede crear recursos sobre propiedades de su organización.
+ */
+async function assertPublicEngagementOrgAccess(userId: string, role: UserRole, propertyOrganizationId: string) {
+  if (role === "BUYER" || role === "SELLER") return;
+
+  const scope = await getOrganizationScope(userId, role);
+  assertOrganizationAccess(scope, propertyOrganizationId);
+}
+
+/**
+ * Solo el agente publicado en la listing si sigue siendo miembro de la org.
+ * Si el anuncio no tiene agente o el usuario ya no pertenece → null (el broker/admin asigna en CRM).
+ */
+async function resolveListingAgentUserIdOrNull(
+  organizationId: string,
+  propertyAssignedAgentId: string | null,
+): Promise<string | null> {
+  if (!propertyAssignedAgentId) return null;
+  const member = await prisma.membership.findFirst({
+    where: { organizationId, userId: propertyAssignedAgentId },
+  });
+  return member ? propertyAssignedAgentId : null;
+}
+
+/**
+ * Agente del anuncio (si pertenece a la org) o primer miembro operativo AGENT/MANAGER/OWNER.
+ * Usado cuando hace falta un usuario obligatorio (p. ej. Transaction.agentId).
+ */
+async function resolveAssignableAgentUserId(
+  organizationId: string,
+  propertyAssignedAgentId: string | null,
+): Promise<string> {
+  const direct = await resolveListingAgentUserIdOrNull(organizationId, propertyAssignedAgentId);
+  if (direct) return direct;
+
+  const memberships = await prisma.membership.findMany({
+    where: {
+      organizationId,
+      role: { in: ["AGENT", "MANAGER", "OWNER"] },
+    },
+    select: { userId: true, role: true },
+  });
+
+  memberships.sort((a, b) => {
+    const pa = MEMBERSHIP_AGENT_PRIORITY[a.role] ?? 99;
+    const pb = MEMBERSHIP_AGENT_PRIORITY[b.role] ?? 99;
+    return pa - pb;
+  });
+
+  const first = memberships[0];
+  if (!first) {
+    throw new Response(
+      "La propiedad no tiene agente asignado y la inmobiliaria no tiene agentes o responsables configurados.",
+      { status: 409 },
+    );
+  }
+  return first.userId;
 }
 
 async function getPublicPropertyBySlugOrThrow(slug: string) {
@@ -52,6 +120,10 @@ export const contactAgentFromPublic = createServerFn({ method: "POST" })
   .handler(async ({ data }) => {
     const user = await requireAuthedUser();
     const property = await getPublicPropertyBySlugOrThrow(data.propertySlug);
+    const listingAgentId = await resolveListingAgentUserIdOrNull(
+      property.organizationId,
+      property.assignedAgentId,
+    );
 
     const lead = await prisma.lead.create({
       data: {
@@ -63,7 +135,7 @@ export const contactAgentFromPublic = createServerFn({ method: "POST" })
         source: "PUBLIC_PROPERTY_CONTACT",
         status: "NUEVO",
         temperature: "TIBIO",
-        assignedAgentId: property.assignedAgentId ?? null,
+        assignedAgentId: listingAgentId,
         notesText: data.message
           ? `${data.message}\n\nPropiedad interes: ${property.title} (${property.slug})`
           : `Propiedad interes: ${property.title} (${property.slug})`,
@@ -92,11 +164,14 @@ export const scheduleVisitFromPublic = createServerFn({ method: "POST" })
   .inputValidator((data: unknown) => scheduleVisitSchema.parse(data))
   .handler(async ({ data }) => {
     const user = await requireAuthedUser();
-    assertCanAccessCrm(user.role);
 
     const property = await getPublicPropertyBySlugOrThrow(data.propertySlug);
-    const scope = await getOrganizationScope(user.id, user.role);
-    assertOrganizationAccess(scope, property.organizationId);
+    await assertPublicEngagementOrgAccess(user.id, user.role, property.organizationId);
+
+    const listingAgentId = await resolveListingAgentUserIdOrNull(
+      property.organizationId,
+      property.assignedAgentId,
+    );
 
     const buyerLead = user.email
       ? await prisma.lead.findFirst({
@@ -122,7 +197,7 @@ export const scheduleVisitFromPublic = createServerFn({ method: "POST" })
           source: "PUBLIC_VISIT_SCHEDULE",
           status: "NUEVO",
           temperature: "TIBIO",
-          assignedAgentId: property.assignedAgentId ?? user.id,
+          assignedAgentId: listingAgentId,
           notesText: `Lead creado automaticamente por agenda de visita (${property.slug}).`,
         },
         select: { id: true },
@@ -147,7 +222,7 @@ export const scheduleVisitFromPublic = createServerFn({ method: "POST" })
         status: TaskStatus.PENDIENTE,
         propertyId: property.id,
         leadId: lead.id,
-        assigneeId: property.assignedAgentId ?? user.id,
+        assigneeId: listingAgentId,
         dueDate: data.dueDate ? new Date(data.dueDate) : null,
       },
       select: { id: true },
@@ -174,15 +249,15 @@ export const startBuyingProcessFromPublic = createServerFn({ method: "POST" })
   .inputValidator((data: unknown) => startBuyingProcessSchema.parse(data))
   .handler(async ({ data }) => {
     const user = await requireAuthedUser();
-    assertCanAccessCrm(user.role);
 
     const property = await getPublicPropertyBySlugOrThrow(data.propertySlug);
-    const scope = await getOrganizationScope(user.id, user.role);
-    assertOrganizationAccess(scope, property.organizationId);
+    await assertPublicEngagementOrgAccess(user.id, user.role, property.organizationId);
 
     if (!property.sellerId) {
       throw new Response("La propiedad no tiene seller asociado", { status: 409 });
     }
+
+    const routingAgentId = await resolveAssignableAgentUserId(property.organizationId, property.assignedAgentId);
 
     const buyer = await prisma.buyer.upsert({
       where: { userId: user.id },
@@ -190,14 +265,16 @@ export const startBuyingProcessFromPublic = createServerFn({ method: "POST" })
         organizationId: property.organizationId,
         name: user.name,
         email: user.email ?? null,
-        phone: user.phone,
+        phone: user.phone ?? null,
+        assignedAgentId: routingAgentId,
       },
       create: {
         organizationId: property.organizationId,
         userId: user.id,
         name: user.name,
         email: user.email ?? null,
-        phone: user.phone,
+        phone: user.phone ?? null,
+        assignedAgentId: routingAgentId,
       },
       select: { id: true },
     });
@@ -208,7 +285,7 @@ export const startBuyingProcessFromPublic = createServerFn({ method: "POST" })
         propertyId: property.id,
         buyerId: buyer.id,
         sellerId: property.sellerId,
-        agentId: property.assignedAgentId ?? user.id,
+        agentId: routingAgentId,
         offeredPrice: data.offeredPrice ?? null,
         paymentType: data.paymentType ?? "CREDITO",
         creditType: data.creditType ?? null,

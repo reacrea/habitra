@@ -29,7 +29,10 @@ export function ScheduleVisitForm({ propertySlug }: { propertySlug: string }) {
   return (
     <section className="rounded-2xl border border-slate-200 bg-white p-5">
       <h3 className="text-lg font-semibold text-habitra-text">Agendar visita</h3>
-      <p className="mt-1 text-sm text-slate-600">Crea Task + ActivityLog en CRM (requiere permisos CRM).</p>
+      <p className="mt-1 text-sm text-slate-600">
+        Si el anuncio tiene agente, la tarea se asigna a esa persona; si no, el broker o administrador la enruta desde Tareas
+        en el CRM.
+      </p>
       <div className="mt-3 grid gap-2">
         <input
           value={title}

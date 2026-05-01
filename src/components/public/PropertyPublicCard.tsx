@@ -1,4 +1,5 @@
 import { Link } from "@tanstack/react-router";
+import { Heart } from "lucide-react";
 
 import { AuthRequiredDialog } from "@/components/public/AuthRequiredDialog";
 import { useRequireAuthAction } from "@/hooks/use-require-auth-action";
@@ -21,12 +22,31 @@ export function PropertyPublicCard({ property }: { property: PublicPropertyCard 
 
   return (
     <article className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
-      <div className="h-44 w-full bg-slate-100">
+      <div className="relative h-44 w-full bg-slate-100">
         {property.imageUrl ? (
           <img src={property.imageUrl} alt={property.title} className="h-full w-full object-cover" />
         ) : (
           <div className="flex h-full items-center justify-center text-xs text-slate-500">Sin imagen</div>
         )}
+        <button
+          type="button"
+          aria-label={favorite ? "Quitar de favoritos" : "Guardar en favoritos"}
+          className={
+            favorite
+              ? "absolute right-2 top-2 flex h-9 w-9 items-center justify-center rounded-full bg-white/95 shadow-md ring-1 ring-slate-200/80"
+              : "absolute right-2 top-2 flex h-9 w-9 items-center justify-center rounded-full bg-black/25 shadow-md backdrop-blur-sm ring-1 ring-white/30"
+          }
+          onClick={(e) => {
+            e.stopPropagation();
+            e.preventDefault();
+            authAction.requireAuth(() => shortlists.toggleFavorite(property));
+          }}
+        >
+          <Heart
+            className={`h-[1.125rem] w-[1.125rem] transition-colors ${favorite ? "fill-red-500 text-red-500" : "stroke-[2.25] text-white"}`}
+            fill={favorite ? "currentColor" : "transparent"}
+          />
+        </button>
       </div>
       <div className="space-y-2 p-4">
         <div className="flex items-center justify-between">
@@ -59,13 +79,6 @@ export function PropertyPublicCard({ property }: { property: PublicPropertyCard 
           </Link>
         </div>
         <div className="flex items-center gap-2 pt-1">
-          <button
-            type="button"
-            onClick={() => authAction.requireAuth(() => shortlists.toggleFavorite(property))}
-            className={`rounded-lg border px-3 py-2 text-xs font-semibold ${favorite ? "border-emerald-200 bg-emerald-50 text-emerald-700" : "border-slate-200 text-slate-700"}`}
-          >
-            {favorite ? "En favoritos" : "Guardar"}
-          </button>
           <button
             type="button"
             onClick={() => authAction.requireAuth(() => shortlists.toggleCompare(property))}
