@@ -9,6 +9,7 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as ZonesRouteImport } from './routes/zones'
 import { Route as SellRouteImport } from './routes/sell'
 import { Route as RentRouteImport } from './routes/rent'
 import { Route as PropertiesRouteImport } from './routes/properties'
@@ -21,6 +22,7 @@ import { Route as BuyerRouteImport } from './routes/buyer'
 import { Route as BuyRouteImport } from './routes/buy'
 import { Route as AppRouteImport } from './routes/app'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as ZonesCityRouteImport } from './routes/zones/$city'
 import { Route as PropertiesSlugRouteImport } from './routes/properties/$slug'
 import { Route as BuyerTransactionsRouteImport } from './routes/buyer/transactions'
 import { Route as BuyerProfileRouteImport } from './routes/buyer/profile'
@@ -47,6 +49,7 @@ import { Route as AppPropertiesIndexRouteImport } from './routes/app/properties/
 import { Route as AppLeadsIndexRouteImport } from './routes/app/leads/index'
 import { Route as AppDocumentsIndexRouteImport } from './routes/app/documents/index'
 import { Route as AppBuyersIndexRouteImport } from './routes/app/buyers/index'
+import { Route as ZonesCityNeighborhoodRouteImport } from './routes/zones/$city/$neighborhood'
 import { Route as BuyerTransactionsTransactionIdRouteImport } from './routes/buyer/transactions/$transactionId'
 import { Route as AppTransactionsNewRouteImport } from './routes/app/transactions/new'
 import { Route as AppTransactionsTransactionIdRouteImport } from './routes/app/transactions/$transactionId'
@@ -62,6 +65,11 @@ import { Route as AppDocumentsDocumentIdRouteImport } from './routes/app/documen
 import { Route as AppBuyersNewRouteImport } from './routes/app/buyers/new'
 import { Route as AppBuyersBuyerIdRouteImport } from './routes/app/buyers/$buyerId'
 
+const ZonesRoute = ZonesRouteImport.update({
+  id: '/zones',
+  path: '/zones',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const SellRoute = SellRouteImport.update({
   id: '/sell',
   path: '/sell',
@@ -121,6 +129,11 @@ const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
+} as any)
+const ZonesCityRoute = ZonesCityRouteImport.update({
+  id: '/$city',
+  path: '/$city',
+  getParentRoute: () => ZonesRoute,
 } as any)
 const PropertiesSlugRoute = PropertiesSlugRouteImport.update({
   id: '/$slug',
@@ -252,6 +265,11 @@ const AppBuyersIndexRoute = AppBuyersIndexRouteImport.update({
   path: '/',
   getParentRoute: () => AppBuyersRouteRoute,
 } as any)
+const ZonesCityNeighborhoodRoute = ZonesCityNeighborhoodRouteImport.update({
+  id: '/$neighborhood',
+  path: '/$neighborhood',
+  getParentRoute: () => ZonesCityRoute,
+} as any)
 const BuyerTransactionsTransactionIdRoute =
   BuyerTransactionsTransactionIdRouteImport.update({
     id: '/$transactionId',
@@ -338,6 +356,7 @@ export interface FileRoutesByFullPath {
   '/properties': typeof PropertiesRouteWithChildren
   '/rent': typeof RentRoute
   '/sell': typeof SellRoute
+  '/zones': typeof ZonesRouteWithChildren
   '/app/buyers': typeof AppBuyersRouteRouteWithChildren
   '/app/documents': typeof AppDocumentsRouteRouteWithChildren
   '/app/leads': typeof AppLeadsRouteRouteWithChildren
@@ -357,6 +376,7 @@ export interface FileRoutesByFullPath {
   '/buyer/profile': typeof BuyerProfileRoute
   '/buyer/transactions': typeof BuyerTransactionsRouteWithChildren
   '/properties/$slug': typeof PropertiesSlugRoute
+  '/zones/$city': typeof ZonesCityRouteWithChildren
   '/app/buyers/$buyerId': typeof AppBuyersBuyerIdRoute
   '/app/buyers/new': typeof AppBuyersNewRoute
   '/app/documents/$documentId': typeof AppDocumentsDocumentIdRoute
@@ -371,6 +391,7 @@ export interface FileRoutesByFullPath {
   '/app/transactions/$transactionId': typeof AppTransactionsTransactionIdRoute
   '/app/transactions/new': typeof AppTransactionsNewRoute
   '/buyer/transactions/$transactionId': typeof BuyerTransactionsTransactionIdRoute
+  '/zones/$city/$neighborhood': typeof ZonesCityNeighborhoodRoute
   '/app/buyers/': typeof AppBuyersIndexRoute
   '/app/documents/': typeof AppDocumentsIndexRoute
   '/app/leads/': typeof AppLeadsIndexRoute
@@ -392,6 +413,7 @@ export interface FileRoutesByTo {
   '/properties': typeof PropertiesRouteWithChildren
   '/rent': typeof RentRoute
   '/sell': typeof SellRoute
+  '/zones': typeof ZonesRouteWithChildren
   '/app/admin': typeof AppAdminRoute
   '/app/billing': typeof AppBillingRoute
   '/app/calendar': typeof AppCalendarRoute
@@ -404,6 +426,7 @@ export interface FileRoutesByTo {
   '/buyer/profile': typeof BuyerProfileRoute
   '/buyer/transactions': typeof BuyerTransactionsRouteWithChildren
   '/properties/$slug': typeof PropertiesSlugRoute
+  '/zones/$city': typeof ZonesCityRouteWithChildren
   '/app/buyers/$buyerId': typeof AppBuyersBuyerIdRoute
   '/app/buyers/new': typeof AppBuyersNewRoute
   '/app/documents/$documentId': typeof AppDocumentsDocumentIdRoute
@@ -418,6 +441,7 @@ export interface FileRoutesByTo {
   '/app/transactions/$transactionId': typeof AppTransactionsTransactionIdRoute
   '/app/transactions/new': typeof AppTransactionsNewRoute
   '/buyer/transactions/$transactionId': typeof BuyerTransactionsTransactionIdRoute
+  '/zones/$city/$neighborhood': typeof ZonesCityNeighborhoodRoute
   '/app/buyers': typeof AppBuyersIndexRoute
   '/app/documents': typeof AppDocumentsIndexRoute
   '/app/leads': typeof AppLeadsIndexRoute
@@ -440,6 +464,7 @@ export interface FileRoutesById {
   '/properties': typeof PropertiesRouteWithChildren
   '/rent': typeof RentRoute
   '/sell': typeof SellRoute
+  '/zones': typeof ZonesRouteWithChildren
   '/app/buyers': typeof AppBuyersRouteRouteWithChildren
   '/app/documents': typeof AppDocumentsRouteRouteWithChildren
   '/app/leads': typeof AppLeadsRouteRouteWithChildren
@@ -459,6 +484,7 @@ export interface FileRoutesById {
   '/buyer/profile': typeof BuyerProfileRoute
   '/buyer/transactions': typeof BuyerTransactionsRouteWithChildren
   '/properties/$slug': typeof PropertiesSlugRoute
+  '/zones/$city': typeof ZonesCityRouteWithChildren
   '/app/buyers/$buyerId': typeof AppBuyersBuyerIdRoute
   '/app/buyers/new': typeof AppBuyersNewRoute
   '/app/documents/$documentId': typeof AppDocumentsDocumentIdRoute
@@ -473,6 +499,7 @@ export interface FileRoutesById {
   '/app/transactions/$transactionId': typeof AppTransactionsTransactionIdRoute
   '/app/transactions/new': typeof AppTransactionsNewRoute
   '/buyer/transactions/$transactionId': typeof BuyerTransactionsTransactionIdRoute
+  '/zones/$city/$neighborhood': typeof ZonesCityNeighborhoodRoute
   '/app/buyers/': typeof AppBuyersIndexRoute
   '/app/documents/': typeof AppDocumentsIndexRoute
   '/app/leads/': typeof AppLeadsIndexRoute
@@ -496,6 +523,7 @@ export interface FileRouteTypes {
     | '/properties'
     | '/rent'
     | '/sell'
+    | '/zones'
     | '/app/buyers'
     | '/app/documents'
     | '/app/leads'
@@ -515,6 +543,7 @@ export interface FileRouteTypes {
     | '/buyer/profile'
     | '/buyer/transactions'
     | '/properties/$slug'
+    | '/zones/$city'
     | '/app/buyers/$buyerId'
     | '/app/buyers/new'
     | '/app/documents/$documentId'
@@ -529,6 +558,7 @@ export interface FileRouteTypes {
     | '/app/transactions/$transactionId'
     | '/app/transactions/new'
     | '/buyer/transactions/$transactionId'
+    | '/zones/$city/$neighborhood'
     | '/app/buyers/'
     | '/app/documents/'
     | '/app/leads/'
@@ -550,6 +580,7 @@ export interface FileRouteTypes {
     | '/properties'
     | '/rent'
     | '/sell'
+    | '/zones'
     | '/app/admin'
     | '/app/billing'
     | '/app/calendar'
@@ -562,6 +593,7 @@ export interface FileRouteTypes {
     | '/buyer/profile'
     | '/buyer/transactions'
     | '/properties/$slug'
+    | '/zones/$city'
     | '/app/buyers/$buyerId'
     | '/app/buyers/new'
     | '/app/documents/$documentId'
@@ -576,6 +608,7 @@ export interface FileRouteTypes {
     | '/app/transactions/$transactionId'
     | '/app/transactions/new'
     | '/buyer/transactions/$transactionId'
+    | '/zones/$city/$neighborhood'
     | '/app/buyers'
     | '/app/documents'
     | '/app/leads'
@@ -597,6 +630,7 @@ export interface FileRouteTypes {
     | '/properties'
     | '/rent'
     | '/sell'
+    | '/zones'
     | '/app/buyers'
     | '/app/documents'
     | '/app/leads'
@@ -616,6 +650,7 @@ export interface FileRouteTypes {
     | '/buyer/profile'
     | '/buyer/transactions'
     | '/properties/$slug'
+    | '/zones/$city'
     | '/app/buyers/$buyerId'
     | '/app/buyers/new'
     | '/app/documents/$documentId'
@@ -630,6 +665,7 @@ export interface FileRouteTypes {
     | '/app/transactions/$transactionId'
     | '/app/transactions/new'
     | '/buyer/transactions/$transactionId'
+    | '/zones/$city/$neighborhood'
     | '/app/buyers/'
     | '/app/documents/'
     | '/app/leads/'
@@ -652,10 +688,18 @@ export interface RootRouteChildren {
   PropertiesRoute: typeof PropertiesRouteWithChildren
   RentRoute: typeof RentRoute
   SellRoute: typeof SellRoute
+  ZonesRoute: typeof ZonesRouteWithChildren
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/zones': {
+      id: '/zones'
+      path: '/zones'
+      fullPath: '/zones'
+      preLoaderRoute: typeof ZonesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/sell': {
       id: '/sell'
       path: '/sell'
@@ -739,6 +783,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
+    }
+    '/zones/$city': {
+      id: '/zones/$city'
+      path: '/$city'
+      fullPath: '/zones/$city'
+      preLoaderRoute: typeof ZonesCityRouteImport
+      parentRoute: typeof ZonesRoute
     }
     '/properties/$slug': {
       id: '/properties/$slug'
@@ -921,6 +972,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/app/buyers/'
       preLoaderRoute: typeof AppBuyersIndexRouteImport
       parentRoute: typeof AppBuyersRouteRoute
+    }
+    '/zones/$city/$neighborhood': {
+      id: '/zones/$city/$neighborhood'
+      path: '/$neighborhood'
+      fullPath: '/zones/$city/$neighborhood'
+      preLoaderRoute: typeof ZonesCityNeighborhoodRouteImport
+      parentRoute: typeof ZonesCityRoute
     }
     '/buyer/transactions/$transactionId': {
       id: '/buyer/transactions/$transactionId'
@@ -1205,6 +1263,28 @@ const PropertiesRouteWithChildren = PropertiesRoute._addFileChildren(
   PropertiesRouteChildren,
 )
 
+interface ZonesCityRouteChildren {
+  ZonesCityNeighborhoodRoute: typeof ZonesCityNeighborhoodRoute
+}
+
+const ZonesCityRouteChildren: ZonesCityRouteChildren = {
+  ZonesCityNeighborhoodRoute: ZonesCityNeighborhoodRoute,
+}
+
+const ZonesCityRouteWithChildren = ZonesCityRoute._addFileChildren(
+  ZonesCityRouteChildren,
+)
+
+interface ZonesRouteChildren {
+  ZonesCityRoute: typeof ZonesCityRouteWithChildren
+}
+
+const ZonesRouteChildren: ZonesRouteChildren = {
+  ZonesCityRoute: ZonesCityRouteWithChildren,
+}
+
+const ZonesRouteWithChildren = ZonesRoute._addFileChildren(ZonesRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AppRoute: AppRouteWithChildren,
@@ -1218,6 +1298,7 @@ const rootRouteChildren: RootRouteChildren = {
   PropertiesRoute: PropertiesRouteWithChildren,
   RentRoute: RentRoute,
   SellRoute: SellRoute,
+  ZonesRoute: ZonesRouteWithChildren,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

@@ -16,6 +16,7 @@ export function PublicFooter() {
             <Link to="/buy">Comprar</Link>
             <Link to="/rent">Rentar</Link>
             <Link to="/sell">Vender</Link>
+            <Link to="/zones">Zonas</Link>
           </div>
         </div>
         <div>

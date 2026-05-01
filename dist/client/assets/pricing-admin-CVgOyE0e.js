@@ -1,0 +1,1 @@
+import{Nt as e,Vt as t}from"./index-tWWnwCX2.js";var n=e({method:`GET`}).handler(t(`dbc2cebfbb4f3fe7517aa7b4de6f4f86895d94c002ed0d5310819f1d1893b647`)),r=e({method:`GET`}).handler(t(`937855f22eef26eea84f74041b99c050c11c6267f2cf1eb19361ba17d075cefc`));export{n,r as t};
