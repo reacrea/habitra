@@ -32,6 +32,7 @@ export function DocumentsTable({ documents, filters, onFilterChange }: Documents
             <th className="px-4 py-3">Titulo</th>
             <th className="px-4 py-3">Tipo</th>
             <th className="px-4 py-3">Estado</th>
+            <th className="px-4 py-3">Propiedad</th>
             <th className="px-4 py-3">Asociado</th>
             <th className="px-4 py-3 text-right">Accion</th>
           </tr>
@@ -54,6 +55,9 @@ export function DocumentsTable({ documents, filters, onFilterChange }: Documents
               />
             </th>
             <th className="px-4 py-2 align-top font-normal">
+              <CrmFilterText value={f("property")} onChange={(v) => onFilterChange("property", v)} placeholder="Titulo inmueble" />
+            </th>
+            <th className="px-4 py-2 align-top font-normal">
               <CrmFilterSelect
                 value={f("assoc")}
                 onChange={(v) => onFilterChange("assoc", v)}
@@ -67,7 +71,7 @@ export function DocumentsTable({ documents, filters, onFilterChange }: Documents
         <tbody className="divide-y divide-slate-100 text-slate-800">
           {documents.length === 0 ? (
             <tr>
-              <td colSpan={5} className="px-4 py-8 text-center text-sm text-slate-500">
+              <td colSpan={6} className="px-4 py-8 text-center text-sm text-slate-500">
                 Ningún resultado con los filtros actuales.
               </td>
             </tr>
@@ -77,6 +81,19 @@ export function DocumentsTable({ documents, filters, onFilterChange }: Documents
                 <td className="px-4 py-3 font-medium">{d.title}</td>
                 <td className="px-4 py-3">{DOCUMENT_TYPE_LABELS[d.type] ?? d.type}</td>
                 <td className="px-4 py-3">{DOCUMENT_STATUS_LABELS[d.status] ?? d.status}</td>
+                <td className="px-4 py-3 text-sm">
+                  {d.propertyId ? (
+                    <Link
+                      to="/app/properties/$propertyId"
+                      params={{ propertyId: d.propertyId }}
+                      className="font-medium text-emerald-700 hover:underline"
+                    >
+                      {(d.propertyTitle ?? "").trim() || "Ver propiedad"}
+                    </Link>
+                  ) : (
+                    <span className="text-slate-400">Sin propiedad</span>
+                  )}
+                </td>
                 <td className="px-4 py-3 text-xs text-slate-600">
                   {d.propertyId
                     ? "Property"

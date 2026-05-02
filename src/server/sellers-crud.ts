@@ -2,6 +2,7 @@ import { createServerFn } from "@tanstack/react-start";
 
 import { prisma } from "@/lib/db/prisma";
 import type { SellerPropertySummary, SellerRow } from "@/types/crm";
+import { entityPickerSearchSchema } from "@/validations/crm-picker";
 import {
   sellerCreateSchema,
   sellerIdPayloadSchema,
@@ -105,6 +106,35 @@ export const listSellerOptions = createServerFn({ method: "GET" }).handler(
     return { options: rows };
   },
 );
+
+/** Busqueda de vendedores por id, nombre o email (picker en formularios). */
+export const searchSellersForPicker = createServerFn({ method: "POST" })
+  .inputValidator((data: unknown) => entityPickerSearchSchema.parse(data))
+  .handler(async ({ data }): Promise<{ items: { id: string; primary: string; secondary: string }[] }> => {
+    const ctx = await requireCrmOrganization();
+    const q = data.q.trim();
+    if (q.length === 0) return { items: [] };
+    const rows = await prisma.seller.findMany({
+      where: {
+        organizationId: ctx.organizationId,
+        OR: [
+          { id: { contains: q, mode: "insensitive" } },
+          { name: { contains: q, mode: "insensitive" } },
+          { email: { contains: q, mode: "insensitive" } },
+        ],
+      },
+      select: { id: true, name: true, email: true },
+      take: 25,
+      orderBy: { name: "asc" },
+    });
+    return {
+      items: rows.map((r) => ({
+        id: r.id,
+        primary: r.name,
+        secondary: [r.email, r.id].filter(Boolean).join(" · "),
+      })),
+    };
+  });
 
 export const getSellerWithProperties = createServerFn({ method: "POST" })
   .inputValidator((data: unknown) => sellerIdPayloadSchema.parse(data))

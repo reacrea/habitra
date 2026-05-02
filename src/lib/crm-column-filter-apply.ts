@@ -116,6 +116,7 @@ export function applyDocumentColumnFilters(rows: DocumentRow[], f: Record<string
     if (!contains(row.title, f.title ?? "")) return false;
     if (f.type && row.type !== f.type) return false;
     if (f.status && row.status !== f.status) return false;
+    if (!contains(row.propertyTitle ?? "", f.property ?? "")) return false;
     if (f.assoc && documentAssocKey(row) !== f.assoc) return false;
     return true;
   });

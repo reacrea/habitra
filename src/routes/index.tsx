@@ -26,12 +26,8 @@ function LandingPage() {
       <section className="mx-auto flex max-w-7xl flex-col gap-8 px-4 py-8 md:px-6 md:py-12">
         <div className="relative overflow-hidden rounded-3xl border border-slate-200/60 shadow-[0_24px_48px_-12px_rgba(15,23,42,0.18)]">
           <div
-            className="absolute inset-0 bg-cover bg-center bg-no-repeat"
-            style={{ backgroundImage: "url(/images/hero/hero-banner.svg)" }}
-            aria-hidden
-          />
-          <div
-            className="absolute inset-0 bg-gradient-to-br from-slate-950/82 via-emerald-950/72 to-slate-950/88"
+            className="absolute inset-0 bg-cover bg-center bg-no-repeat blur-100"
+            style={{ backgroundImage: "url(/images/hero/hero-banner.png)" }}
             aria-hidden
           />
           <div className="relative z-10 flex flex-col gap-8 px-5 py-12 sm:px-8 sm:py-14 md:gap-10 md:py-16 lg:py-20">

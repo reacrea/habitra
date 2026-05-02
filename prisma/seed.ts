@@ -733,6 +733,24 @@ async function main() {
     });
   }
 
+  /** PATCH-10: completar propertyId en documentos que solo tenian transaction (datos viejos / creacion manual). */
+  const orphanPropertyDocs = await prisma.document.findMany({
+    where: { propertyId: null, transactionId: { not: null } },
+    select: { id: true, transactionId: true, organizationId: true },
+  });
+  for (const doc of orphanPropertyDocs) {
+    const trx = await prisma.transaction.findFirst({
+      where: { id: doc.transactionId!, organizationId: doc.organizationId },
+      select: { propertyId: true },
+    });
+    if (trx?.propertyId) {
+      await prisma.document.update({
+        where: { id: doc.id },
+        data: { propertyId: trx.propertyId },
+      });
+    }
+  }
+
   console.log("Seed B2C FASE 10 completado (idempotente con upsert).");
   console.log("Credenciales demo: admin@habitra.mx, broker@habitra.mx, agente1@habitra.mx");
   console.log("Credenciales buyer/seller: buyer@habitra.mx, seller@habitra.mx");

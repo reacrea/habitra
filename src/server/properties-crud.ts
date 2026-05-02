@@ -3,6 +3,7 @@ import { createServerFn } from "@tanstack/react-start";
 
 import { prisma } from "@/lib/db/prisma";
 import type { DocumentRow, PropertyChecklistItem, PropertyImageRow, PropertyRow } from "@/types/crm";
+import { entityPickerSearchSchema } from "@/validations/crm-picker";
 import { propertyDocumentCreateSchema } from "@/validations/document";
 import {
   propertyChecklistUpdateSchema,
@@ -193,6 +194,36 @@ export const listProperties = createServerFn({ method: "GET" }).handler(async ()
     ),
   };
 });
+
+/** Busqueda de propiedades por id, titulo, slug o ciudad (picker en formularios). */
+export const searchPropertiesForPicker = createServerFn({ method: "POST" })
+  .inputValidator((data: unknown) => entityPickerSearchSchema.parse(data))
+  .handler(async ({ data }): Promise<{ items: { id: string; primary: string; secondary: string }[] }> => {
+    const ctx = await requireCrmOrganization();
+    const q = data.q.trim();
+    if (q.length === 0) return { items: [] };
+    const rows = await prisma.property.findMany({
+      where: {
+        organizationId: ctx.organizationId,
+        OR: [
+          { id: { contains: q, mode: "insensitive" } },
+          { title: { contains: q, mode: "insensitive" } },
+          { slug: { contains: q, mode: "insensitive" } },
+          { city: { contains: q, mode: "insensitive" } },
+        ],
+      },
+      select: { id: true, title: true, city: true },
+      take: 25,
+      orderBy: { updatedAt: "desc" },
+    });
+    return {
+      items: rows.map((r) => ({
+        id: r.id,
+        primary: r.title,
+        secondary: `${r.city} · ${r.id}`,
+      })),
+    };
+  });
 
 export const getPropertyDetail = createServerFn({ method: "POST" })
   .inputValidator((data: unknown) => propertyIdPayloadSchema.parse(data))

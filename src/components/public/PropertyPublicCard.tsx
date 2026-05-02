@@ -23,18 +23,31 @@ export function PropertyPublicCard({ property }: { property: PublicPropertyCard 
   return (
     <article className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
       <div className="relative h-44 w-full bg-slate-100">
-        {property.imageUrl ? (
-          <img src={property.imageUrl} alt={property.title} className="h-full w-full object-cover" />
-        ) : (
-          <div className="flex h-full items-center justify-center text-xs text-slate-500">Sin imagen</div>
-        )}
+        <Link
+          to="/properties/$slug"
+          params={{ slug: property.slug }}
+          className="block h-full w-full overflow-hidden rounded-t-2xl focus:outline-none focus-visible:ring-2 focus-visible:ring-emerald-600 focus-visible:ring-offset-2"
+          aria-label={`Ver detalle: ${property.title}`}
+        >
+          {property.imageUrl ? (
+            <img
+              src={property.imageUrl}
+              alt={property.title}
+              className="h-full w-full object-cover transition-transform duration-200 hover:scale-[1.02]"
+            />
+          ) : (
+            <div className="flex h-full min-h-[11rem] items-center justify-center text-xs text-slate-500 hover:bg-slate-50">
+              Sin imagen
+            </div>
+          )}
+        </Link>
         <button
           type="button"
           aria-label={favorite ? "Quitar de favoritos" : "Guardar en favoritos"}
           className={
             favorite
-              ? "absolute right-2 top-2 flex h-9 w-9 items-center justify-center rounded-full bg-white/95 shadow-md ring-1 ring-slate-200/80"
-              : "absolute right-2 top-2 flex h-9 w-9 items-center justify-center rounded-full bg-black/25 shadow-md backdrop-blur-sm ring-1 ring-white/30"
+              ? "absolute right-2 top-2 z-10 flex h-9 w-9 items-center justify-center rounded-full bg-white/95 shadow-md ring-1 ring-slate-200/80"
+              : "absolute right-2 top-2 z-10 flex h-9 w-9 items-center justify-center rounded-full bg-black/25 shadow-md backdrop-blur-sm ring-1 ring-white/30"
           }
           onClick={(e) => {
             e.stopPropagation();

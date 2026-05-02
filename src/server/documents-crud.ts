@@ -7,26 +7,30 @@ import { documentCreateSchema, documentIdPayloadSchema, documentUpdateSchema } f
 
 import { requireCrmOrganization } from "./crm-session";
 
-function mapDocument(row: {
-  id: string;
-  organizationId: string;
-  type: DocumentRow["type"];
-  status: DocumentRow["status"];
-  title: string;
-  description: string | null;
-  fileName: string | null;
-  fileUrl: string;
-  buyerId: string | null;
-  sellerId: string | null;
-  propertyId: string | null;
-  transactionId: string | null;
-  createdAt: Date;
-  updatedAt: Date;
-}): DocumentRow {
+function mapDocument(
+  row: {
+    id: string;
+    organizationId: string;
+    type: DocumentRow["type"];
+    status: DocumentRow["status"];
+    title: string;
+    description: string | null;
+    fileName: string | null;
+    fileUrl: string;
+    buyerId: string | null;
+    sellerId: string | null;
+    propertyId: string | null;
+    transactionId: string | null;
+    createdAt: Date;
+    updatedAt: Date;
+  },
+  propertyTitle?: string | null,
+): DocumentRow {
   return {
     ...row,
     createdAt: row.createdAt.toISOString(),
     updatedAt: row.updatedAt.toISOString(),
+    ...(propertyTitle !== undefined ? { propertyTitle } : {}),
   };
 }
 
@@ -36,8 +40,16 @@ export const listDocuments = createServerFn({ method: "GET" }).handler(async ():
     where: { organizationId: ctx.organizationId },
     orderBy: { createdAt: "desc" },
     take: 200,
+    include: {
+      property: { select: { title: true } },
+    },
   });
-  return { documents: rows.map(mapDocument) };
+  return {
+    documents: rows.map((r) => {
+      const { property, ...rest } = r;
+      return mapDocument(rest, property?.title ?? null);
+    }),
+  };
 });
 
 export const getDocumentById = createServerFn({ method: "POST" })
@@ -54,6 +66,15 @@ export const createDocument = createServerFn({ method: "POST" })
   .inputValidator((data: unknown) => documentCreateSchema.parse(data))
   .handler(async ({ data }): Promise<DocumentRow> => {
     const ctx = await requireCrmOrganization();
+    let propertyId = data.propertyId ?? null;
+    const transactionId = data.transactionId ?? null;
+    if (!propertyId && transactionId) {
+      const trx = await prisma.transaction.findFirst({
+        where: { id: transactionId, organizationId: ctx.organizationId },
+        select: { propertyId: true },
+      });
+      if (trx) propertyId = trx.propertyId;
+    }
     const row = await prisma.document.create({
       data: {
         organizationId: ctx.organizationId,
@@ -65,8 +86,8 @@ export const createDocument = createServerFn({ method: "POST" })
         fileUrl: data.fileUrl,
         buyerId: data.buyerId ?? null,
         sellerId: data.sellerId ?? null,
-        propertyId: data.propertyId ?? null,
-        transactionId: data.transactionId ?? null,
+        propertyId,
+        transactionId,
         uploadedByUserId: ctx.userId,
       },
     });
@@ -81,6 +102,21 @@ export const updateDocument = createServerFn({ method: "POST" })
       where: { id: data.id, organizationId: ctx.organizationId },
     });
     if (!found) throw new Response("Documento no encontrado", { status: 404 });
+    let resolvedPropertyId = data.propertyId !== undefined ? data.propertyId : found.propertyId;
+    const nextTransactionId = data.transactionId !== undefined ? data.transactionId : found.transactionId;
+    if (nextTransactionId) {
+      const trx = await prisma.transaction.findFirst({
+        where: { id: nextTransactionId, organizationId: ctx.organizationId },
+        select: { propertyId: true },
+      });
+      if (trx?.propertyId) {
+        if (!resolvedPropertyId) {
+          resolvedPropertyId = trx.propertyId;
+        } else if (data.transactionId !== undefined && data.propertyId === undefined) {
+          resolvedPropertyId = trx.propertyId;
+        }
+      }
+    }
     const row = await prisma.document.update({
       where: { id: data.id },
       data: {
@@ -92,8 +128,10 @@ export const updateDocument = createServerFn({ method: "POST" })
         ...(data.fileUrl !== undefined ? { fileUrl: data.fileUrl } : {}),
         ...(data.buyerId !== undefined ? { buyerId: data.buyerId } : {}),
         ...(data.sellerId !== undefined ? { sellerId: data.sellerId } : {}),
-        ...(data.propertyId !== undefined ? { propertyId: data.propertyId } : {}),
         ...(data.transactionId !== undefined ? { transactionId: data.transactionId } : {}),
+        ...(data.propertyId !== undefined || resolvedPropertyId !== found.propertyId
+          ? { propertyId: resolvedPropertyId }
+          : {}),
       },
     });
     return mapDocument(row);

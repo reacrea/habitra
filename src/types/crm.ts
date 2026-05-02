@@ -143,6 +143,8 @@ export type DocumentRow = {
   sellerId: string | null;
   propertyId: string | null;
   transactionId: string | null;
+  /** Presente en listados CRM cuando se incluye la propiedad ligada. */
+  propertyTitle?: string | null;
   createdAt: string;
   updatedAt: string;
 };
