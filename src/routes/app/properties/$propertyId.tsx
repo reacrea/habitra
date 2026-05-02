@@ -5,6 +5,7 @@ import { useMemo, useState } from "react";
 
 import { CrmInlineError, CrmLoading } from "@/components/crm/CrmStates";
 import { PropertyCrmOverview } from "@/components/crm/properties/PropertyCrmOverview";
+import { PropertyDocumentsSection } from "@/components/crm/properties/PropertyDocumentsSection";
 import { PropertyEditModal } from "@/components/crm/properties/PropertyEditModal";
 import { PageHeader } from "@/components/layout/PageHeader";
 import {
@@ -213,19 +214,7 @@ function PropertyDetailPage() {
         </div>
       </section>
 
-      <section className="rounded-2xl border border-slate-200 bg-white p-5">
-        <h3 className="mb-3 text-lg font-semibold text-habitra-text">Documentos asociados</h3>
-        {documents.length === 0 ? <p className="text-sm text-slate-600">Sin documentos asociados.</p> : null}
-        <ul className="space-y-2">
-          {documents.map((doc) => (
-            <li key={doc.id} className="text-sm">
-              <a href={doc.fileUrl} target="_blank" rel="noreferrer" className="font-medium text-emerald-700">
-                {doc.title}
-              </a>
-            </li>
-          ))}
-        </ul>
-      </section>
+      <PropertyDocumentsSection propertyId={propertyId} documents={documents} canEdit={canEditProperty} />
 
       <PropertyEditModal
         open={editOpen}

@@ -51,3 +51,14 @@ export const documentUpdateSchema = documentCreateSchema.partial().extend({
 export const documentIdPayloadSchema = z.object({
   id: z.string().min(1),
 });
+
+/** Documento creado desde el detalle CRM de una propiedad (siempre con `propertyId`). */
+export const propertyDocumentCreateSchema = z.object({
+  propertyId: z.string().min(1),
+  title: z.string().trim().min(1, "Titulo requerido").max(200),
+  type: documentTypeSchema,
+  status: documentStatusSchema.optional(),
+  fileUrl: z.string().trim().url("URL invalida"),
+  fileName: optionalText(200),
+  description: optionalText(800),
+});

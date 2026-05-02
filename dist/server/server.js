@@ -39,7 +39,7 @@ var HEADERS = { TSS_SHELL: "X-TSS_SHELL" };
 * the dev styles URL for route-scoped CSS collection.
 */
 async function getStartManifest(matchedRoutes) {
-	const { tsrStartManifest } = await import("./assets/_tanstack-start-manifest_v-CTXlOcoD.js");
+	const { tsrStartManifest } = await import("./assets/_tanstack-start-manifest_v-BzlchicG.js");
 	const startManifest = tsrStartManifest();
 	const rootRoute = startManifest.routes[rootRouteId] = startManifest.routes[rootRouteId] || {};
 	rootRoute.assets = rootRoute.assets || [];
@@ -99,7 +99,7 @@ var manifest = {
 	},
 	"27a2a9ffa198ec7ad0229465102f57ac71d514c43fa8035d5dc9a9a1b3458d77": {
 		functionName: "listDocuments_createServerFn_handler",
-		importer: () => import("./assets/documents-crud-ChqYdZoJ.js")
+		importer: () => import("./assets/documents-crud-BcVgJL1a.js")
 	},
 	"2acbfcf6ed50e4b346efe2e358363f3f171e1ead3b19cdf1169c634927fc1134": {
 		functionName: "listBuyers_createServerFn_handler",
@@ -111,7 +111,7 @@ var manifest = {
 	},
 	"33c20999285b191f9c2ddeb0b1f432146e64e667080910535e975b9b0eb5cd7d": {
 		functionName: "updateProperty_createServerFn_handler",
-		importer: () => import("./assets/properties-crud-_vOskbyY.js")
+		importer: () => import("./assets/properties-crud-CAsa6AW4.js")
 	},
 	"3469f877d7055ecf9ceec4282d96a8dde629170127705f44aa63d7030553c650": {
 		functionName: "listSellers_createServerFn_handler",
@@ -127,7 +127,7 @@ var manifest = {
 	},
 	"3da34a1b7e81612f50224260633be5ea5241a81a6f880c0b8d0bfe9334191345": {
 		functionName: "listProperties_createServerFn_handler",
-		importer: () => import("./assets/properties-crud-_vOskbyY.js")
+		importer: () => import("./assets/properties-crud-CAsa6AW4.js")
 	},
 	"4881e3cebbd1025bc60ce390e259601e664590dda62c225df40507b50b1dcb2c": {
 		functionName: "getSellerWithProperties_createServerFn_handler",
@@ -159,7 +159,7 @@ var manifest = {
 	},
 	"58f82a1fdf9017ce837cdb459358b7ba501caa8c1f078ac40ea0c9d33abfb98b": {
 		functionName: "getPropertyDetail_createServerFn_handler",
-		importer: () => import("./assets/properties-crud-_vOskbyY.js")
+		importer: () => import("./assets/properties-crud-CAsa6AW4.js")
 	},
 	"5ba978d6d7dba989da381fc6c7fa8289c58e388ec5bed46bd150c2ac4c962cb9": {
 		functionName: "updateLead_createServerFn_handler",
@@ -172,6 +172,10 @@ var manifest = {
 	"6e61e18b31d382298d80cf632c5b8b62ae5f4c0c36ada03d627817e80b81b9eb": {
 		functionName: "getPublicPropertyBySlug_createServerFn_handler",
 		importer: () => import("./assets/public-b2c-ClXeiVwi.js")
+	},
+	"70cbec16f14fdbba39dabb4441dc84ee05151b6808e2fddfbf81dce76772427d": {
+		functionName: "createPropertyDocument_createServerFn_handler",
+		importer: () => import("./assets/properties-crud-CAsa6AW4.js")
 	},
 	"70e854e4f79775e7edc3eed5d0674373d12648d913d003034cc63288978db009": {
 		functionName: "getFinancialSimulationOptions_createServerFn_handler",
@@ -191,7 +195,7 @@ var manifest = {
 	},
 	"7420f414ddedc7db406035537960f7ca3a7aff3e9d83089df1c82ccb6e3a4d0e": {
 		functionName: "getDocumentById_createServerFn_handler",
-		importer: () => import("./assets/documents-crud-ChqYdZoJ.js")
+		importer: () => import("./assets/documents-crud-BcVgJL1a.js")
 	},
 	"804f553de3f5f88ca79e6e5454a7f75a190869e737bbf201f5cd4aa059e51421": {
 		functionName: "updateTaskAssignee_createServerFn_handler",
@@ -219,7 +223,7 @@ var manifest = {
 	},
 	"9a365336f3c3ddecaa5204f2e837214ac82c78eb61436ae9b420adb6accfd759": {
 		functionName: "updateDocument_createServerFn_handler",
-		importer: () => import("./assets/documents-crud-ChqYdZoJ.js")
+		importer: () => import("./assets/documents-crud-BcVgJL1a.js")
 	},
 	"9d06937a187d39bf9f89971fea9b10a92fa977205b1bea045db58fbc263eeb25": {
 		functionName: "getBuyerTransactionDetailData_createServerFn_handler",
@@ -271,7 +275,7 @@ var manifest = {
 	},
 	"e1994d814176091b5f68df7a30da3d67c4aa1f575f8c3db61784d717c1357b43": {
 		functionName: "createDocument_createServerFn_handler",
-		importer: () => import("./assets/documents-crud-ChqYdZoJ.js")
+		importer: () => import("./assets/documents-crud-BcVgJL1a.js")
 	},
 	"f529dfac7ea07eaee4a2b9834bdf1b989722926ca0c945202bb7a7f1a2d4e07d": {
 		functionName: "updateBuyer_createServerFn_handler",
@@ -287,11 +291,11 @@ var manifest = {
 	},
 	"f6a8e645b5f969cfb5b547ff343e80648cda798b9b379452bc61c9c9b18bafb5": {
 		functionName: "updatePropertyChecklist_createServerFn_handler",
-		importer: () => import("./assets/properties-crud-_vOskbyY.js")
+		importer: () => import("./assets/properties-crud-CAsa6AW4.js")
 	},
 	"f8c4be80127ff912b4879e204b7a4eb143c739058a7bec7d96945b3bcba71352": {
 		functionName: "addPropertyImage_createServerFn_handler",
-		importer: () => import("./assets/properties-crud-_vOskbyY.js")
+		importer: () => import("./assets/properties-crud-CAsa6AW4.js")
 	},
 	"fa7c5458134aaa87bc0d27f1c277971e8238a181ccc9822b6c1a4109a6d05e3d": {
 		functionName: "startBuyingProcessFromPublic_createServerFn_handler",
@@ -1177,7 +1181,7 @@ var baseManifestPromise;
 var cachedFinalManifestPromise;
 async function loadEntries() {
 	const [routerEntry, startEntry, pluginAdapters] = await Promise.all([
-		import("./assets/router-GZXCMn7X.js"),
+		import("./assets/router-B5GoRkHh.js"),
 		import("./assets/start-cxry2j-v.js"),
 		import("./assets/__23tanstack-start-plugin-adapters-BWZzj-RW.js")
 	]);

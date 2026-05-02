@@ -1,8 +1,9 @@
-import type { Prisma } from "@prisma/client";
+import { DocumentStatus, type Prisma } from "@prisma/client";
 import { createServerFn } from "@tanstack/react-start";
 
 import { prisma } from "@/lib/db/prisma";
 import type { DocumentRow, PropertyChecklistItem, PropertyImageRow, PropertyRow } from "@/types/crm";
+import { propertyDocumentCreateSchema } from "@/validations/document";
 import {
   propertyChecklistUpdateSchema,
   propertyIdPayloadSchema,
@@ -364,4 +365,30 @@ export const addPropertyImage = createServerFn({ method: "POST" })
       },
     });
     return mapImage(image);
+  });
+
+export const createPropertyDocument = createServerFn({ method: "POST" })
+  .inputValidator((data: unknown) => propertyDocumentCreateSchema.parse(data))
+  .handler(async ({ data }): Promise<DocumentRow> => {
+    const ctx = await requireCrmOrganization();
+    const property = await prisma.property.findFirst({
+      where: { id: data.propertyId, organizationId: ctx.organizationId },
+      select: { id: true, assignedAgentId: true },
+    });
+    if (!property) throw new Response("Propiedad no encontrada", { status: 404 });
+    assertCanEditCrmProperty(ctx, property);
+    const row = await prisma.document.create({
+      data: {
+        organizationId: ctx.organizationId,
+        type: data.type,
+        status: data.status ?? DocumentStatus.PENDIENTE,
+        title: data.title,
+        description: data.description ?? null,
+        fileName: data.fileName ?? null,
+        fileUrl: data.fileUrl,
+        propertyId: property.id,
+        uploadedByUserId: ctx.userId,
+      },
+    });
+    return mapDocument(row);
   });
