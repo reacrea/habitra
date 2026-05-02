@@ -4,9 +4,10 @@ import { useServerFn } from "@tanstack/react-start";
 import { useEffect, useState } from "react";
 
 import { CrmInlineError, CrmLoading } from "@/components/crm/CrmStates";
+import { SellerPropertiesSection } from "@/components/crm/sellers/SellerPropertiesSection";
 import { SellerEditForm } from "@/components/crm/sellers/SellerForm";
 import { PageHeader } from "@/components/layout/PageHeader";
-import { getSellerById, updateSeller } from "@/server/sellers-crud";
+import { getSellerWithProperties, updateSeller } from "@/server/sellers-crud";
 import { formatMutationError } from "@/utils/mutation-error";
 import type { SellerUpdateInput } from "@/validations/seller";
 
@@ -18,7 +19,7 @@ function SellerEditPage() {
   const { sellerId } = Route.useParams();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
-  const fetchSeller = useServerFn(getSellerById);
+  const fetchSeller = useServerFn(getSellerWithProperties);
   const saveSeller = useServerFn(updateSeller);
   const [submitError, setSubmitError] = useState<string | null>(null);
 
@@ -45,7 +46,7 @@ function SellerEditPage() {
   }, [sellerId]);
 
   return (
-    <div>
+    <div className="space-y-8">
       <PageHeader title="Editar vendedor" />
 
       {query.isPending ? <CrmLoading label="Cargando vendedor..." /> : null}
@@ -57,16 +58,24 @@ function SellerEditPage() {
       ) : null}
 
       {query.data ? (
-        <SellerEditForm
-          initial={query.data}
-          isSubmitting={mutation.isPending}
-          submitError={submitError}
-          onSubmit={async (values) => {
-            setSubmitError(null);
-            mutation.mutate(values);
-          }}
-          onCancel={() => void navigate({ to: "/app/sellers" })}
-        />
+        <>
+          <SellerPropertiesSection
+            sellerId={sellerId}
+            linkedProperties={query.data.linkedProperties}
+            unassignedProperties={query.data.unassignedProperties}
+          />
+
+          <SellerEditForm
+            initial={query.data.seller}
+            isSubmitting={mutation.isPending}
+            submitError={submitError}
+            onSubmit={async (values) => {
+              setSubmitError(null);
+              mutation.mutate(values);
+            }}
+            onCancel={() => void navigate({ to: "/app/sellers" })}
+          />
+        </>
       ) : null}
     </div>
   );

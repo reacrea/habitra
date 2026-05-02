@@ -66,8 +66,20 @@ export type SellerRow = {
   expectedPrice: number | null;
   sellingReason: string | null;
   assignedAgentId: string | null;
+  /** Solo en listados CRM (`listSellers`). */
+  propertyCount?: number;
   createdAt: string;
   updatedAt: string;
+};
+
+/** Propiedad ligada a un vendedor (resumen para CRM). */
+export type SellerPropertySummary = {
+  id: string;
+  title: string;
+  city: string;
+  status: PropertyStatus;
+  operationType: OperationType;
+  price: number;
 };
 
 export type PropertyImageRow = {
@@ -104,6 +116,10 @@ export type PropertyRow = {
   bedrooms: number | null;
   bathrooms: number | null;
   parkingSpaces: number | null;
+  landArea: number | null;
+  constructionArea: number | null;
+  /** Nombres de amenidades (`PropertyAmenity`), orden no garantizado en listados. */
+  amenities: string[];
   status: PropertyStatus;
   sellerId: string | null;
   assignedAgentId: string | null;
@@ -209,7 +225,9 @@ export type TaskListRow = {
   dueDate: string | null;
   assigneeId: string | null;
   assigneeName: string | null;
+  propertyId: string | null;
   propertyTitle: string | null;
+  leadId: string | null;
   leadName: string | null;
   createdAt: string;
 };

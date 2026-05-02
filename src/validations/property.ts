@@ -32,6 +32,9 @@ const optionalInt = z.preprocess((val) => {
   return Number.isFinite(n) ? Math.trunc(n) : undefined;
 }, z.number().int().min(0).optional());
 
+/** Superficies y áreas opcionales; `null` en payload limpia el campo en BD. */
+const optionalArea = z.union([z.number().min(0), z.null()]).optional();
+
 export const propertyUpdateSchema = z.object({
   id: z.string().min(1),
   title: z.string().trim().min(1).max(250).optional(),
@@ -49,6 +52,12 @@ export const propertyUpdateSchema = z.object({
   bedrooms: optionalInt,
   bathrooms: optionalInt,
   parkingSpaces: optionalInt,
+  landArea: optionalArea,
+  constructionArea: optionalArea,
+  /** Reemplaza el set de amenidades (nombres únicos por propiedad). */
+  amenityNames: z.array(z.string().trim().min(1).max(120)).max(80).optional(),
+  /** Asignar o quitar vendedor en la propiedad (misma organización). */
+  sellerId: z.union([z.string().min(1), z.null()]).optional(),
 });
 
 export const propertyIdPayloadSchema = z.object({

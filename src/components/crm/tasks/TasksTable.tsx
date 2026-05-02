@@ -1,3 +1,5 @@
+import { Link } from "@tanstack/react-router";
+
 import {
   CrmFilterDateRange,
   CrmFilterSelect,
@@ -120,8 +122,32 @@ export function TasksTable({
                     <span>{task.assigneeName ?? "—"}</span>
                   )}
                 </td>
-                <td className="px-4 py-3">{task.propertyTitle ?? "—"}</td>
-                <td className="px-4 py-3">{task.leadName ?? "—"}</td>
+                <td className="px-4 py-3">
+                  {task.propertyId ? (
+                    <Link
+                      to="/app/properties/$propertyId"
+                      params={{ propertyId: task.propertyId }}
+                      className="font-medium text-emerald-700 hover:text-emerald-800 hover:underline"
+                    >
+                      {task.propertyTitle?.trim() ? task.propertyTitle : "Ver propiedad"}
+                    </Link>
+                  ) : (
+                    <span className="text-slate-500">Sin propiedad</span>
+                  )}
+                </td>
+                <td className="px-4 py-3">
+                  {task.leadId ? (
+                    <Link
+                      to="/app/leads/$leadId"
+                      params={{ leadId: task.leadId }}
+                      className="font-medium text-emerald-700 hover:text-emerald-800 hover:underline"
+                    >
+                      {task.leadName?.trim() ? task.leadName : "Ver lead"}
+                    </Link>
+                  ) : (
+                    <span className="text-slate-500">Sin lead</span>
+                  )}
+                </td>
               </tr>
             ))
           )}

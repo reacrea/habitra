@@ -1,3 +1,4 @@
+import type { Prisma } from "@prisma/client";
 import { createServerFn } from "@tanstack/react-start";
 
 import { prisma } from "@/lib/db/prisma";
@@ -9,6 +10,7 @@ import {
   propertyUpdateSchema,
 } from "@/validations/property";
 
+import { assertCanEditCrmProperty, canEditCrmProperty } from "./property-permissions";
 import { requireCrmOrganization } from "./crm-session";
 
 const CHECKLIST_ITEMS: ReadonlyArray<{ id: string; label: string }> = [
@@ -121,6 +123,9 @@ function mapProperty(row: {
   bedrooms: number | null;
   bathrooms: number | null;
   parkingSpaces: number | null;
+  landArea?: unknown;
+  constructionArea?: unknown;
+  amenities?: ReadonlyArray<{ name: string }>;
   status: PropertyRow["status"];
   sellerId: string | null;
   assignedAgentId: string | null;
@@ -130,6 +135,7 @@ function mapProperty(row: {
   createdAt: Date;
   updatedAt: Date;
 }): PropertyRow {
+  const names = row.amenities?.map((a) => a.name) ?? [];
   return {
     id: row.id,
     organizationId: row.organizationId,
@@ -149,6 +155,9 @@ function mapProperty(row: {
     bedrooms: row.bedrooms,
     bathrooms: row.bathrooms,
     parkingSpaces: row.parkingSpaces,
+    landArea: decimalToNumber(row.landArea ?? null),
+    constructionArea: decimalToNumber(row.constructionArea ?? null),
+    amenities: [...names].sort((a, b) => a.localeCompare(b, "es")),
     status: row.status,
     sellerId: row.sellerId,
     assignedAgentId: row.assignedAgentId,
@@ -164,16 +173,21 @@ export const listProperties = createServerFn({ method: "GET" }).handler(async ()
   const ctx = await requireCrmOrganization();
   const rows = await prisma.property.findMany({
     where: { organizationId: ctx.organizationId },
-    include: { images: { orderBy: { order: "asc" } } },
+    include: {
+      images: { orderBy: { order: "asc" } },
+      amenities: { select: { name: true } },
+    },
     orderBy: { createdAt: "desc" },
     take: 200,
   });
+  type PropertyListRow = (typeof rows)[number];
   return {
-    properties: rows.map((row) =>
+    properties: rows.map((row: PropertyListRow) =>
       mapProperty({
         ...row,
         currency: row.currency,
         images: row.images.map(mapImage),
+        amenities: row.amenities,
       }),
     ),
   };
@@ -181,25 +195,47 @@ export const listProperties = createServerFn({ method: "GET" }).handler(async ()
 
 export const getPropertyDetail = createServerFn({ method: "POST" })
   .inputValidator((data: unknown) => propertyIdPayloadSchema.parse(data))
-  .handler(async ({ data }): Promise<{ property: PropertyRow; checklist: PropertyChecklistItem[]; documents: DocumentRow[] } | null> => {
-    const ctx = await requireCrmOrganization();
-    const row = await prisma.property.findFirst({
-      where: { id: data.id, organizationId: ctx.organizationId },
-      include: {
-        images: { orderBy: { order: "asc" } },
-        documents: { orderBy: { createdAt: "desc" }, take: 50 },
-      },
-    });
-    if (!row) return null;
-    const property = mapProperty({
-      ...row,
-      currency: row.currency,
-      images: row.images.map(mapImage),
-    });
-    const documents = row.documents.map(mapDocument);
-    const checklist = checklistFromProperty(row, row.images.length, row.documents.length);
-    return { property, checklist, documents };
-  });
+  .handler(
+    async ({
+      data,
+    }): Promise<{
+      property: PropertyRow;
+      checklist: PropertyChecklistItem[];
+      documents: DocumentRow[];
+      canEditProperty: boolean;
+      assignedAgentName: string | null;
+      sellerName: string | null;
+    } | null> => {
+      const ctx = await requireCrmOrganization();
+      const row = await prisma.property.findFirst({
+        where: { id: data.id, organizationId: ctx.organizationId },
+        include: {
+          images: { orderBy: { order: "asc" } },
+          documents: { orderBy: { createdAt: "desc" }, take: 50 },
+          amenities: { select: { name: true } },
+          assignedAgent: { select: { name: true } },
+          seller: { select: { name: true } },
+        },
+      });
+      if (!row) return null;
+      const property = mapProperty({
+        ...row,
+        currency: row.currency,
+        images: row.images.map(mapImage),
+        amenities: row.amenities,
+      });
+      const documents = row.documents.map(mapDocument);
+      const checklist = checklistFromProperty(row, row.images.length, row.documents.length);
+      return {
+        property,
+        checklist,
+        documents,
+        canEditProperty: canEditCrmProperty(ctx, row),
+        assignedAgentName: row.assignedAgent?.name ?? null,
+        sellerName: row.seller?.name ?? null,
+      };
+    },
+  );
 
 export const updateProperty = createServerFn({ method: "POST" })
   .inputValidator((data: unknown) => propertyUpdateSchema.parse(data))
@@ -209,31 +245,65 @@ export const updateProperty = createServerFn({ method: "POST" })
       where: { id: data.id, organizationId: ctx.organizationId },
     });
     if (!found) throw new Response("Propiedad no encontrada", { status: 404 });
-    const updated = await prisma.property.update({
-      where: { id: data.id },
-      data: {
-        ...(data.title !== undefined ? { title: data.title } : {}),
-        ...(data.description !== undefined ? { description: data.description } : {}),
-        ...(data.fullDescription !== undefined ? { fullDescription: data.fullDescription } : {}),
-        ...(data.propertyType !== undefined ? { propertyType: data.propertyType } : {}),
-        ...(data.operationType !== undefined ? { operationType: data.operationType } : {}),
-        ...(data.status !== undefined ? { status: data.status } : {}),
-        ...(data.price !== undefined ? { price: data.price } : {}),
-        ...(data.address !== undefined ? { address: data.address } : {}),
-        ...(data.city !== undefined ? { city: data.city } : {}),
-        ...(data.state !== undefined ? { state: data.state } : {}),
-        ...(data.neighborhood !== undefined ? { neighborhood: data.neighborhood } : {}),
-        ...(data.postalCode !== undefined ? { postalCode: data.postalCode } : {}),
-        ...(data.bedrooms !== undefined ? { bedrooms: data.bedrooms } : {}),
-        ...(data.bathrooms !== undefined ? { bathrooms: data.bathrooms } : {}),
-        ...(data.parkingSpaces !== undefined ? { parkingSpaces: data.parkingSpaces } : {}),
-      },
-      include: { images: { orderBy: { order: "asc" } } },
-    });
-    return mapProperty({
-      ...updated,
-      currency: updated.currency,
-      images: updated.images.map(mapImage),
+
+    assertCanEditCrmProperty(ctx, found);
+
+    if (data.sellerId) {
+      const sellerOk = await prisma.seller.findFirst({
+        where: { id: data.sellerId, organizationId: ctx.organizationId },
+        select: { id: true },
+      });
+      if (!sellerOk) {
+        throw new Response("Vendedor no encontrado en esta organizacion", { status: 400 });
+      }
+    }
+
+    return prisma.$transaction(async (tx: Prisma.TransactionClient) => {
+      if (data.amenityNames !== undefined) {
+        await tx.propertyAmenity.deleteMany({ where: { propertyId: data.id } });
+        const unique = [...new Set(data.amenityNames.map((n) => n.trim()).filter((n) => n.length > 0))];
+        if (unique.length > 0) {
+          await tx.propertyAmenity.createMany({
+            data: unique.map((name) => ({ propertyId: data.id, name })),
+            skipDuplicates: true,
+          });
+        }
+      }
+
+      const updated = await tx.property.update({
+        where: { id: data.id },
+        data: {
+          ...(data.title !== undefined ? { title: data.title } : {}),
+          ...(data.description !== undefined ? { description: data.description } : {}),
+          ...(data.fullDescription !== undefined ? { fullDescription: data.fullDescription } : {}),
+          ...(data.propertyType !== undefined ? { propertyType: data.propertyType } : {}),
+          ...(data.operationType !== undefined ? { operationType: data.operationType } : {}),
+          ...(data.status !== undefined ? { status: data.status } : {}),
+          ...(data.price !== undefined ? { price: data.price } : {}),
+          ...(data.address !== undefined ? { address: data.address } : {}),
+          ...(data.city !== undefined ? { city: data.city } : {}),
+          ...(data.state !== undefined ? { state: data.state } : {}),
+          ...(data.neighborhood !== undefined ? { neighborhood: data.neighborhood } : {}),
+          ...(data.postalCode !== undefined ? { postalCode: data.postalCode } : {}),
+          ...(data.bedrooms !== undefined ? { bedrooms: data.bedrooms } : {}),
+          ...(data.bathrooms !== undefined ? { bathrooms: data.bathrooms } : {}),
+          ...(data.parkingSpaces !== undefined ? { parkingSpaces: data.parkingSpaces } : {}),
+          ...(data.landArea !== undefined ? { landArea: data.landArea } : {}),
+          ...(data.constructionArea !== undefined ? { constructionArea: data.constructionArea } : {}),
+          ...(data.sellerId !== undefined ? { sellerId: data.sellerId } : {}),
+        },
+        include: {
+          images: { orderBy: { order: "asc" } },
+          amenities: { select: { name: true } },
+        },
+      });
+
+      return mapProperty({
+        ...updated,
+        currency: updated.currency,
+        images: updated.images.map(mapImage),
+        amenities: updated.amenities,
+      });
     });
   });
 
@@ -249,7 +319,8 @@ export const updatePropertyChecklist = createServerFn({ method: "POST" })
       },
     });
     if (!row) throw new Response("Propiedad no encontrada", { status: 404 });
-    const nonChecklistRisks = row.risks.filter((risk) => !risk.startsWith("CHECKLIST_"));
+    assertCanEditCrmProperty(ctx, row);
+    const nonChecklistRisks = row.risks.filter((risk: string) => !risk.startsWith("CHECKLIST_"));
     const checklist = CHECKLIST_ITEMS.map((item) => ({
       id: item.id,
       label: item.label,
@@ -278,6 +349,7 @@ export const addPropertyImage = createServerFn({ method: "POST" })
       include: { images: true },
     });
     if (!property) throw new Response("Propiedad no encontrada", { status: 404 });
+    assertCanEditCrmProperty(ctx, property);
     const url =
       data.mode === "MOCK"
         ? `https://picsum.photos/seed/habitra-${Date.now()}/1200/800`

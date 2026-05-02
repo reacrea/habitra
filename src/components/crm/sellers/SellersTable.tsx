@@ -30,6 +30,7 @@ export function SellersTable({ sellers, filters, onFilterChange }: SellersTableP
             <th className="px-4 py-3">Contacto</th>
             <th className="px-4 py-3">Precio esperado</th>
             <th className="px-4 py-3">Urgencia</th>
+            <th className="px-4 py-3 text-center tabular-nums">Inmuebles</th>
             <th className="px-4 py-3 text-right">Acciones</th>
           </tr>
           <tr className="border-t border-slate-200 bg-white normal-case">
@@ -56,12 +57,13 @@ export function SellersTable({ sellers, filters, onFilterChange }: SellersTableP
               />
             </th>
             <th className="px-4 py-2" aria-hidden />
+            <th className="px-4 py-2" aria-hidden />
           </tr>
         </thead>
         <tbody className="divide-y divide-slate-100 text-slate-800">
           {sellers.length === 0 ? (
             <tr>
-              <td colSpan={5} className="px-4 py-8 text-center text-sm text-slate-500">
+              <td colSpan={6} className="px-4 py-8 text-center text-sm text-slate-500">
                 Ningún resultado con los filtros actuales.
               </td>
             </tr>
@@ -74,6 +76,9 @@ export function SellersTable({ sellers, filters, onFilterChange }: SellersTableP
                 </td>
                 <td className="px-4 py-3 tabular-nums">{formatMoney(seller.expectedPrice)}</td>
                 <td className="px-4 py-3 tabular-nums">{seller.urgency ?? "—"}</td>
+                <td className="px-4 py-3 text-center tabular-nums text-slate-700">
+                  {seller.propertyCount ?? 0}
+                </td>
                 <td className="px-4 py-3 text-right">
                   <Link
                     to="/app/sellers/$sellerId"

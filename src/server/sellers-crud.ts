@@ -1,7 +1,7 @@
 import { createServerFn } from "@tanstack/react-start";
 
 import { prisma } from "@/lib/db/prisma";
-import type { SellerRow } from "@/types/crm";
+import type { SellerPropertySummary, SellerRow } from "@/types/crm";
 import {
   sellerCreateSchema,
   sellerIdPayloadSchema,
@@ -52,6 +52,24 @@ function toSellerRow(row: {
   };
 }
 
+function toSellerPropertySummary(row: {
+  id: string;
+  title: string;
+  city: string;
+  status: SellerPropertySummary["status"];
+  operationType: SellerPropertySummary["operationType"];
+  price: unknown;
+}): SellerPropertySummary {
+  return {
+    id: row.id,
+    title: row.title,
+    city: row.city,
+    status: row.status,
+    operationType: row.operationType,
+    price: decimalToNumber(row.price) ?? 0,
+  };
+}
+
 export const listSellers = createServerFn({ method: "GET" }).handler(async (): Promise<{
   organizationId: string;
   sellers: SellerRow[];
@@ -61,22 +79,86 @@ export const listSellers = createServerFn({ method: "GET" }).handler(async (): P
     where: { organizationId: ctx.organizationId },
     orderBy: { createdAt: "desc" },
     take: 200,
+    include: {
+      _count: { select: { properties: true } },
+    },
   });
   return {
     organizationId: ctx.organizationId,
-    sellers: rows.map(toSellerRow),
+    sellers: rows.map((row) => ({
+      ...toSellerRow(row),
+      propertyCount: row._count.properties,
+    })),
   };
 });
 
-export const getSellerById = createServerFn({ method: "POST" })
-  .inputValidator((data: unknown) => sellerIdPayloadSchema.parse(data))
-  .handler(async ({ data }): Promise<SellerRow | null> => {
+/** Opciones compactas para selects (p. ej. vendedor en ficha de propiedad). */
+export const listSellerOptions = createServerFn({ method: "GET" }).handler(
+  async (): Promise<{ options: { id: string; name: string }[] }> => {
     const ctx = await requireCrmOrganization();
-    const row = await prisma.seller.findFirst({
-      where: { id: data.id, organizationId: ctx.organizationId },
+    const rows = await prisma.seller.findMany({
+      where: { organizationId: ctx.organizationId },
+      select: { id: true, name: true },
+      orderBy: { name: "asc" },
+      take: 500,
     });
-    return row ? toSellerRow(row) : null;
-  });
+    return { options: rows };
+  },
+);
+
+export const getSellerWithProperties = createServerFn({ method: "POST" })
+  .inputValidator((data: unknown) => sellerIdPayloadSchema.parse(data))
+  .handler(
+    async ({
+      data,
+    }): Promise<{
+      seller: SellerRow;
+      linkedProperties: SellerPropertySummary[];
+      unassignedProperties: SellerPropertySummary[];
+    } | null> => {
+      const ctx = await requireCrmOrganization();
+      const row = await prisma.seller.findFirst({
+        where: { id: data.id, organizationId: ctx.organizationId },
+        include: {
+          properties: {
+            select: {
+              id: true,
+              title: true,
+              city: true,
+              status: true,
+              operationType: true,
+              price: true,
+            },
+            orderBy: { updatedAt: "desc" },
+            take: 200,
+          },
+        },
+      });
+      if (!row) return null;
+
+      const { properties: linkedProps, ...sellerRest } = row;
+
+      const unassigned = await prisma.property.findMany({
+        where: { organizationId: ctx.organizationId, sellerId: null },
+        select: {
+          id: true,
+          title: true,
+          city: true,
+          status: true,
+          operationType: true,
+          price: true,
+        },
+        orderBy: { updatedAt: "desc" },
+        take: 100,
+      });
+
+      return {
+        seller: toSellerRow(sellerRest),
+        linkedProperties: linkedProps.map(toSellerPropertySummary),
+        unassignedProperties: unassigned.map(toSellerPropertySummary),
+      };
+    },
+  );
 
 export const createSeller = createServerFn({ method: "POST" })
   .inputValidator((data: unknown) => sellerCreateSchema.parse(data))

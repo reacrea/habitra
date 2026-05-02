@@ -39,7 +39,7 @@ var HEADERS = { TSS_SHELL: "X-TSS_SHELL" };
 * the dev styles URL for route-scoped CSS collection.
 */
 async function getStartManifest(matchedRoutes) {
-	const { tsrStartManifest } = await import("./assets/_tanstack-start-manifest_v-fi_n0xHD.js");
+	const { tsrStartManifest } = await import("./assets/_tanstack-start-manifest_v-CTXlOcoD.js");
 	const startManifest = tsrStartManifest();
 	const rootRoute = startManifest.routes[rootRouteId] = startManifest.routes[rootRouteId] || {};
 	rootRoute.assets = rootRoute.assets || [];
@@ -75,11 +75,11 @@ var manifest = {
 	},
 	"05da3d02fdf6162abc21e4be545554878d63902c3875f38ac6b44c94c114126e": {
 		functionName: "createSeller_createServerFn_handler",
-		importer: () => import("./assets/sellers-crud-K_Yc6ReO.js")
+		importer: () => import("./assets/sellers-crud-UHi9mPBi.js")
 	},
 	"18d22bfe3612c3f8eeab69f8735b3766b2998b250008ecdf07fe588b4212b0dc": {
 		functionName: "runFinancialSimulation_createServerFn_handler",
-		importer: () => import("./assets/financial-simulator-C9xCy1yn.js")
+		importer: () => import("./assets/financial-simulator-DyKX8EK0.js")
 	},
 	"1912b17146cd4f5212efe519585dc393fc2c0026800b3004f06c2aa0e9a346df": {
 		functionName: "getAppSession_createServerFn_handler",
@@ -111,11 +111,11 @@ var manifest = {
 	},
 	"33c20999285b191f9c2ddeb0b1f432146e64e667080910535e975b9b0eb5cd7d": {
 		functionName: "updateProperty_createServerFn_handler",
-		importer: () => import("./assets/properties-crud-Du2zw1M6.js")
+		importer: () => import("./assets/properties-crud-_vOskbyY.js")
 	},
 	"3469f877d7055ecf9ceec4282d96a8dde629170127705f44aa63d7030553c650": {
 		functionName: "listSellers_createServerFn_handler",
-		importer: () => import("./assets/sellers-crud-K_Yc6ReO.js")
+		importer: () => import("./assets/sellers-crud-UHi9mPBi.js")
 	},
 	"34968bd9938c387a89556f7c27666916cb4576e297a36dbd4eb9a9ff63113f15": {
 		functionName: "getTransactionCreateOptions_createServerFn_handler",
@@ -127,15 +127,19 @@ var manifest = {
 	},
 	"3da34a1b7e81612f50224260633be5ea5241a81a6f880c0b8d0bfe9334191345": {
 		functionName: "listProperties_createServerFn_handler",
-		importer: () => import("./assets/properties-crud-Du2zw1M6.js")
+		importer: () => import("./assets/properties-crud-_vOskbyY.js")
+	},
+	"4881e3cebbd1025bc60ce390e259601e664590dda62c225df40507b50b1dcb2c": {
+		functionName: "getSellerWithProperties_createServerFn_handler",
+		importer: () => import("./assets/sellers-crud-UHi9mPBi.js")
 	},
 	"48bc91ce4129f4530dd32ee4b5509a621c0bcced738e7123f83c6508455b1395": {
 		functionName: "getBuyerProfileData_createServerFn_handler",
-		importer: () => import("./assets/buyer-portal-CYQZfOEO.js")
+		importer: () => import("./assets/buyer-portal-BlB-_wRG.js")
 	},
 	"4c167f198e2fc3d046cce1bb567ef6113e3fec12b8ec414bbe73cdf672b4eb64": {
 		functionName: "updateSeller_createServerFn_handler",
-		importer: () => import("./assets/sellers-crud-K_Yc6ReO.js")
+		importer: () => import("./assets/sellers-crud-UHi9mPBi.js")
 	},
 	"4de9b7e8e90a6e9d34b30a75b3ff9da0bf696e649554efbb7c5e482c4ac6faaa": {
 		functionName: "getPublicSimilarProperties_createServerFn_handler",
@@ -143,11 +147,11 @@ var manifest = {
 	},
 	"4fab45921e2c270410c0f0ed84da104aa3d01dbf79708a89e125a3b43111ec75": {
 		functionName: "runAiDummyInsights_createServerFn_handler",
-		importer: () => import("./assets/ai-dummy-TTBTBXwf.js")
+		importer: () => import("./assets/ai-dummy-CeuX0wOq.js")
 	},
 	"527c1c84ff012fb7bb15fa0f6a0b3746121d2b16cf070e084b0c8a1203b919d8": {
 		functionName: "getBuyerTransactionsData_createServerFn_handler",
-		importer: () => import("./assets/buyer-portal-CYQZfOEO.js")
+		importer: () => import("./assets/buyer-portal-BlB-_wRG.js")
 	},
 	"52c1af2a133a929dbcd3448ea19e0954e45b1b23c52814ec07a98eb7261579ce": {
 		functionName: "contactAgentFromPublic_createServerFn_handler",
@@ -155,7 +159,7 @@ var manifest = {
 	},
 	"58f82a1fdf9017ce837cdb459358b7ba501caa8c1f078ac40ea0c9d33abfb98b": {
 		functionName: "getPropertyDetail_createServerFn_handler",
-		importer: () => import("./assets/properties-crud-Du2zw1M6.js")
+		importer: () => import("./assets/properties-crud-_vOskbyY.js")
 	},
 	"5ba978d6d7dba989da381fc6c7fa8289c58e388ec5bed46bd150c2ac4c962cb9": {
 		functionName: "updateLead_createServerFn_handler",
@@ -171,11 +175,11 @@ var manifest = {
 	},
 	"70e854e4f79775e7edc3eed5d0674373d12648d913d003034cc63288978db009": {
 		functionName: "getFinancialSimulationOptions_createServerFn_handler",
-		importer: () => import("./assets/financial-simulator-C9xCy1yn.js")
+		importer: () => import("./assets/financial-simulator-DyKX8EK0.js")
 	},
 	"722497102469e27d777122db30f21c008acf368b60c6b9a14befbd4ae3681509": {
 		functionName: "listTasks_createServerFn_handler",
-		importer: () => import("./assets/tasks-crud-tEfiNZmO.js")
+		importer: () => import("./assets/tasks-crud-CBI2XLkb.js")
 	},
 	"733d61339d01d5150d0dd72aaee28e5ecbe2e0c9c3c1974e8c0d7865daf2609c": {
 		functionName: "getDashboardMetrics_createServerFn_handler",
@@ -183,23 +187,23 @@ var manifest = {
 	},
 	"73c8f8bd5186bfb79b629701527c0be60686434cbca82128ed2cc0a233b5763c": {
 		functionName: "getBuyerMatchesData_createServerFn_handler",
-		importer: () => import("./assets/buyer-portal-CYQZfOEO.js")
+		importer: () => import("./assets/buyer-portal-BlB-_wRG.js")
 	},
 	"7420f414ddedc7db406035537960f7ca3a7aff3e9d83089df1c82ccb6e3a4d0e": {
 		functionName: "getDocumentById_createServerFn_handler",
 		importer: () => import("./assets/documents-crud-ChqYdZoJ.js")
 	},
-	"7c118fa3faa78432195d37ce6bb939d63ae1c840513f9bd3d787b9b7d6cd2229": {
-		functionName: "getSellerById_createServerFn_handler",
-		importer: () => import("./assets/sellers-crud-K_Yc6ReO.js")
-	},
 	"804f553de3f5f88ca79e6e5454a7f75a190869e737bbf201f5cd4aa059e51421": {
 		functionName: "updateTaskAssignee_createServerFn_handler",
-		importer: () => import("./assets/tasks-crud-tEfiNZmO.js")
+		importer: () => import("./assets/tasks-crud-CBI2XLkb.js")
+	},
+	"80a1ec452b6c6a7a8eeea7d440eea3a30b9c34cb168affb1c85d2d109758cda8": {
+		functionName: "listSellerOptions_createServerFn_handler",
+		importer: () => import("./assets/sellers-crud-UHi9mPBi.js")
 	},
 	"840cf681e4b756a5d8ae058c30b7c9c0e723bc175966a5d0dce7756d98f21212": {
 		functionName: "getBuyerDashboardData_createServerFn_handler",
-		importer: () => import("./assets/buyer-portal-CYQZfOEO.js")
+		importer: () => import("./assets/buyer-portal-BlB-_wRG.js")
 	},
 	"87544689e896b3d6ad1d6e1fa7cc76930b30c99f74d30f270d5c67455d480fe4": {
 		functionName: "getZoneCityData_createServerFn_handler",
@@ -219,7 +223,7 @@ var manifest = {
 	},
 	"9d06937a187d39bf9f89971fea9b10a92fa977205b1bea045db58fbc263eeb25": {
 		functionName: "getBuyerTransactionDetailData_createServerFn_handler",
-		importer: () => import("./assets/buyer-portal-CYQZfOEO.js")
+		importer: () => import("./assets/buyer-portal-BlB-_wRG.js")
 	},
 	"9ffb2ba70d8dd7be0731527e86d3b6a2f17d8561b2a0e310ca2fc729303d7c58": {
 		functionName: "createLead_createServerFn_handler",
@@ -235,7 +239,7 @@ var manifest = {
 	},
 	"b320476fd190f370cdbcf42337ec86b70254b2d257e89448d343196b34ee5296": {
 		functionName: "updateBuyerProfileData_createServerFn_handler",
-		importer: () => import("./assets/buyer-portal-CYQZfOEO.js")
+		importer: () => import("./assets/buyer-portal-BlB-_wRG.js")
 	},
 	"b33611eb61d6ab83ace351250bd6ebd372ba59abdeac03e4a161fb4e20e52a58": {
 		functionName: "getBuyerById_createServerFn_handler",
@@ -283,11 +287,11 @@ var manifest = {
 	},
 	"f6a8e645b5f969cfb5b547ff343e80648cda798b9b379452bc61c9c9b18bafb5": {
 		functionName: "updatePropertyChecklist_createServerFn_handler",
-		importer: () => import("./assets/properties-crud-Du2zw1M6.js")
+		importer: () => import("./assets/properties-crud-_vOskbyY.js")
 	},
 	"f8c4be80127ff912b4879e204b7a4eb143c739058a7bec7d96945b3bcba71352": {
 		functionName: "addPropertyImage_createServerFn_handler",
-		importer: () => import("./assets/properties-crud-Du2zw1M6.js")
+		importer: () => import("./assets/properties-crud-_vOskbyY.js")
 	},
 	"fa7c5458134aaa87bc0d27f1c277971e8238a181ccc9822b6c1a4109a6d05e3d": {
 		functionName: "startBuyingProcessFromPublic_createServerFn_handler",
@@ -1173,7 +1177,7 @@ var baseManifestPromise;
 var cachedFinalManifestPromise;
 async function loadEntries() {
 	const [routerEntry, startEntry, pluginAdapters] = await Promise.all([
-		import("./assets/router-D8oFf8gT.js"),
+		import("./assets/router-GZXCMn7X.js"),
 		import("./assets/start-cxry2j-v.js"),
 		import("./assets/__23tanstack-start-plugin-adapters-BWZzj-RW.js")
 	]);
