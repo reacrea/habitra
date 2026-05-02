@@ -2,24 +2,10 @@ import type { UserRole } from "@prisma/client";
 import { createServerFn } from "@tanstack/react-start";
 
 import { prisma } from "@/lib/db/prisma";
+import type { TaskAssignableUser, TaskListRow } from "@/types/crm";
 import { updateTaskAssigneeSchema } from "@/validations/task";
 
 import { requireCrmOrganization } from "./crm-session";
-
-export type TaskListRow = {
-  id: string;
-  title: string;
-  description: string | null;
-  status: string;
-  dueDate: string | null;
-  assigneeId: string | null;
-  assigneeName: string | null;
-  propertyTitle: string | null;
-  leadName: string | null;
-  createdAt: string;
-};
-
-export type TaskAssignableUser = { id: string; name: string };
 
 function canReassignTasks(role: UserRole): boolean {
   return role === "ADMIN" || role === "BROKER_OWNER";

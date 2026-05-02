@@ -1,0 +1,1 @@
+import{t as e}from"./jsx-dev-runtime-CKlSMCfp.js";import{t}from"./CrmPlaceholderPage-C4vQQV8L.js";var n=e(),r=`C:/Jcrea/Projects/Habitra/src/routes/app/organizations.tsx?tsr-split=component`,i=()=>(0,n.jsxDEV)(t,{title:`Organizaciones`},void 0,!1,{fileName:r,lineNumber:2,columnNumber:30},void 0);export{i as component};

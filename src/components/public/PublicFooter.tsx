@@ -13,8 +13,12 @@ export function PublicFooter() {
         <div>
           <p className="font-semibold text-habitra-text">Explorar</p>
           <div className="mt-2 flex flex-col gap-1 text-slate-600">
-            <Link to="/buy">Comprar</Link>
-            <Link to="/rent">Rentar</Link>
+            <Link to="/properties" search={{ operationType: "SALE" }}>
+              Comprar
+            </Link>
+            <Link to="/properties" search={{ operationType: "RENT" }}>
+              Rentar
+            </Link>
             <Link to="/sell">Vender</Link>
             <Link to="/zones">Zonas</Link>
           </div>

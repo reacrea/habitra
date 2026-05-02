@@ -197,3 +197,19 @@ export type TransactionOption = {
   id: string;
   label: string;
 };
+
+export type TaskAssignableUser = { id: string; name: string };
+
+/** Fila de listado de tareas CRM (`/app/tasks`), alineada con `listTasks`. */
+export type TaskListRow = {
+  id: string;
+  title: string;
+  description: string | null;
+  status: string;
+  dueDate: string | null;
+  assigneeId: string | null;
+  assigneeName: string | null;
+  propertyTitle: string | null;
+  leadName: string | null;
+  createdAt: string;
+};

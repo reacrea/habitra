@@ -2,6 +2,7 @@ import { Link, createFileRoute } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { useState } from "react";
+import { z } from "zod";
 
 import { CrmInlineError, CrmLoading } from "@/components/crm/CrmStates";
 import { AuthRequiredDialog } from "@/components/public/AuthRequiredDialog";
@@ -19,7 +20,10 @@ import { useRequireAuthAction } from "@/hooks/use-require-auth-action";
 import { usePublicShortlists } from "@/hooks/use-public-shortlists";
 import { getPublicPropertyBySlug, getPublicSimilarProperties } from "@/server/public-b2c";
 
+const propertyDetailSearchSchema = z.object({}).catchall(z.unknown());
+
 export const Route = createFileRoute("/properties/$slug")({
+  validateSearch: (search) => propertyDetailSearchSchema.parse(search ?? {}),
   component: PublicPropertyDetailPage,
 });
 

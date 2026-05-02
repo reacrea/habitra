@@ -1,5 +1,5 @@
 import { Outlet, createFileRoute, useLocation, useNavigate } from "@tanstack/react-router";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 
@@ -9,7 +9,7 @@ import { PropertyMapView } from "@/components/public/PropertyMapView";
 import { PropertyResultsGrid } from "@/components/public/PropertyResultsGrid";
 import { PublicLayout } from "@/components/public/PublicLayout";
 import { getPublicListings } from "@/server/public-b2c";
-import { publicSearchSchema } from "@/validations/public-search";
+import { mergePublicSearchDefaults, publicSearchSchema } from "@/validations/public-search";
 
 export const Route = createFileRoute("/properties")({
   validateSearch: (search) => publicSearchSchema.parse(search ?? {}),
@@ -27,18 +27,62 @@ function PublicPropertiesPage() {
     return <Outlet />;
   }
 
-  const [filters, setFilters] = useState({
-    operation: (search.operation ?? "buy") as "buy" | "rent",
-    city: search.city ?? "",
-    type: search.type ?? "",
-    minPrice: search.minPrice ?? "",
-    maxPrice: search.maxPrice ?? "",
-    bedrooms: search.bedrooms ?? "",
-    bathrooms: search.bathrooms ?? "",
-    sort: (search.sort ?? "relevance") as "relevance" | "price_asc" | "price_desc" | "recent" | "readiness_desc",
+  const [filters, setFilters] = useState(() => {
+    const e = mergePublicSearchDefaults(search);
+    return {
+      operation: e.operation,
+      city: e.city ?? "",
+      type: e.type,
+      minPrice: e.minPrice ?? "",
+      maxPrice: e.maxPrice ?? "",
+      bedrooms: e.bedrooms ?? "",
+      bathrooms: e.bathrooms ?? "",
+      sort: (e.sort ?? "relevance") as "relevance" | "price_asc" | "price_desc" | "recent" | "readiness_desc",
+    };
   });
 
+  useEffect(() => {
+    const e = mergePublicSearchDefaults(search);
+    setFilters({
+      operation: e.operation,
+      city: e.city ?? "",
+      type: e.type,
+      minPrice: e.minPrice ?? "",
+      maxPrice: e.maxPrice ?? "",
+      bedrooms: e.bedrooms ?? "",
+      bathrooms: e.bathrooms ?? "",
+      sort: (e.sort ?? "relevance") as "relevance" | "price_asc" | "price_desc" | "recent" | "readiness_desc",
+    });
+  }, [
+    search.operation,
+    search.operationType,
+    search.city,
+    search.type,
+    search.propertyType,
+    search.minPrice,
+    search.maxPrice,
+    search.bedrooms,
+    search.bathrooms,
+    search.sort,
+  ]);
+
   const view = (search.view ?? "list") as "list" | "map";
+
+  const listingSearch = useMemo(
+    () => ({
+      operationType: filters.operation === "buy" ? ("SALE" as const) : ("RENT" as const),
+      operation: filters.operation,
+      city: filters.city || undefined,
+      type: filters.type || undefined,
+      minPrice: filters.minPrice || undefined,
+      maxPrice: filters.maxPrice || undefined,
+      bedrooms: filters.bedrooms || undefined,
+      bathrooms: filters.bathrooms || undefined,
+      sort: filters.sort,
+      view,
+    }),
+    [filters, view],
+  );
 
   const parsedFilters = useMemo(
     () => ({
@@ -84,7 +128,10 @@ function PublicPropertiesPage() {
               type="button"
               className={`rounded-lg px-3 py-2 text-xs font-semibold ${view === "list" ? "bg-habitra-action text-white" : "text-slate-700"}`}
               onClick={() =>
-                void navigate({ to: "/properties", search: { ...search, view: "list" } })
+                void navigate({
+                  to: "/properties",
+                  search: { ...listingSearch, view: "list" },
+                })
               }
             >
               Lista
@@ -93,7 +140,10 @@ function PublicPropertiesPage() {
               type="button"
               className={`rounded-lg px-3 py-2 text-xs font-semibold ${view === "map" ? "bg-habitra-action text-white" : "text-slate-700"}`}
               onClick={() =>
-                void navigate({ to: "/properties", search: { ...search, view: "map" } })
+                void navigate({
+                  to: "/properties",
+                  search: { ...listingSearch, view: "map" },
+                })
               }
             >
               Mapa
@@ -108,17 +158,7 @@ function PublicPropertiesPage() {
             onApply={() =>
               void navigate({
                 to: "/properties",
-                search: {
-                  operation: filters.operation,
-                  city: filters.city || undefined,
-                  type: filters.type || undefined,
-                  minPrice: filters.minPrice || undefined,
-                  maxPrice: filters.maxPrice || undefined,
-                  bedrooms: filters.bedrooms || undefined,
-                  bathrooms: filters.bathrooms || undefined,
-                  sort: filters.sort,
-                  view,
-                },
+                search: { ...listingSearch },
               })
             }
           />

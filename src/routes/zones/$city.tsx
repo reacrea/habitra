@@ -58,10 +58,18 @@ function ZoneCityPage() {
             <section className="rounded-2xl border border-slate-200 bg-white p-5">
               <h2 className="text-lg font-semibold text-habitra-text">Enlaces SEO</h2>
               <div className="mt-3 flex flex-wrap gap-2">
-                <Link to="/buy" search={{ city: cityData.city }} className="rounded-lg border border-slate-200 px-3 py-2 text-sm text-slate-700">
+                <Link
+                  to="/properties"
+                  search={{ operationType: "SALE", city: cityData.city }}
+                  className="rounded-lg border border-slate-200 px-3 py-2 text-sm text-slate-700"
+                >
                   Comprar en {cityData.city}
                 </Link>
-                <Link to="/rent" search={{ city: cityData.city }} className="rounded-lg border border-slate-200 px-3 py-2 text-sm text-slate-700">
+                <Link
+                  to="/properties"
+                  search={{ operationType: "RENT", city: cityData.city }}
+                  className="rounded-lg border border-slate-200 px-3 py-2 text-sm text-slate-700"
+                >
                   Rentar en {cityData.city}
                 </Link>
                 <Link to="/properties" search={{ city: cityData.city }} className="rounded-lg border border-slate-200 px-3 py-2 text-sm text-slate-700">

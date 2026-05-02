@@ -50,12 +50,13 @@ function LandingPage() {
 
             <PropertySearchBar
               onSearch={(payload) => {
-                const to = payload.operation === "buy" ? "/buy" : "/rent";
                 void navigate({
-                  to,
+                  to: "/properties",
                   search: {
+                    operationType: payload.operation === "buy" ? "SALE" : "RENT",
+                    operation: payload.operation,
                     city: payload.city,
-                    type: payload.type,
+                    type: payload.type ?? "",
                     minPrice: payload.minPrice,
                     maxPrice: payload.maxPrice,
                   },

@@ -1,10 +1,14 @@
 import { Link, createFileRoute } from "@tanstack/react-router";
+import { useMemo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 
 import { CrmEmpty, CrmInlineError, CrmLoading } from "@/components/crm/CrmStates";
+import { CrmFilterSummary } from "@/components/crm/CrmTableFilterControls";
 import { TransactionsTable } from "@/components/crm/transactions/TransactionsTable";
 import { PageHeader } from "@/components/layout/PageHeader";
+import { useCrmColumnFilters } from "@/hooks/use-crm-column-filters";
+import { applyTransactionColumnFilters } from "@/lib/crm-column-filter-apply";
 import { listTransactions } from "@/server/transactions-crud";
 
 export const Route = createFileRoute("/app/transactions/")({
@@ -17,6 +21,10 @@ function TransactionsIndexPage() {
     queryKey: ["crm-transactions"],
     queryFn: () => fetchTransactions(),
   });
+
+  const transactions = query.data?.transactions ?? [];
+  const { filters, setField, clearAll, hasActive } = useCrmColumnFilters();
+  const filtered = useMemo(() => applyTransactionColumnFilters(transactions, filters), [transactions, filters]);
 
   return (
     <div>
@@ -35,11 +43,19 @@ function TransactionsIndexPage() {
 
       {query.isPending ? <CrmLoading /> : null}
       {query.isError ? <CrmInlineError message="No se pudieron cargar las operaciones." /> : null}
-      {query.data && query.data.transactions.length === 0 ? (
+      {query.data && transactions.length === 0 ? (
         <CrmEmpty title="Sin operaciones" hint="Crea una operacion para conectar buyer/seller/property/agent." />
       ) : null}
-      {query.data && query.data.transactions.length > 0 ? (
-        <TransactionsTable transactions={query.data.transactions} />
+      {query.data && transactions.length > 0 ? (
+        <>
+          <CrmFilterSummary
+            filteredCount={filtered.length}
+            totalCount={transactions.length}
+            hasActive={hasActive}
+            onClear={clearAll}
+          />
+          <TransactionsTable transactions={filtered} filters={filters} onFilterChange={setField} />
+        </>
       ) : null}
     </div>
   );

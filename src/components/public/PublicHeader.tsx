@@ -39,10 +39,10 @@ export function PublicHeader() {
           Habitra
         </Link>
         <nav className="hidden items-center gap-6 text-sm font-medium text-slate-700 md:flex">
-          <Link to="/buy" className="hover:text-habitra-action">
+          <Link to="/properties" search={{ operationType: "SALE" }} className="hover:text-habitra-action">
             Comprar
           </Link>
-          <Link to="/rent" className="hover:text-habitra-action">
+          <Link to="/properties" search={{ operationType: "RENT" }} className="hover:text-habitra-action">
             Rentar
           </Link>
           <Link to="/sell" className="hover:text-habitra-action">

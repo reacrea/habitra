@@ -1,8 +1,10 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { useMemo, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 
 import { CrmInlineError, CrmLoading } from "@/components/crm/CrmStates";
+import { CrmFilterText } from "@/components/crm/CrmTableFilterControls";
 import { PageHeader } from "@/components/layout/PageHeader";
 import { getAdminBasicData } from "@/server/pricing-admin";
 import { formatMutationError } from "@/utils/mutation-error";
@@ -18,6 +20,27 @@ function AdminPage() {
     queryFn: () => fetchAdmin(),
   });
 
+  const [orgSearch, setOrgSearch] = useState("");
+  const [userSearch, setUserSearch] = useState("");
+
+  const filteredOrganizations = useMemo(() => {
+    if (!query.data) return [];
+    const q = orgSearch.trim().toLowerCase();
+    if (!q) return query.data.organizations;
+    return query.data.organizations.filter((org) =>
+      [org.name, org.city, org.state].some((x) => String(x ?? "").toLowerCase().includes(q)),
+    );
+  }, [query.data, orgSearch]);
+
+  const filteredRecentUsers = useMemo(() => {
+    if (!query.data) return [];
+    const q = userSearch.trim().toLowerCase();
+    if (!q) return query.data.recentUsers;
+    return query.data.recentUsers.filter((u) =>
+      [u.name, u.email, u.role].some((x) => String(x ?? "").toLowerCase().includes(q)),
+    );
+  }, [query.data, userSearch]);
+
   return (
     <div className="space-y-6">
       <PageHeader title="Admin basico" description="Resumen operativo multi-organizacion." />
@@ -26,32 +49,72 @@ function AdminPage() {
       {query.data ? (
         <>
           <div className="grid gap-3 md:grid-cols-4">
-            <div className="rounded-xl border border-slate-200 bg-white p-4 text-sm">Orgs: <strong>{query.data.summary.organizations}</strong></div>
-            <div className="rounded-xl border border-slate-200 bg-white p-4 text-sm">Users: <strong>{query.data.summary.users}</strong></div>
-            <div className="rounded-xl border border-slate-200 bg-white p-4 text-sm">Subs activas: <strong>{query.data.summary.activeSubscriptions}</strong></div>
-            <div className="rounded-xl border border-slate-200 bg-white p-4 text-sm">Operaciones activas: <strong>{query.data.summary.activeTransactions}</strong></div>
+            <div className="rounded-xl border border-slate-200 bg-white p-4 text-sm">
+              Orgs: <strong>{query.data.summary.organizations}</strong>
+            </div>
+            <div className="rounded-xl border border-slate-200 bg-white p-4 text-sm">
+              Users: <strong>{query.data.summary.users}</strong>
+            </div>
+            <div className="rounded-xl border border-slate-200 bg-white p-4 text-sm">
+              Subs activas: <strong>{query.data.summary.activeSubscriptions}</strong>
+            </div>
+            <div className="rounded-xl border border-slate-200 bg-white p-4 text-sm">
+              Operaciones activas: <strong>{query.data.summary.activeTransactions}</strong>
+            </div>
           </div>
 
           <div className="grid gap-4 md:grid-cols-2">
             <div className="rounded-2xl border border-slate-200 bg-white p-4">
               <h3 className="mb-2 text-sm font-semibold text-habitra-text">Organizaciones recientes</h3>
+              <div className="mb-3">
+                <CrmFilterText
+                  value={orgSearch}
+                  onChange={setOrgSearch}
+                  placeholder="Filtrar por nombre, ciudad o estado…"
+                />
+                {orgSearch.trim() ? (
+                  <p className="mt-1 text-xs text-slate-500">
+                    {filteredOrganizations.length} de {query.data.organizations.length} mostradas
+                  </p>
+                ) : null}
+              </div>
               <ul className="space-y-2 text-sm text-slate-700">
-                {query.data.organizations.map((org) => (
-                  <li key={org.id}>
-                    <strong>{org.name}</strong> - {org.city}, {org.state}
-                  </li>
-                ))}
+                {filteredOrganizations.length === 0 ? (
+                  <li className="text-slate-500">Ninguna coincidencia con el filtro.</li>
+                ) : (
+                  filteredOrganizations.map((org) => (
+                    <li key={org.id}>
+                      <strong>{org.name}</strong> - {org.city}, {org.state}
+                    </li>
+                  ))
+                )}
               </ul>
             </div>
 
             <div className="rounded-2xl border border-slate-200 bg-white p-4">
               <h3 className="mb-2 text-sm font-semibold text-habitra-text">Usuarios recientes</h3>
+              <div className="mb-3">
+                <CrmFilterText
+                  value={userSearch}
+                  onChange={setUserSearch}
+                  placeholder="Filtrar por nombre, email o rol…"
+                />
+                {userSearch.trim() ? (
+                  <p className="mt-1 text-xs text-slate-500">
+                    {filteredRecentUsers.length} de {query.data.recentUsers.length} mostrados
+                  </p>
+                ) : null}
+              </div>
               <ul className="space-y-2 text-sm text-slate-700">
-                {query.data.recentUsers.map((user) => (
-                  <li key={user.id}>
-                    <strong>{user.name}</strong> ({user.role}) - {user.isActive ? "Activo" : "Inactivo"}
-                  </li>
-                ))}
+                {filteredRecentUsers.length === 0 ? (
+                  <li className="text-slate-500">Ninguna coincidencia con el filtro.</li>
+                ) : (
+                  filteredRecentUsers.map((user) => (
+                    <li key={user.id}>
+                      <strong>{user.name}</strong> ({user.role}) - {user.isActive ? "Activo" : "Inactivo"}
+                    </li>
+                  ))
+                )}
               </ul>
             </div>
           </div>

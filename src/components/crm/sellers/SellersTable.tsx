@@ -1,5 +1,6 @@
 import { Link } from "@tanstack/react-router";
 
+import { CrmFilterNumberRange, CrmFilterText } from "@/components/crm/CrmTableFilterControls";
 import type { SellerRow } from "@/types/crm";
 
 function formatMoney(value: number | null): string {
@@ -13,9 +14,13 @@ function formatMoney(value: number | null): string {
 
 type SellersTableProps = {
   sellers: SellerRow[];
+  filters: Record<string, string>;
+  onFilterChange: (key: string, value: string) => void;
 };
 
-export function SellersTable({ sellers }: SellersTableProps) {
+export function SellersTable({ sellers, filters, onFilterChange }: SellersTableProps) {
+  const f = (key: string) => filters[key] ?? "";
+
   return (
     <div className="overflow-x-auto rounded-2xl border border-slate-200 bg-white shadow-sm">
       <table className="min-w-full divide-y divide-slate-200 text-left text-sm">
@@ -27,27 +32,60 @@ export function SellersTable({ sellers }: SellersTableProps) {
             <th className="px-4 py-3">Urgencia</th>
             <th className="px-4 py-3 text-right">Acciones</th>
           </tr>
+          <tr className="border-t border-slate-200 bg-white normal-case">
+            <th className="px-4 py-2 align-top font-normal">
+              <CrmFilterText value={f("name")} onChange={(v) => onFilterChange("name", v)} />
+            </th>
+            <th className="px-4 py-2 align-top font-normal">
+              <CrmFilterText value={f("contact")} onChange={(v) => onFilterChange("contact", v)} />
+            </th>
+            <th className="min-w-[8rem] px-4 py-2 align-top font-normal">
+              <CrmFilterNumberRange
+                minValue={f("priceMin")}
+                maxValue={f("priceMax")}
+                onMinChange={(v) => onFilterChange("priceMin", v)}
+                onMaxChange={(v) => onFilterChange("priceMax", v)}
+              />
+            </th>
+            <th className="min-w-[6rem] px-4 py-2 align-top font-normal">
+              <CrmFilterNumberRange
+                minValue={f("urgencyMin")}
+                maxValue={f("urgencyMax")}
+                onMinChange={(v) => onFilterChange("urgencyMin", v)}
+                onMaxChange={(v) => onFilterChange("urgencyMax", v)}
+              />
+            </th>
+            <th className="px-4 py-2" aria-hidden />
+          </tr>
         </thead>
         <tbody className="divide-y divide-slate-100 text-slate-800">
-          {sellers.map((seller) => (
-            <tr key={seller.id} className="hover:bg-slate-50/80">
-              <td className="px-4 py-3 font-medium">{seller.name}</td>
-              <td className="max-w-[220px] truncate px-4 py-3 text-slate-600">
-                {[seller.email, seller.phone].filter(Boolean).join(" · ") || "—"}
-              </td>
-              <td className="px-4 py-3 tabular-nums">{formatMoney(seller.expectedPrice)}</td>
-              <td className="px-4 py-3 tabular-nums">{seller.urgency ?? "—"}</td>
-              <td className="px-4 py-3 text-right">
-                <Link
-                  to="/app/sellers/$sellerId"
-                  params={{ sellerId: seller.id }}
-                  className="font-semibold text-emerald-700 hover:text-emerald-800"
-                >
-                  Editar
-                </Link>
+          {sellers.length === 0 ? (
+            <tr>
+              <td colSpan={5} className="px-4 py-8 text-center text-sm text-slate-500">
+                Ningún resultado con los filtros actuales.
               </td>
             </tr>
-          ))}
+          ) : (
+            sellers.map((seller) => (
+              <tr key={seller.id} className="hover:bg-slate-50/80">
+                <td className="px-4 py-3 font-medium">{seller.name}</td>
+                <td className="max-w-[220px] truncate px-4 py-3 text-slate-600">
+                  {[seller.email, seller.phone].filter(Boolean).join(" · ") || "—"}
+                </td>
+                <td className="px-4 py-3 tabular-nums">{formatMoney(seller.expectedPrice)}</td>
+                <td className="px-4 py-3 tabular-nums">{seller.urgency ?? "—"}</td>
+                <td className="px-4 py-3 text-right">
+                  <Link
+                    to="/app/sellers/$sellerId"
+                    params={{ sellerId: seller.id }}
+                    className="font-semibold text-emerald-700 hover:text-emerald-800"
+                  >
+                    Editar
+                  </Link>
+                </td>
+              </tr>
+            ))
+          )}
         </tbody>
       </table>
     </div>
